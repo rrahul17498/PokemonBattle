@@ -1,9 +1,13 @@
-import LandingPage from './components/landingPage'
+import { ThemeProvider } from 'styled-components';
+import theme from './theme';
+import LandingPage from './components/landingPage';
 
 function App() {
 
   return (
-    <LandingPage />
+    <ThemeProvider theme={theme}>
+     <LandingPage />
+    </ThemeProvider>
   )
 }
 
