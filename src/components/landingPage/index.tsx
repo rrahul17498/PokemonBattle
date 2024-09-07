@@ -1,9 +1,9 @@
-
+import * as S from './styles';
 
 
 
 export default function LandingPage() {
-   return (<div>
+   return (<S.Container>
      Landing Page
-   </div>);
+   </S.Container>);
 };
