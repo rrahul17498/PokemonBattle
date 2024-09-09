@@ -1,0 +1,31 @@
+{
+    "pokemons": [
+        {
+             "id": 1,
+             "name": "Charmander",
+             "image": "src/assets/images/Charmander.png",
+             "pokemonTheme": {
+                 "light": "#EFC3C9",
+                 "dark": "#BE3144"
+                  }
+                },
+        {
+             "id": 2,
+             "name": "Bulbasaur",
+             "image": "src/assets/images/Bulbasaur.png",
+             "pokemonTheme": {
+                 "light": "#BAF7C2",
+                 "dark": "#119822"
+                  }
+                },
+        {
+             "id": 3,
+             "name": "Squirtle",
+             "image": "src/assets/images/Squirtle.png",
+             "pokemonTheme": {
+                 "light": "#bfcfff",
+                 "dark": "#4D79FF"
+                  }
+                }
+     ]
+}

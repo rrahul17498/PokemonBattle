@@ -1,45 +1,53 @@
 import { useState } from 'react';
+import { isNull } from 'lodash';
 import * as S from './styles';
-import theme from '../../../theme';
+import ChosenPokemon from './chosenPokemon';
+import STARTOFF_POKEMONS from './startoffPokemons.json';
 
-const STARTOFF_POKEMONS = [
-   { id: 1, name: 'Charmander', img: 'src/assets/images/Charmander.png' , pokemonTheme: { light: theme.BRICK_RED_EXTRA_LIGHT, dark: theme.BRICK_RED_LIGHT }},
-   { id: 2, name: 'Bulbasaur', img: 'src/assets/images/Bulbasaur.png', pokemonTheme: { light: theme.SUGARCANE, dark: theme.LA_PALMA }},
-   { id: 3, name: 'Squirtle', img: 'src/assets/images/Squirtle.png', pokemonTheme: { light: theme.PERI_WINKLE, dark: theme.DODGER_BLUE }}
-]
 
 export interface PokemonInterface {
     id: number,
     name: string,
+    image: string,
     pokemonTheme: { light: string, dark: string }
     };
 
 export default function ChooseYourPokemon() {
    const [selectedPokemon, setSelectedPokemon] = useState<PokemonInterface | null>(null);
+   const [isPokemonSubmitted, setIsPokemonSubmitted] = useState<boolean>(false);
    
    const selectPokemon = (pokemon: PokemonInterface) => () => {
       setSelectedPokemon(pokemon);
    };
 
+   const onPokemonSubmit = () => {
+    setIsPokemonSubmitted(true);
+   };
+
+   if(isPokemonSubmitted) {
+    return <ChosenPokemon pokemon={selectedPokemon} />;
+   }
+
    return (
           <S.Container>
-            <S.PokemonFormCardContentHeading>
+            <S.PokemonCardContentHeading>
                 Choose Your Pokemon
-            </S.PokemonFormCardContentHeading>
-            <S.PokemonFormCardSubContent>
+            </S.PokemonCardContentHeading>
+            <S.PokemonCardSubContent>
                 {STARTOFF_POKEMONS.map((pokemon, i) => (
-                <S.PokemonFormCardSubContentElem
+                <S.PokemonCardSubContentElemInteractive
                     key={`startoff_pokemon_${i}`}
                     elemTheme={pokemon.pokemonTheme}
                     isSelected={pokemon.id == selectedPokemon?.id}
                     onClick={selectPokemon(pokemon)}
+                    default={false}
                     >
-                    <S.PokemonFormCardSubContentElemImg src={pokemon.img} />
-                    <S.PokemonFormCardSubContentElemHeading>{pokemon.name}</S.PokemonFormCardSubContentElemHeading>
-                </S.PokemonFormCardSubContentElem>
+                    <S.PokemonCardSubContentElemImg src={pokemon.image} />
+                    <S.PokemonCardSubContentElemHeading>{pokemon.name}</S.PokemonCardSubContentElemHeading>
+                </S.PokemonCardSubContentElemInteractive>
                 ))}
-            </S.PokemonFormCardSubContent>
-            <S.ChooseButton selectedPokemon={selectedPokemon}>I Choose You!</S.ChooseButton>
+            </S.PokemonCardSubContent>
+            <S.ChooseButton isPokemonSelected={!isNull(selectedPokemon)} onClick={onPokemonSubmit}>I Choose You!</S.ChooseButton>
            </S.Container>
    );
 };
