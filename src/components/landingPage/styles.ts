@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-
 export const Main = styled.main`
   width: 100%;
   height: 100%;
@@ -21,7 +20,5 @@ export const LandingFormCard = styled.div`
 `;
 
 export const LandingFormCardContent = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
+ width: 100%;
 `;
