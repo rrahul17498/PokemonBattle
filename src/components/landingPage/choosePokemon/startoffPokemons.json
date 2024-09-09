@@ -1,0 +1,49 @@
+{
+    "data": [
+        {
+             "id": 1,
+             "name": "Charmander",
+             "type": "Fire",
+             "image": "src/assets/images/Charmander.png",
+             "attacks": [
+              { "name": "Scratch", "power": 15, "accuracy": 100, "energy_consumed": 5 },
+              { "name": "Tackle", "power": 20, "accuracy": 95, "energy_consumed": 5 },
+              { "name": "Flame Thrower", "power": 40, "accuracy": 80, "energy_consumed": 10 }
+             ],
+             "pokemonTheme": {
+                 "light": "#EFC3C9",
+                 "dark": "#BE3144"
+                  }
+                },
+        {
+             "id": 2,
+             "name": "Bulbasaur",
+             "type": "Grass",
+             "attacks": [
+              { "name": "Vine Whip", "power": 15, "accuracy": 100, "energy_consumed": 5 },
+              { "name": "Razor Leaf", "power": 20, "accuracy": 95, "energy_consumed": 5 },
+              { "name": "Solar Beam", "power": 50, "accuracy": 80, "energy_consumed": 30 }
+             ],
+             "image": "src/assets/images/Bulbasaur.png",
+             "pokemonTheme": {
+                 "light": "#BAF7C2",
+                 "dark": "#119822"
+                  }
+                },
+        {
+             "id": 3,
+             "name": "Squirtle",
+             "type": "Water",
+             "attacks": [
+              { "name": "Bubble", "power": 15, "accuracy": 100, "energy_consumed": 5 },
+              { "name": "Water Gun", "power": 15, "accuracy": 95, "energy_consumed": 5 },
+              { "name": "Hydro Pump", "power": 20, "accuracy": 80, "energy_consumed": 10 }
+             ],
+             "image": "src/assets/images/Squirtle.png",
+             "pokemonTheme": {
+                 "light": "#bfcfff",
+                 "dark": "#4D79FF"
+                  }
+                }
+     ]
+}
