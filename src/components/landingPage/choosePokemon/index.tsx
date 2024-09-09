@@ -34,20 +34,19 @@ export default function ChooseYourPokemon() {
                 Choose Your Pokemon
             </S.PokemonCardContentHeading>
             <S.PokemonCardSubContent>
-                {STARTOFF_POKEMONS.map((pokemon, i) => (
+                {STARTOFF_POKEMONS.data.map((pokemon: PokemonInterface, i: number) => (
                 <S.PokemonCardSubContentElemInteractive
                     key={`startoff_pokemon_${i}`}
-                    elemTheme={pokemon.pokemonTheme}
-                    isSelected={pokemon.id == selectedPokemon?.id}
+                    $elemTheme={pokemon.pokemonTheme}
+                    $isSelected={pokemon.id == selectedPokemon?.id}
                     onClick={selectPokemon(pokemon)}
-                    default={false}
                     >
                     <S.PokemonCardSubContentElemImg src={pokemon.image} />
                     <S.PokemonCardSubContentElemHeading>{pokemon.name}</S.PokemonCardSubContentElemHeading>
                 </S.PokemonCardSubContentElemInteractive>
                 ))}
             </S.PokemonCardSubContent>
-            <S.ChooseButton isPokemonSelected={!isNull(selectedPokemon)} onClick={onPokemonSubmit}>I Choose You!</S.ChooseButton>
+            <S.ChooseButton $isPokemonSelected={!isNull(selectedPokemon)} onClick={onPokemonSubmit}>I Choose You!</S.ChooseButton>
            </S.Container>
    );
 };

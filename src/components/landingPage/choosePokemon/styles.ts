@@ -23,12 +23,12 @@ export const PokemonCardSubContentElem = styled.div`
   border-radius: 8px;
 `;
 
-export const PokemonCardSubContentElemInteractive = styled(PokemonCardSubContentElem)<{ elemTheme: { light: string, dark: string }, isSelected: boolean, default: boolean}>`
+export const PokemonCardSubContentElemInteractive = styled(PokemonCardSubContentElem)<{ $elemTheme: { light: string, dark: string }, $isSelected: boolean}>`
   &:hover{
    cursor: pointer;
-   background-color: ${p => p.elemTheme.light};
+   background-color: ${p => p.$elemTheme.light};
   }
-  background-color: ${p => p.isSelected ? p.elemTheme.light: 'transparent'}; 
+  background-color: ${p => p.$isSelected ? p.$elemTheme.light: 'transparent'}; 
 `;
 
 export const PokemonCardSubContentElemHeading = styled.h2`
@@ -39,7 +39,7 @@ export const PokemonCardSubContentElemImg = styled.img`
   width: 200px;
 `;
 
-export const ChooseButton = styled.button<{ isPokemonSelected: boolean }>`
+export const ChooseButton = styled.button<{ $isPokemonSelected: boolean }>`
   display: block;
   width: 200px;
   height: 48px;
@@ -49,10 +49,12 @@ export const ChooseButton = styled.button<{ isPokemonSelected: boolean }>`
   color: ${p => p.theme.WHITE};
   font-size: 20px;
   border-radius: 8px;
-  visibility: ${p => p.isPokemonSelected ? 'visible': 'hidden'}; 
+  visibility: ${p => p.$isPokemonSelected ? 'visible': 'hidden'}; 
   cursor: pointer;
 `;
 
+
+export const PokemonDetails = styled.div``;
 
 export const AttackSection = styled.div``;
 

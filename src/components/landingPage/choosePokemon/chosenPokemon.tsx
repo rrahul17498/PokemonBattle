@@ -9,9 +9,13 @@ export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface |
                 <S.PokemonCardSubContentElem>
                     <S.PokemonCardSubContentElemImg src={pokemon?.image} />
                 </S.PokemonCardSubContentElem>
-                <S.AttackSection>
-                 <S.Attack></S.Attack>
-                </S.AttackSection>
+                <S.PokemonDetails>
+                 <S.AttackSection>
+                    <S.Attack>Vine Whip</S.Attack>
+                    <S.Attack>Razor Leaf</S.Attack>
+                    <S.Attack>Solar Beam</S.Attack>
+                 </S.AttackSection>
+                </S.PokemonDetails>
             </S.PokemonCardSubContent>
             <S.PokemonCardContentHeading>
                 You have chosen {pokemon?.name} !
