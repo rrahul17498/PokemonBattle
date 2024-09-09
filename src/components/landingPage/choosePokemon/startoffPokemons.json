@@ -3,6 +3,7 @@
         {
              "id": 1,
              "name": "Charmander",
+             "type": "Fire",
              "image": "src/assets/images/Charmander.png",
              "pokemonTheme": {
                  "light": "#EFC3C9",
@@ -12,6 +13,7 @@
         {
              "id": 2,
              "name": "Bulbasaur",
+             "type": "Grass",
              "image": "src/assets/images/Bulbasaur.png",
              "pokemonTheme": {
                  "light": "#BAF7C2",
@@ -21,6 +23,7 @@
         {
              "id": 3,
              "name": "Squirtle",
+             "type": "Water",
              "image": "src/assets/images/Squirtle.png",
              "pokemonTheme": {
                  "light": "#bfcfff",

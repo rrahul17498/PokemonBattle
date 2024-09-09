@@ -1,7 +1,6 @@
 import * as S from './styles';
 import { PokemonInterface } from './index';
 
-
 export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface | null }) {
    return (
           <S.Container>
@@ -10,6 +9,9 @@ export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface |
                     <S.PokemonCardSubContentElemImg src={pokemon?.image} />
                 </S.PokemonCardSubContentElem>
                 <S.PokemonDetails>
+                 <S.PokemonDetailsHeading>Type</S.PokemonDetailsHeading> 
+                 <S.PokemonType $colorTheme={pokemon?.pokemonTheme}>{pokemon?.type}</S.PokemonType> 
+                 <S.PokemonDetailsHeading>Attacks</S.PokemonDetailsHeading> 
                  <S.AttackSection>
                     <S.Attack>Vine Whip</S.Attack>
                     <S.Attack>Razor Leaf</S.Attack>
@@ -20,6 +22,7 @@ export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface |
             <S.PokemonCardContentHeading>
                 You have chosen {pokemon?.name} !
             </S.PokemonCardContentHeading>
+            <S.GoToBattle>Go to Battle</S.GoToBattle>
            </S.Container>
    );
 };

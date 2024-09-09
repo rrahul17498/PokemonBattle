@@ -56,6 +56,33 @@ export const ChooseButton = styled.button<{ $isPokemonSelected: boolean }>`
 
 export const PokemonDetails = styled.div``;
 
-export const AttackSection = styled.div``;
+export const PokemonDetailsHeading = styled.h4`
+  margin: 16px 0 8px 0;
+`;
 
-export const Attack = styled.div``;
+export const PokemonType = styled.div<{ $colorTheme: { light: string, dark: string } }>`
+  text-align: center;
+  padding: 8px;
+  border: 0.5px solid black;
+  border-radius: 8px;
+  color: ${p => p.theme.WHITE};
+  background-color: ${p => p.$colorTheme.dark || p.theme.BLACK};
+  width: fit-content;
+`;
+
+export const AttackSection = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+export const Attack = styled.div`
+  padding: 8px;
+  border: 0.5px solid black;
+  border-radius: 8px;
+  color: ${p => p.theme.WHITE};
+  background-color: ${p => p.theme.BLACK};
+`;
+
+export const GoToBattle = styled(ChooseButton)`
+  visibility: visible;
+`;

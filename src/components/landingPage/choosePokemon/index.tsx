@@ -8,6 +8,7 @@ import STARTOFF_POKEMONS from './startoffPokemons.json';
 export interface PokemonInterface {
     id: number,
     name: string,
+    type: string,
     image: string,
     pokemonTheme: { light: string, dark: string }
     };
