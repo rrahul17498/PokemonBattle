@@ -39,7 +39,7 @@ export const PokemonCardSubContentElemImg = styled.img`
   width: 200px;
 `;
 
-export const ChooseButton = styled.button<{ $isPokemonSelected: boolean }>`
+export const SubmitButton = styled.button`
   display: block;
   width: 200px;
   height: 48px;
@@ -49,8 +49,11 @@ export const ChooseButton = styled.button<{ $isPokemonSelected: boolean }>`
   color: ${p => p.theme.WHITE};
   font-size: 20px;
   border-radius: 8px;
-  visibility: ${p => p.$isPokemonSelected ? 'visible': 'hidden'}; 
   cursor: pointer;
+`;
+
+export const ChooseButton = styled(SubmitButton)<{ $isPokemonSelected: boolean }>`
+  visibility: ${p => p.$isPokemonSelected ? 'visible': 'hidden'}; 
 `;
 
 
@@ -60,13 +63,13 @@ export const PokemonDetailsHeading = styled.h4`
   margin: 16px 0 8px 0;
 `;
 
-export const PokemonType = styled.div<{ $colorTheme: { light: string, dark: string } }>`
+export const PokemonType = styled.div<{ $colorTheme: { light: string, dark: string } | undefined }>`
   text-align: center;
   padding: 8px;
   border: 0.5px solid black;
   border-radius: 8px;
   color: ${p => p.theme.WHITE};
-  background-color: ${p => p.$colorTheme.dark || p.theme.BLACK};
+  background-color: ${p => p.$colorTheme?.dark || p.theme.BLACK};
   width: fit-content;
 `;
 
@@ -83,6 +86,5 @@ export const Attack = styled.div`
   background-color: ${p => p.theme.BLACK};
 `;
 
-export const GoToBattle = styled(ChooseButton)`
-  visibility: visible;
+export const GoToBattle = styled(SubmitButton)`
 `;

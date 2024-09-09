@@ -13,9 +13,9 @@ export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface |
                  <S.PokemonType $colorTheme={pokemon?.pokemonTheme}>{pokemon?.type}</S.PokemonType> 
                  <S.PokemonDetailsHeading>Attacks</S.PokemonDetailsHeading> 
                  <S.AttackSection>
-                    <S.Attack>Vine Whip</S.Attack>
-                    <S.Attack>Razor Leaf</S.Attack>
-                    <S.Attack>Solar Beam</S.Attack>
+                    {pokemon?.attacks.map((attack) => (
+                        <S.Attack>{attack.name}</S.Attack>
+                    ))}
                  </S.AttackSection>
                 </S.PokemonDetails>
             </S.PokemonCardSubContent>
