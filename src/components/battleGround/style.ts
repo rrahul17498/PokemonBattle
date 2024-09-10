@@ -1,0 +1,42 @@
+import styled from "styled-components";
+
+export const Main = styled.main`
+  width: 100%;
+  height: 100%;
+`;
+
+export const Section = styled.section`
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  height: 100%;
+`;
+
+export const UserSection = styled.div`
+ border: 1px solid ${p => p.theme.QUICK_SILVER};
+`;
+
+export const PokemonDetails = styled.div`
+ border: 1px solid ${p => p.theme.QUICK_SILVER};
+`;
+
+export const AttackPanel = styled.div`
+ border: 1px solid ${p => p.theme.QUICK_SILVER};
+`;
+
+export const TriggerAttack = styled.button`
+  background-color: ${p => p.theme.BLACK};
+  color: ${p => p.theme.WHITE};
+`;
+
+
+
+export const AttackSection = styled.div`
+  display: flex;
+  justify-content: space-around;
+  padding: 24px;
+  border-radius: 4px;
+`;
+
+export const OpponentSection = styled.div`
+ border: 1px solid ${p => p.theme.QUICK_SILVER};
+`;
