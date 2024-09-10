@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { isNull } from 'lodash';
 import * as S from './style';
 import Video from '../atoms/video';
+import PokeballIcon from '../../assets/icons/pokeball_side_icon_1.png';
 import CharmanderFlameThrower1 from '../../assets/videos/flamethrower_1.mov';
 import CharmanderFlameThrower2 from '../../assets/videos/flamethrower_2.mov';
 import CharmanderScratchAttack1 from '../../assets/videos/scratch_attack.mov';
@@ -40,10 +41,19 @@ export default function BattleGround() {
 
                     </S.PokemonDetails>
                     <S.AttackPanel>
-                      <S.TriggerAttack onClick={triggerAttack(0)}>Flame Thrower 1</S.TriggerAttack>
-                      <S.TriggerAttack onClick={triggerAttack(1)}>Flame Thrower 2</S.TriggerAttack>
-                      <S.TriggerAttack onClick={triggerAttack(2)}>Scratch Attack</S.TriggerAttack>
+                      <li><S.TriggerAttack onClick={triggerAttack(0)}>Flame Thrower 1</S.TriggerAttack></li>
+                      <li><S.TriggerAttack onClick={triggerAttack(1)}>Flame Thrower 2</S.TriggerAttack></li>
+                      <li><S.TriggerAttack onClick={triggerAttack(2)}>Scratch Attack</S.TriggerAttack></li>
                     </S.AttackPanel>
+                    <S.UserDetails>
+                        <S.UserName>Rahul Radhakrishna</S.UserName>
+                        <S.UserPokemons>
+                            <S.UserPokemon>
+                                <S.UserPokeball src={PokeballIcon} />
+                                <S.UserPokemonName>Charmander</S.UserPokemonName>
+                            </S.UserPokemon>
+                        </S.UserPokemons>
+                    </S.UserDetails>
                 </S.UserSection>
                 <S.AttackSection>
                    <Video

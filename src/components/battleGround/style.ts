@@ -12,15 +12,18 @@ export const Section = styled.section`
 `;
 
 export const UserSection = styled.div`
- border: 1px solid ${p => p.theme.QUICK_SILVER};
+  border: 1px solid ${p => p.theme.QUICK_SILVER};
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 `;
 
 export const PokemonDetails = styled.div`
- border: 1px solid ${p => p.theme.QUICK_SILVER};
+  border: 1px solid ${p => p.theme.QUICK_SILVER};
 `;
 
-export const AttackPanel = styled.div`
- border: 1px solid ${p => p.theme.QUICK_SILVER};
+export const AttackPanel = styled.ul`
+  display: flex;
 `;
 
 export const TriggerAttack = styled.button`
@@ -35,6 +38,34 @@ export const AttackSection = styled.div`
   justify-content: space-around;
   padding: 24px;
   border-radius: 4px;
+`;
+
+export const UserDetails = styled.div`
+ border: 1px solid ${p => p.theme.QUICK_SILVER};
+`;
+
+export const UserName = styled.h1`
+  text-align: center;
+  margin: 12px 0;
+`;
+
+export const UserPokemons = styled.div`
+  display: flex;
+  padding: 12px;
+`;
+
+export const UserPokemon = styled.div`
+`;
+
+export const UserPokeball = styled.img`
+  width: 42px;
+  display: block;
+  margin: auto;
+`;
+
+export const UserPokemonName = styled.h5`
+  display: block;
+  margin-top: 6px;
 `;
 
 export const OpponentSection = styled.div`
