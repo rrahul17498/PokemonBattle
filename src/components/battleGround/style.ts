@@ -25,13 +25,16 @@ export const PokemonImage = styled.img`
   max-width: 250px;
   margin: 0 auto;
   display: block;
+  -moz-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  transform: scale(-1, 1);
 `;
 
 export const PokemonName = styled.h3`
   margin: 12px 0 0 0;
   padding: 12px;
   font-variation-settings: 'wght' 600;
-  text-align: center;
 `;
 
 export const AttackHeading = styled.h4`
@@ -80,13 +83,19 @@ export const UserName = styled(PokemonName)`
   font-variation-settings: 'wght' 400;
 `;
 
-export const UserPokemons = styled.div`
-  display: flex;
-  gap: 12px;
+export const UserPokemons = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   padding: 12px;
+  li {
+    list-style-type: none;
+  }
 `;
 
-export const UserPokemon = styled.div`
+export const UserPokemon = styled.button`
+  border: none;
+  background: none;
+  cursor: pointer;
 `;
 
 export const UserPokeballIcon = styled.img<{ $isOpen: boolean }>`
@@ -100,6 +109,8 @@ export const UserPokeballIcon = styled.img<{ $isOpen: boolean }>`
 export const UserPokemonName = styled.h5`
   display: block;
   margin-top: 6px;
+  width: 90px;
+  text-align: center;
 `;
 
 export const OpponentSection = styled.div`
