@@ -9,7 +9,7 @@ export interface PokemonInterface {
     id: number,
     name: string,
     type: string,
-    attacks: { name: string, power: number, accuracy: number, energy_consumed: number }[],
+    attacks: { name: string, src: string, power: number, accuracy: number, energy_consumed: number }[],
     image: string,
     pokemonTheme: { light: string, dark: string }
     };
