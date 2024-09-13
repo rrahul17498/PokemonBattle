@@ -1,5 +1,6 @@
 import * as S from './styles';
 import { PokemonInterface } from './index';
+import RouteDefinitions from '../../../routes'
 
 export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface | null }) {
    return (
@@ -22,7 +23,7 @@ export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface |
             <S.PokemonCardContentHeading>
                 You have chosen {pokemon?.name} !
             </S.PokemonCardContentHeading>
-            <S.GoToBattle to="/battle">Go to Battle</S.GoToBattle>
+            <S.GoToBattle to={RouteDefinitions.open.battleground}>Go to Battle</S.GoToBattle>
            </S.Container>
    );
 };
