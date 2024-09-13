@@ -13,7 +13,7 @@ export const Section = styled.section`
 `;
 
 export const LandingFormCard = styled.div`
-  border: 1px solid ${p => p.theme.QUICK_SILVER};
+  border: 1px solid ${p => p.theme.colors.QUICK_SILVER};
   width: 1000px;
   padding: 24px;
   border-radius: 4px;

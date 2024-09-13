@@ -1,5 +1,7 @@
+import { css } from "styled-components";
+
 // Name source: https://chir.ag/projects/name-that-color/
-export default {
+const colors = {
     BLACK: '#000000',
     LA_PALMA: '#119822',
     DODGER_BLUE: '#4D79FF',
@@ -10,4 +12,27 @@ export default {
     SCORPION: '#606060',
     QUICK_SILVER: '#A6A6A6',
     WHITE: '#FFFFFF',
+};
+
+const commonStyles = {
+  submitButton: css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 48px;
+    background-color: ${colors.BRICK_RED_LIGHT};
+    margin: 42px auto 18px auto;
+    border: none;
+    color: ${colors.WHITE};
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+  `,
+};
+
+export default {
+    colors,
+    commonStyles,
 };
