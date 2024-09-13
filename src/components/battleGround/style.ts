@@ -53,8 +53,8 @@ export const AttackPanel = styled.ul`
 `;
 
 export const TriggerAttack = styled.button`
-  background-color: ${p => p.theme.BLACK};
-  color: ${p => p.theme.WHITE};
+  background-color: ${p => p.theme.colors.BLACK};
+  color: ${p => p.theme.colors.WHITE};
   padding: 6px;
   border-radius: 4px;
   border: none;
@@ -71,8 +71,8 @@ export const BattleArena = styled.div`
   justify-content: space-around;
   padding: 24px;
   border-radius: 4px;
-  border: 1px solid ${p => p.theme.QUICK_SILVER};
-  background-color: ${p => p.theme.BLACK};
+  border: 1px solid ${p => p.theme.colors.QUICK_SILVER};
+  background-color: ${p => p.theme.colors.BLACK};
 `;
 
 export const UserDetails = styled.div`
@@ -114,5 +114,5 @@ export const UserPokemonName = styled.h5`
 `;
 
 export const OpponentSection = styled.div`
- border: 1px solid ${p => p.theme.QUICK_SILVER};
+ border: 1px solid ${p => p.theme.colors.QUICK_SILVER};
 `;

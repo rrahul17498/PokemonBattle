@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -40,16 +41,7 @@ export const PokemonCardSubContentElemImg = styled.img`
 `;
 
 export const SubmitButton = styled.button`
-  display: block;
-  width: 200px;
-  height: 48px;
-  background-color: ${p => p.theme.BRICK_RED_LIGHT};
-  margin: 42px auto 18px auto;
-  border: none;
-  color: ${p => p.theme.WHITE};
-  font-size: 20px;
-  border-radius: 8px;
-  cursor: pointer;
+  ${(p) => p.theme.commonStyles.submitButton}
 `;
 
 export const ChooseButton = styled(SubmitButton)<{ $isPokemonSelected: boolean }>`
@@ -68,8 +60,8 @@ export const PokemonType = styled.div<{ $colorTheme: { light: string, dark: stri
   padding: 8px;
   border: 0.5px solid black;
   border-radius: 8px;
-  color: ${p => p.theme.WHITE};
-  background-color: ${p => p.$colorTheme?.dark || p.theme.BLACK};
+  color: ${p => p.theme.colors.WHITE};
+  background-color: ${p => p.$colorTheme?.dark || p.theme.colors.BLACK};
   width: fit-content;
 `;
 
@@ -82,9 +74,10 @@ export const Attack = styled.div`
   padding: 8px;
   border: 0.5px solid black;
   border-radius: 8px;
-  color: ${p => p.theme.WHITE};
-  background-color: ${p => p.theme.BLACK};
+  color: ${p => p.theme.colors.WHITE};
+  background-color: ${p => p.theme.colors.BLACK};
 `;
 
-export const GoToBattle = styled(SubmitButton)`
+export const GoToBattle = styled(Link)`
+  ${(p) => p.theme.commonStyles.submitButton}
 `;

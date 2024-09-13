@@ -22,7 +22,7 @@ export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface |
             <S.PokemonCardContentHeading>
                 You have chosen {pokemon?.name} !
             </S.PokemonCardContentHeading>
-            <S.GoToBattle>Go to Battle</S.GoToBattle>
+            <S.GoToBattle to="/battle">Go to Battle</S.GoToBattle>
            </S.Container>
    );
 };
