@@ -1,7 +1,5 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon;
 
-import java.util.List;
-
 
 public class Pokemon {
     private Integer id;
@@ -15,15 +13,32 @@ public class Pokemon {
         this.name = name;
     }
 
-    public enum Types {
-        FIRE, WATER, GRASS,
+    public String name() {
+        return name;
     }
 
-    public record Theme(
-       String light,
-       String dark
-    ) {
+    public void name(String name) {
+        this.name = name;
     }
+
+    public Integer id() {
+        return this.id;
+    }
+
+    public void id(int id) {
+        this.id = id;
+    }
+
+
+//    public enum Types {
+//        FIRE, WATER, GRASS,
+//    }
+//
+//    public record Theme(
+//       String light,
+//       String dark
+//    ) {
+//    }
 
 
 }
