@@ -41,15 +41,15 @@ public class PokemonController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/{id")
+    @PutMapping("/{id}")
     void update(@RequestBody Pokemon pokemon, @PathVariable Integer id) {
         this.pokemonRepository.update(id, pokemon);
 
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("")
-    void delete(Integer id) {
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable Integer id) {
         this.pokemonRepository.delete(id);
     }
 

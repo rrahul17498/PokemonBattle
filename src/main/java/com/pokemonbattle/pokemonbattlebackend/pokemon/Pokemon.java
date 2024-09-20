@@ -13,19 +13,19 @@ public class Pokemon {
         this.name = name;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
-    public void name(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public Integer id() {
+    public Integer getId() {
         return this.id;
     }
 
-    public void id(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 

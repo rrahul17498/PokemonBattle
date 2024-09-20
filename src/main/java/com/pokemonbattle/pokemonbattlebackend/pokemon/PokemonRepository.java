@@ -19,7 +19,7 @@ public class PokemonRepository {
     }
 
     Optional<Pokemon> getById(int id) {
-      return pokemons.stream().filter(pokemon -> pokemon.id() == id).findFirst();
+      return pokemons.stream().filter(pokemon -> pokemon.getId() == id).findFirst();
     }
 
     void create(Pokemon pokemon) {
@@ -43,7 +43,7 @@ public class PokemonRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        pokemons.removeIf(data -> data.id().equals(id));
+        pokemons.removeIf(data -> data.getId().equals(id));
     }
 
 
