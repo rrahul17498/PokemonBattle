@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:16.4'
+    environment:
+      - 'POSTGRES_DB=pokemonbattle'
+      - 'POSTGRES_PASSWORD=mypass123'
+      - 'POSTGRES_USER=rahul'
+    ports:
+      - '5432:5432'
