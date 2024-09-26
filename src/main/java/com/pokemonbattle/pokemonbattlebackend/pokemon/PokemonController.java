@@ -19,13 +19,13 @@ public class PokemonController {
 
     @GetMapping("")
     List<Pokemon> getAll() {
-        return this.pokemonRepository.getAll();
+        return this.pokemonRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    Pokemon getById(@PathVariable Integer id) {
+    Pokemon getById(@PathVariable Long id) {
 
-        Optional<Pokemon> pokemon = this.pokemonRepository.getById(id);
+        Optional<Pokemon> pokemon = this.pokemonRepository.findById(id);
 
         if (pokemon.isEmpty()) {
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -35,24 +35,21 @@ public class PokemonController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("")
+    @PostMapping("/create")
     void create(@RequestBody Pokemon pokemon) {
-        this.pokemonRepository.create(pokemon);
+        this.pokemonRepository.save(pokemon);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/{id}")
-    void update(@RequestBody Pokemon pokemon, @PathVariable Integer id) {
-        this.pokemonRepository.update(id, pokemon);
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @PutMapping("/{id}")
+//    void update(@RequestBody Pokemon pokemon, @PathVariable Integer id) {
+//        this.pokemonRepository.update(id, pokemon);
+//    }
 
-    }
-
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
-    void delete(@PathVariable Integer id) {
-        this.pokemonRepository.delete(id);
-    }
-
-
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    @DeleteMapping("/{id}")
+//    void delete(@PathVariable Integer id) {
+//        this.pokemonRepository.delete(id);
+//    }
 
 }
