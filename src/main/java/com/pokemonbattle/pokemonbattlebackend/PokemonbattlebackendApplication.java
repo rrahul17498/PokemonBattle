@@ -13,8 +13,7 @@ public class PokemonbattlebackendApplication {
 
 		ConfigurableApplicationContext context = SpringApplication.run(PokemonbattlebackendApplication.class, args);
 
-		WelcomeMessage welcomeMessage = (WelcomeMessage) context.getBean("welcomeMessage");
-		System.out.println(welcomeMessage.getWelcomeMessage());
+		System.out.println("Welcome to Pokemon Battle backend");
 	}
 
 }
