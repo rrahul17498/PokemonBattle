@@ -22,6 +22,7 @@ public class User {
     private String password;
 
     @Column(name = "owned_pokemons")
+    private List<Long> ownedPokemons = List.of();
 
     private Integer rating;
 }
