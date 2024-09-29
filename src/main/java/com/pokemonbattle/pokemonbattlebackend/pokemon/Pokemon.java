@@ -2,8 +2,6 @@ package com.pokemonbattle.pokemonbattlebackend.pokemon;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "Pokemons")
@@ -25,7 +23,6 @@ public class Pokemon {
     private String theme_light;
 
     private String theme_dark;
-
 
     public Pokemon(){
 

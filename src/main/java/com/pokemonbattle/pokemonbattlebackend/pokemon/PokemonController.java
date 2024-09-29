@@ -11,45 +11,38 @@ import java.util.Optional;
 @RequestMapping("/api/pokemons")
 public class PokemonController {
 
-    private final PokemonRepository pokemonRepository;
+    private final PokemonService pokemonService;
 
-    public PokemonController(PokemonRepository pokemonRepository) {
-       this.pokemonRepository = pokemonRepository;
+    public PokemonController(PokemonService pokemonService) {
+       this.pokemonService = pokemonService;
     }
 
     @GetMapping("")
-    List<Pokemon> getAll() {
-        return this.pokemonRepository.findAll();
+    List<Pokemon> getAllPokemons() {
+        return this.pokemonService.getAllPokemons();
     }
 
     @GetMapping("/{id}")
-    Pokemon getById(@PathVariable Long id) {
-
-        Optional<Pokemon> pokemon = this.pokemonRepository.findById(id);
-
-        if (pokemon.isEmpty()) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        return pokemon.get();
+    Pokemon getPokemonById(@PathVariable Long id) {
+        return this.pokemonService.getPokemonById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create")
-    void create(@RequestBody Pokemon pokemon) {
-        this.pokemonRepository.save(pokemon);
+    void createPokemon(@RequestBody Pokemon pokemon) {
+        this.pokemonService.createPokemon(pokemon);
     }
 
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @PutMapping("/{id}")
-//    void update(@RequestBody Pokemon pokemon, @PathVariable Integer id) {
-//        this.pokemonRepository.update(id, pokemon);
-//    }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}")
+    void updatePokemon( @PathVariable Long id, @RequestBody Pokemon pokemon) {
+        this.pokemonService.updatePokemon(id, pokemon);
+    }
 
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @DeleteMapping("/{id}")
-//    void delete(@PathVariable Integer id) {
-//        this.pokemonRepository.delete(id);
-//    }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    void deletePokemon(@PathVariable Long id) {
+        this.pokemonService.deletePokemon(id);
+    }
 
 }
