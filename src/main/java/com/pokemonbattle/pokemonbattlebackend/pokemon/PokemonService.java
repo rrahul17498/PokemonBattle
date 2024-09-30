@@ -1,5 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon;
 
+import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.Attack;
+import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.AttackRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,9 +13,11 @@ import java.util.Optional;
 public class PokemonService {
 
        private final PokemonRepository pokemonRepository;
+    private final AttackRepository attackRepository;
 
-       public PokemonService(PokemonRepository pokemonRepository) {
+       public PokemonService(PokemonRepository pokemonRepository, AttackRepository attackRepository) {
            this.pokemonRepository = pokemonRepository;
+           this.attackRepository = attackRepository;
        }
 
        List<Pokemon> getAllPokemons() {
@@ -26,11 +30,24 @@ public class PokemonService {
            if (pokemon.isEmpty()) {
                throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
            }
+           
+
 
            return pokemon.get();
        }
 
        void createPokemon(Pokemon pokemon) {
+
+           List<Attack> attacks = pokemon.getAttacks();
+
+           for (Attack attack: attacks) {
+               attack.setPokemon(pokemon);
+           }
+
+           pokemon.setAttacks(attacks);
+
+           System.out.println("Pokemon:");
+//           System.out.println(pokemon);
            this.pokemonRepository.save(pokemon);
        }
 
@@ -48,6 +65,16 @@ public class PokemonService {
            newPokemon.setImage(pokemon.getImage());
            newPokemon.setTheme_dark(pokemon.getTheme_dark());
            newPokemon.setTheme_light(pokemon.getTheme_light());
+
+           List<Attack> attacks = pokemon.getAttacks();
+
+           for (Attack attack: attacks) {
+//               Optional<Attack> existingAttack = this.attackRepository.findById(attack.getId());
+
+               attack.setPokemon(newPokemon);
+           }
+
+           newPokemon.setAttacks(attacks);
 
            this.pokemonRepository.save(newPokemon);
        }
