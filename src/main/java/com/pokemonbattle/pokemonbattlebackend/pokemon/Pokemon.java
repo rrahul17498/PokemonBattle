@@ -1,10 +1,16 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.Attack;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "Pokemons")
 @Data
@@ -26,16 +32,8 @@ public class Pokemon {
 
     private String theme_dark;
 
-
-    public Pokemon(){
-
-    }
-
-    public Pokemon(Long id, String name, PokemonAttributes type, String image) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.image = image;
-    }
+    @JsonManagedReference
+    @OneToMany(mappedBy = "pokemon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Attack> attacks;
 
 }
