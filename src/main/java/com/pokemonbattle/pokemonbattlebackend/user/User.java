@@ -1,5 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @JsonProperty("owned_pokemons")
     @Column(name = "owned_pokemons")
     private List<Long> ownedPokemons = List.of();
 
