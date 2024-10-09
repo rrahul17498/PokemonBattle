@@ -10,6 +10,9 @@ module.exports = {
       padding: "2rem"
     },
     extend: {
+      fontFamily: {
+        montserrat: ["Montserrat", defaultTheme.fontFamily.sans],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
