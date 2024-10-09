@@ -1,13 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { isNull } from 'lodash';
 import * as S from './style';
-import Video from '../atoms/video';
+import Video from '../../components/ui/video';
 import PokeballIcon from '../../assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '../../assets/icons/pokeball_open_1.png';
 import STARTOFF_POKEMONS from '../landingPage/choosePokemon/startoffPokemons.json';
 import { PokemonInterface } from '../landingPage/choosePokemon';
 
-export default function BattleGround() {
+export const BattleGround = () => {
 
     const [selectedPokemon, setSelectedPokemon] = useState<PokemonInterface | null>(null);
 

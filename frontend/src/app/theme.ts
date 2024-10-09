@@ -32,7 +32,9 @@ const commonStyles = {
   `,
 };
 
-export default {
-    colors,
-    commonStyles,
+const theme = {
+  colors,
+  commonStyles,
 };
+
+export default theme;
