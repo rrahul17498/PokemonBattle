@@ -65,7 +65,6 @@ export const TriggerAttack = styled.button`
 `;
 
 
-
 export const BattleArena = styled.div`
   display: flex;
   justify-content: space-around;
