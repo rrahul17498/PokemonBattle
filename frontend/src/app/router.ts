@@ -6,10 +6,24 @@ import { createBrowserRouter } from "react-router-dom";
     {
         path: "/",
         lazy: async() => {
-          const { LandingPage } = await import("../features/landingPage");  
+          const { LandingPage } = await import("../features/landing");  
           return { Component: LandingPage };
         }
     },
+    {
+        path: "/register",
+        lazy: async() => {
+          const { Register } = await import("../features/users/components/register");  
+          return { Component: Register };
+        }
+    },
+    // {
+    //     path: "/login",
+    //     lazy: async() => {
+    //       const { LandingPage } = await import("../features/landing");  
+    //       return { Component: LandingPage };
+    //     }
+    // },
 
 
     // Protected Routes
