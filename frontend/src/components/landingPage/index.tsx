@@ -1,7 +1,8 @@
 import * as S from './styles';
 import ChooseYourPokemon from './choosePokemon';
 
-export default function LandingPage() {
+export const LandingPage = () => {
+
    return (
    <S.Main>
       <S.Section>

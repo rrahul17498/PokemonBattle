@@ -1,6 +1,6 @@
 import * as S from './styles';
 import { PokemonInterface } from './index';
-import RouteDefinitions from '../../../routes'
+import RouteDefinitions from '../../../app/routes'
 
 export default function ChosenPokemon({ pokemon }: { pokemon: PokemonInterface | null }) {
    return (

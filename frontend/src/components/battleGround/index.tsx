@@ -7,7 +7,7 @@ import PokeballOpenIcon from '../../assets/icons/pokeball_open_1.png';
 import STARTOFF_POKEMONS from '../landingPage/choosePokemon/startoffPokemons.json';
 import { PokemonInterface } from '../landingPage/choosePokemon';
 
-export default function BattleGround() {
+export const BattleGround = () => {
 
     const [selectedPokemon, setSelectedPokemon] = useState<PokemonInterface | null>(null);
 
