@@ -1,4 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+@layer base {
+  :root {
+    --background: "#FFFFFF";
+    --foreground: "#020817";
+
+    --primary: "#BE3144";
+    --primary-light: "#EFC3C9";
+    --primary-foreground: "#FFFFFF";
+
+    --border: "#A6A6A6";
+
+    --warning: "#F2CD00";
+
+    --danger: "#D64256";
+    --danger-foreground: "#f8fafc";
+  }
+}
 
 #root {
   height: 100%;
@@ -8,13 +28,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  src: url('./assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf');
-  font-weight: normal;
-  font-style: normal;
 }
 
 body, html {
