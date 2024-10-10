@@ -10,7 +10,7 @@ type LayoutProps = {
 export const AuthLayout = ({ children, title }: LayoutProps) => {
   return (
       <main className="flex min-h-screen flex-col bg-background py-12 sm:px-6 lg:px-8">
-        <section className="sm:mx-auto sm:w-full sm:max-w-md mt-20">
+        <section className="sm:mx-auto sm:w-full sm:max-w-md mt-12">
           <div className="flex justify-center">
             <Link className="flex items-center text-white" to="/">
                 <img className="h-24 w-auto" src={PokemonLogo} alt="Pokemon Battle" />
@@ -21,8 +21,8 @@ export const AuthLayout = ({ children, title }: LayoutProps) => {
           </h2>
         </section>
 
-        <section className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-          <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
+        <section className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
+          <div className="bg-white px-10 py-8 sm:shadow sm:rounded-lg sm:px-10">
             {children}
           </div>
         </section>

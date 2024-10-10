@@ -3,7 +3,7 @@ import { cn } from "@/utils/cn";
 
 
 const buttonVariant = {
-     default: "bg-primary text-xl text-primary-foreground flex justify-center items-center cursor-pointer rounded-lg mx-auto min-w-36"
+     default: "bg-primary text-xl text-primary-foreground shadow-md flex justify-center items-center cursor-pointer rounded-lg mx-auto min-w-36"
 };
 
 const buttonSize = {
