@@ -20,6 +20,7 @@ module.exports = {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)"
         },
+        link: "var(--link)",
         border: "var(--border)",
         danger: {
           DEFAULT: "var(--danger)",
