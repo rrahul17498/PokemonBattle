@@ -15,12 +15,12 @@ export const Register = () => {
                     console.log("Submitted !");
                   }}
                 >
-                    <Input type="text" name="Email" placeholder="Enter your name" />
+                    <Input type="email" name="Email" placeholder="Enter your name" />
                     <Input type="password" name="Password" placeholder="Enter your password" />
                     <Button
                      type="submit"
                      name={""}
-                     className="mt-6"
+                     className="mt-7"
                      >
                         Register
                      </Button>
