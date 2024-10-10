@@ -1,16 +1,14 @@
 import { AuthLayout } from "@/components/layout/authLayout";
 
 
-export const Register = () => {
-
+export const Login = () => {
     return (
         <AuthLayout title={"Log in to your account"}>
             <div>
-                Register Form
+                Login Form
             </div>
         </AuthLayout>
     );
-
 };
 
  

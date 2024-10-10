@@ -17,6 +17,13 @@ import { createBrowserRouter } from "react-router-dom";
           return { Component: Register };
         }
     },
+    {
+        path: "/login",
+        lazy: async() => {
+          const { Login } = await import("../features/users/components/login");  
+          return { Component: Login };
+        }
+    },
     // {
     //     path: "/login",
     //     lazy: async() => {
