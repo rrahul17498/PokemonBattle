@@ -22,6 +22,10 @@
 
     --disabled: #EBEBE4;
     --disabled-foreground: #FFFFFF;
+
+    --fire-theme: #ec8146;
+    --grass-theme: #119822;
+    --water-theme: #4D79FF;
   }
 }
 

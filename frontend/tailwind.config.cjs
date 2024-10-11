@@ -31,6 +31,15 @@ module.exports = {
           DEFAULT: "var(--danger)",
           foreground: "var(--danger-foreground)"
         },
+        fire: {
+          DEFAULT: "var(--fire-theme)",
+        },
+        grass: {
+          DEFAULT: "var(--grass-theme)",
+        },
+        water: {
+          DEFAULT: "var(--water-theme)",
+        }
       }
     },
   },

@@ -19,6 +19,20 @@ import AppRoutes from "./routes";
           return { Component: Trial };
         }
     },
+    {
+      path: AppRoutes.onboard,
+      lazy: async() => {
+        const { OnBoard } = await import("../../features/users/onBoard");  
+        return { Component: OnBoard };
+      }
+    },
+    {
+      path: AppRoutes.pokemon(":id"),
+      lazy: async() => {
+        const { Pokemon } = await import("../../features/pokemon");  
+        return { Component: Pokemon };
+      }
+    }
 
 
     // Protected Routes
