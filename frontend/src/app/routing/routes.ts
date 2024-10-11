@@ -1,6 +1,5 @@
 
 export default {
     landing: "/",
-    login: "/login",
-    register: "/register"
+    trial: "/trial"
  };

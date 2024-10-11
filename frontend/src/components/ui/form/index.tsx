@@ -1,24 +1,30 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { Schema, z } from "zod";
 
-interface Props {
+type Props =  {
     id: string,
     className?: string,
-    children: React.ReactNode | React.ReactNode[],
+    schema: Schema
+    children: (methods: UseFormReturn) => React.ReactNode,
     onSubmit: () => void
 }
 
 const Form = ({
     id,
     className,
-    children,
-    onSubmit
+    schema,
+    onSubmit,
+    children
 }: Props) => {
+    const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema)});
     return (
         <form
           id={id}
           className={className}
           onSubmit={onSubmit}
         >
-            {children}
+            {children(form)}
         </form>
     );
 };

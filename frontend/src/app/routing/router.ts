@@ -13,10 +13,10 @@ import AppRoutes from "./routes";
         }
     },
     {
-        path: AppRoutes.register,
+        path: AppRoutes.trial,
         lazy: async() => {
-          const { Register } = await import("../../features/users/register");  
-          return { Component: Register };
+          const { Trial } = await import("../../features/users/trial");  
+          return { Component: Trial };
         }
     },
 
