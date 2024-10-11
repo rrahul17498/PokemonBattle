@@ -17,12 +17,14 @@ const Form = ({
     onSubmit,
     children
 }: Props) => {
-    const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema)});
+    const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema), mode: "onChange" });
+
+    console.log("formState: ", form.formState.isValid);
     return (
         <form
           id={id}
           className={className}
-          onSubmit={onSubmit}
+          onSubmit={form.handleSubmit(onSubmit)}
         >
             {children(form)}
         </form>

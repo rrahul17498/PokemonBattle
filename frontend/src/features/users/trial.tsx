@@ -6,8 +6,8 @@ import Form from "@/components/ui/form";
 import Button from "@/components/ui/button";
 
 
-const TrialUserSchema = z.object({
-    name: z.string().min(3, 'Required')
+const TrialUserFormSchema = z.object({
+    name: z.string().min(3)
 });
 
 export const Trial = () => {
@@ -17,19 +17,24 @@ export const Trial = () => {
             <div>
                 <Form
                   id="trial_account"
-                  schema={TrialUserSchema}
+                  schema={TrialUserFormSchema}
                   onSubmit={() => {
                     console.log("Submitted !");
                   }}
                 >
-                    {({ register }) => (
+                    {({ register, formState }) => (
                         <>
-                            <Input type="text" placeholder="Enter your name" {...register("name")} />
+                            <Input
+                             type="text"
+                             placeholder="Enter your name"
+                             autoComplete={"name"}
+                             {...register("name")}
+                              />
                             <div className="mt-7 mb-4">
                                 <Button
                                 type="submit"
-                                name="Battle"
-                                disabled={true}
+                                name="Go to battle"
+                                disabled={!formState.isValid}
                                 >Go to battle</Button>
                             </div>
                          </>

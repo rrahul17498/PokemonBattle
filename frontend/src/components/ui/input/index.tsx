@@ -9,11 +9,12 @@ interface Props {
    placeholder?: string,
    required?: boolean,
    readOnly?: boolean,
-   disabled?: boolean
+   disabled?: boolean,
+   autoComplete?: string
 }
 
 const Input = forwardRef<HTMLInputElement, Props>(({
-     type, name, className, placeholder, required, readOnly, disabled
+     type, name, className, placeholder, required, readOnly, disabled, autoComplete, ...restProps
      }, ref) => {
 
     return (
@@ -29,6 +30,8 @@ const Input = forwardRef<HTMLInputElement, Props>(({
           readOnly={readOnly}
           required={required}
           disabled={disabled}
+          autoComplete={autoComplete}
+          {...restProps}
         />
     );
 });
