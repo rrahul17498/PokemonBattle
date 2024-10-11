@@ -19,6 +19,9 @@
 
     --danger: #D64256;
     --danger-foreground: #f8fafc;
+
+    --disabled: #EBEBE4;
+    --disabled-foreground: #FFFFFF;
   }
 }
 
