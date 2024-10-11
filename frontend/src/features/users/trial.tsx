@@ -5,6 +5,8 @@ import Input from "@/components/ui/input";
 import Form from "@/components/ui/form";
 import Button from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import AppRoutes from "@/app/routing/routes";
 
 
 const TrialUserFormSchema = z.object({
@@ -13,14 +15,17 @@ const TrialUserFormSchema = z.object({
 
 export const Trial = () => {
 
+    const navigate = useNavigate();
+
     const onSubmit = (data: FieldValues) => {
         console.log("name: ", data.name);
-     
+
+        navigate(AppRoutes.onboard);
     }
 
     return (
         <AuthLayout>
-            <div>
+            <div className="">
                 <Form
                   id="trial_account"
                   schema={TrialUserFormSchema}
