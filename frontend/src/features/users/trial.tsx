@@ -4,6 +4,7 @@ import { AuthLayout } from "@/components/layouts/authLayout";
 import Input from "@/components/ui/input";
 import Form from "@/components/ui/form";
 import Button from "@/components/ui/button";
+import { FieldValues } from "react-hook-form";
 
 
 const TrialUserFormSchema = z.object({
@@ -12,15 +13,18 @@ const TrialUserFormSchema = z.object({
 
 export const Trial = () => {
 
+    const onSubmit = (data: FieldValues) => {
+        console.log("name: ", data.name);
+     
+    }
+
     return (
         <AuthLayout>
             <div>
                 <Form
                   id="trial_account"
                   schema={TrialUserFormSchema}
-                  onSubmit={() => {
-                    console.log("Submitted !");
-                  }}
+                  onSubmit={onSubmit}
                 >
                     {({ register, formState }) => (
                         <>

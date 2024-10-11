@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm, UseFormReturn } from "react-hook-form";
 import { Schema, z } from "zod";
 
 type Props =  {
@@ -7,7 +7,7 @@ type Props =  {
     className?: string,
     schema: Schema
     children: (methods: UseFormReturn) => React.ReactNode,
-    onSubmit: () => void
+    onSubmit: SubmitHandler<FieldValues>
 }
 
 const Form = ({
