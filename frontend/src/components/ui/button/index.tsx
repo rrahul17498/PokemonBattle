@@ -2,33 +2,39 @@ import { forwardRef } from "react";
 import { cn } from "@/utils/cn";
 
 
-const buttonVariant = {
-     default: "bg-primary text-xl text-primary-foreground shadow-md flex justify-center items-center cursor-pointer rounded-lg mx-auto min-w-36"
-};
 
-const buttonSize = {
-    default: "px-4 py-2"
-};
+type VariantType = "default" | "disabled";
 
+const getVariantStyles = (variant: VariantType) => {
+    const baseStyles = "text-base shadow-md flex justify-center items-center px-4 py-2 mx-auto cursor-pointer rounded-lg";
+    const variantStyles = {
+            default: "bg-primary text-primary-foreground",
+            disabled: "bg-primary-light text-disabled-foreground cursor-not-allowed"       
+    };
 
+    return cn(baseStyles, variantStyles[variant]);
+    
+    };
 
-interface Props {
-   type: "button" | "submit" | "reset",
+type Props =  {
+   type: "button" | "submit",
    name: string,
    className?: string,
-   variant?: keyof typeof buttonVariant,
-   size?: keyof typeof buttonSize,
-   children: React.ReactNode | string
+   variant?: VariantType,
+   children: React.ReactNode | string,
+   disabled: boolean,
 }
 
-const Button = forwardRef<HTMLButtonElement, Props>(({ type, name, className, variant = "default", size = "default", children }, ref) => {
+const Button = forwardRef<HTMLButtonElement, Props>((
+    { type, name, variant = "default", disabled, className, children }, ref
+) => {
 
     return (
         <button
           ref={ref}
           type={type} 
           name={name}
-          className={cn(buttonVariant[variant], buttonSize[size], className)}
+          className={getVariantStyles(disabled ? "disabled" : variant)}
         >
             {children}
         </button>
