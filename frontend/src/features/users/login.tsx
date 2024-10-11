@@ -1,17 +1,17 @@
-import { AuthLayout } from "@/components/layout/authLayout";
-import Input from "@/components/ui/input";
-import Form from "@/components/ui/form";
+import { AuthLayout } from "@/components/layouts/authLayout";
 import Button from "@/components/ui/button";
+import Form from "@/components/ui/form";
+import Input from "@/components/ui/input";
 import { Link } from "@/components/ui/link";
 import AppRoutes from "@/app/routing/routes";
 
-export const Register = () => {
 
+export const Login = () => {
     return (
-        <AuthLayout title={"Register your account"}>
-            <div>
+        <AuthLayout>
+               <div>
                 <Form
-                  id="register_account"
+                  id="login_account"
                   onSubmit={() => {
                     console.log("Submitted !");
                   }}
@@ -21,16 +21,14 @@ export const Register = () => {
                     <Button
                      type="submit"
                      name={""}
-                     className="mt-7 mb-4"
                      >
-                        Register
+                        Login
                      </Button>
                 </Form>
-                <Link to={AppRoutes.login} >Log In ?</Link>
+                <Link to={AppRoutes.register} >Register ?</Link>
             </div>
         </AuthLayout>
     );
-
 };
 
  

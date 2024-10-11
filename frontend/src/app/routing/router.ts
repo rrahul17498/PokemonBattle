@@ -15,14 +15,14 @@ import AppRoutes from "./routes";
     {
         path: AppRoutes.register,
         lazy: async() => {
-          const { Register } = await import("../../features/users/components/register");  
+          const { Register } = await import("../../features/users/register");  
           return { Component: Register };
         }
     },
     {
         path: AppRoutes.login,
         lazy: async() => {
-          const { Login } = await import("../../features/users/components/login");  
+          const { Login } = await import("../../features/users/login");  
           return { Component: Login };
         }
     },

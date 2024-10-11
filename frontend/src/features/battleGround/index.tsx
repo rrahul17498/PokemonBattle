@@ -4,8 +4,8 @@ import * as S from './style';
 import Video from '../../components/ui/video';
 import PokeballIcon from '../../assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '../../assets/icons/pokeball_open_1.png';
-import STARTOFF_POKEMONS from '../landingPage/choosePokemon/startoffPokemons.json';
-import { PokemonInterface } from '../landingPage/choosePokemon';
+import STARTOFF_POKEMONS from '../onboard/choosePokemon/startoffPokemons.json';
+import { PokemonInterface } from '../onboard/choosePokemon';
 
 export const BattleGround = () => {
 
