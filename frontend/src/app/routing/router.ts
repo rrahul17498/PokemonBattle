@@ -19,13 +19,6 @@ import AppRoutes from "./routes";
           return { Component: Register };
         }
     },
-    {
-        path: AppRoutes.login,
-        lazy: async() => {
-          const { Login } = await import("../../features/users/login");  
-          return { Component: Login };
-        }
-    },
 
 
     // Protected Routes
