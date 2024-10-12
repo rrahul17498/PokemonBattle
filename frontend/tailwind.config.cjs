@@ -13,6 +13,9 @@ module.exports = {
       fontFamily: {
         montserrat: ["Montserrat", defaultTheme.fontFamily.sans],
       },
+      gridTemplateColumns: {
+        "1-2-1": "1fr 2fr 1fr"
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

@@ -1,8 +1,17 @@
+import AppRoutes from "@/app/routing/routes";
 import Button from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 
 
 export const ConnectToBattle = () => {
+
+    const navigate = useNavigate();
+
+    const createBattle = () => {
+        navigate(AppRoutes.battle(1));
+    };
+
     return (
       <main className="flex min-h-screen w-screen">
         {/* <section className="w-full flex justify-center items-center">
@@ -26,7 +35,7 @@ export const ConnectToBattle = () => {
                     </article>
                 </div>
                 <div className="py-10">
-                    <Button name="create_battle">Create Battle</Button>
+                    <Button name="create_battle" onClick={createBattle}>Create Battle</Button>
                 </div>
              
             </div>

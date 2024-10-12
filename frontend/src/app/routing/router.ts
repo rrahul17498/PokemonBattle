@@ -39,6 +39,13 @@ import AppRoutes from "./routes";
         const { ConnectToBattle } = await import("../../features/battle/connectToBattle");  
         return { Component: ConnectToBattle };
       }
+    },
+    {
+      path: AppRoutes.battle(":id"),
+      lazy: async() => {
+        const { Battle } = await import("../../features/battle");  
+        return { Component: Battle };
+      }
     }
 
 
