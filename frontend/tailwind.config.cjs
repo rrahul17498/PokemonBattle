@@ -13,18 +13,36 @@ module.exports = {
       fontFamily: {
         montserrat: ["Montserrat", defaultTheme.fontFamily.sans],
       },
+      gridTemplateColumns: {
+        "1-2-1": "1fr 2fr 1fr"
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
           DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)"
+          foreground: "var(--primary-foreground)",
+          light:  "var(--primary-light)"
         },
+        link: "var(--link)",
         border: "var(--border)",
+        disabled: {
+          DEFAULT: "var(--disabled)",
+          foreground: "var(--disabled-foreground)"  
+        },
         danger: {
           DEFAULT: "var(--danger)",
           foreground: "var(--danger-foreground)"
         },
+        fire: {
+          DEFAULT: "var(--fire-theme)",
+        },
+        grass: {
+          DEFAULT: "var(--grass-theme)",
+        },
+        water: {
+          DEFAULT: "var(--water-theme)",
+        }
       }
     },
   },
