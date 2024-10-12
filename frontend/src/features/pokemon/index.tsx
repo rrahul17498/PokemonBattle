@@ -4,7 +4,16 @@ import Button from '@/components/ui/button';
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
 import { useNavigate } from 'react-router-dom';
 
-const SELECTED_POKEMON = START_OFF_POKEMONS.data[0];
+export const SELECTED_POKEMON = START_OFF_POKEMONS.data[0];
+
+export type PokemonType = {
+    id: number,
+    name: string,
+    type: string,
+    attacks: { name: string, src: string, power: number, accuracy: number, energy_consumed: number }[],
+    image: string,
+    pokemonTheme: { light: string, dark: string }
+    };
 
 export const Pokemon = () => {
 
