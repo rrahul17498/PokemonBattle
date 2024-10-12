@@ -1,11 +1,18 @@
+import AppRoutes from '@/app/routing/routes';
 import { AuthLayout } from '@/components/layouts/authLayout';
 import Button from '@/components/ui/button';
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
+import { useNavigate } from 'react-router-dom';
 
 const SELECTED_POKEMON = START_OFF_POKEMONS.data[0];
 
 export const Pokemon = () => {
 
+  const navigate = useNavigate();  
+
+  const goToBattle = () => {
+    navigate(AppRoutes.connectToBattle);
+  };
 
   return (
     <AuthLayout hideLogo={true}>
@@ -33,7 +40,7 @@ export const Pokemon = () => {
                 </div>
             </div>
             <div className="mt-8">
-                <Button name="battle">Go to Battle</Button>
+                <Button onClick={goToBattle} name="battle">Go to Battle</Button>
             </div>
         </div>
     

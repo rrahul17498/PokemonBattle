@@ -32,6 +32,13 @@ import AppRoutes from "./routes";
         const { Pokemon } = await import("../../features/pokemon");  
         return { Component: Pokemon };
       }
+    },
+    {
+      path: AppRoutes.connectToBattle,
+      lazy: async() => {
+        const { ConnectToBattle } = await import("../../features/battle/connectToBattle");  
+        return { Component: ConnectToBattle };
+      }
     }
 
 
