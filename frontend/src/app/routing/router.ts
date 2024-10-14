@@ -13,10 +13,10 @@ import AppRoutes from "./routes";
         }
     },
     {
-        path: AppRoutes.trial,
+        path: AppRoutes.guest,
         lazy: async() => {
-          const { Trial } = await import("../../features/users/trial");  
-          return { Component: Trial };
+          const { Guest } = await import("../../features/users/guest");  
+          return { Component: Guest };
         }
     },
     {

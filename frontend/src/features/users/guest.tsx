@@ -1,5 +1,3 @@
-
-import { z } from "zod";
 import { AuthLayout } from "@/components/layouts/authLayout";
 import Input from "@/components/ui/input";
 import Form from "@/components/ui/form";
@@ -7,20 +5,20 @@ import Button from "@/components/ui/button";
 import { FieldValues } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "@/app/routing/routes";
+import { TrialUser } from "@/types";
+import { useCreateTrialUser } from "./data/createTrialUser";
+import { TrialUserType } from "./data/models";
 
-
-const TrialUserFormSchema = z.object({
-    name: z.string().min(3)
-});
 
 export const Trial = () => {
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
-    const onSubmit = (data: FieldValues) => {
-        console.log("name: ", data.name);
+    const createTrialUserMutation =  useCreateTrialUser();
 
-        navigate(AppRoutes.onboard);
+    const onSubmit = (data: TrialUserType) => {
+        createTrialUserMutation.mutate(data);
+        // navigate(AppRoutes.onboard);
     }
 
     return (
@@ -28,7 +26,7 @@ export const Trial = () => {
             <div className="">
                 <Form
                   id="trial_account"
-                  schema={TrialUserFormSchema}
+                  schema={TrialUser}
                   onSubmit={onSubmit}
                 >
                     {({ register, formState }) => (

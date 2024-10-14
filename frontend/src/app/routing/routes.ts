@@ -1,7 +1,7 @@
 
 const AppRoutes =  {
     landing: "/",
-    trial: "/trial",
+    guest: "/guest",
     onboard: "/onboard",
     pokemon: (id: number | string) => `/pokemon/${id}`,
     connectToBattle: "/connect",
