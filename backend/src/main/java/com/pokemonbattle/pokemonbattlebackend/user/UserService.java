@@ -44,6 +44,7 @@ public class UserService {
         this.userRepository.save(user);
     }
 
+
     void updateUser(Long id, User user) {
 
         Optional<User> existingUser = this.userRepository.findById(id);
@@ -61,6 +62,21 @@ public class UserService {
         System.out.println("User-details: " + user.getOwnedPokemons());
 
         this.userRepository.save(newUser);
+    }
+
+    void createGuestUser(GuestUserDTO guestUserDTO) {
+        User newUser = new User(guestUserDTO);
+        this.userRepository.save(newUser);
+    }
+
+    GuestUserDTO getGuestUser(Long id) {
+        Optional<User> existingGuestUser = this.userRepository.findById(id);
+
+        if (existingGuestUser.isEmpty()) {
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return GuestUserDTO.fromUser(existingGuestUser.get());
     }
 
 }
