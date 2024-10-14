@@ -2,31 +2,26 @@ import { AuthLayout } from "@/components/layouts/authLayout";
 import Input from "@/components/ui/input";
 import Form from "@/components/ui/form";
 import Button from "@/components/ui/button";
-import { FieldValues } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import AppRoutes from "@/app/routing/routes";
-import { TrialUser } from "@/types";
-import { useCreateTrialUser } from "./data/createTrialUser";
-import { TrialUserType } from "./data/models";
+import { GuestUserNameFormSchema } from "./data/models";
+import { useOnBoardGuestUser } from "./data/onBoardGuestUser";
+import { z } from "zod";
 
 
-export const Trial = () => {
+export const Guest = () => {
 
-    // const navigate = useNavigate();
+    const { cacheUserName } =  useOnBoardGuestUser();
 
-    const createTrialUserMutation =  useCreateTrialUser();
-
-    const onSubmit = (data: TrialUserType) => {
-        createTrialUserMutation.mutate(data);
-        // navigate(AppRoutes.onboard);
+    const onSubmit = (data: z.infer<typeof GuestUserNameFormSchema>) => {
+        cacheUserName(data);
     }
 
     return (
         <AuthLayout>
             <div className="">
                 <Form
-                  id="trial_account"
-                  schema={TrialUser}
+                  id="guest_account_name"
+                  schema={GuestUserNameFormSchema}
+                  defaultValues={{ name: "" }}
                   onSubmit={onSubmit}
                 >
                     {({ register, formState }) => (
