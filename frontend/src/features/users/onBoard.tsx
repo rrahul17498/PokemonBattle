@@ -29,12 +29,12 @@ export const OnBoard = () => {
   const { completeOnboarding } = useOnBoardGuestUser();
 
 
-    const updateOnBoardInfo = (data: OnBoardInfoType) => {
+    const updateOnBoardInfoAndGoToNextStep = (data: OnBoardInfoType) => {
         const lastStep = ONBOARD_STEPS.length - 1;
 
-        if (data.step > lastStep) {
+        if (data.step == lastStep) {
             completeOnboarding(data);
-        } else if(data.step >= 0 && data.step <= lastStep) {
+        } else if(data.step >= 0 && data.step < lastStep) {
 
             setOnBoardInfo({ ...data, step: data.step + 1 });
         }
@@ -48,7 +48,7 @@ export const OnBoard = () => {
         <section className="sm:shadow sm:rounded-lg sm:mx-auto">
             {hasLogo && <img className="h-24 w-auto mx-auto mt-8 mb-4" src={PokemonLogo} alt="Pokemon Battle" />}
             <div className="px-12 py-8 w-fit min-w-96">
-                <Component onBoardInfo={onBoardInfo} updateOnBoardInfo={updateOnBoardInfo}  />
+                <Component onBoardInfo={onBoardInfo} updateOnBoardInfo={updateOnBoardInfoAndGoToNextStep}  />
             </div>
         </section>
     </main>

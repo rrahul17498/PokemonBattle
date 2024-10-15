@@ -1,5 +1,5 @@
 import PokeballIcon from "@/assets/icons/pokeball_side_icon_1.png";
-import Button, { VariantType } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
 import { OnBoardInfoType } from "../users/data/models";
 import { PokemonDataType, PokemonSchema } from "@/features/pokemon/data/models"
@@ -30,14 +30,13 @@ export const ChoosePokemon = ({ onBoardInfo, updateOnBoardInfo }: ChoosePokemonP
                   {START_OFF_POKEMONS.data.map((pokemonData, i) => {
 
                     const validatedPokemonData = PokemonSchema.parse(pokemonData);
-
-                    console.log("pokemonData: ", pokemonData);
                     
                     return (
                       <Button
-                        variant={VariantType.CONTAINER}
+                        key={`choose_pokemon_${i}`}
+                        variant="container"
                         name={`choose_pokemon_${i}`}
-                        className="mx-8 cursor-pointer"
+                        className="mx-5 hover:scale-110 transform transition-transform duration-200"
                         onClick={onChoosePokemon(validatedPokemonData)}
                         >
                           <img className="h-20 w-auto mx-auto mt-8 mb-4" src={PokeballIcon} alt="Pokeball" />
