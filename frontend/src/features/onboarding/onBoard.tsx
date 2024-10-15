@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { GuestUserSchema } from './data/models';
 import { z } from 'zod';
 import PokemonLogo from '@/assets/logos/pokemon.png';
-import { ChoosePokemon } from '@/features/pokemon/choosePokemon';
+import { ChooseStartOffPokemon } from '@/features/onboarding/chooseStartOffPokemon';
 import { GuestForm } from './guestForm';
 import { useOnBoardGuestUser } from './data/onBoardGuestUser';
 
@@ -17,7 +17,7 @@ const ONBOARD_STEPS = [
         hasLogo: true,
     },
     {
-        component: ChoosePokemon,
+        component: ChooseStartOffPokemon,
         hasLogo: false,
     }
 ];

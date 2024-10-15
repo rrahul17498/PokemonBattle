@@ -1,7 +1,7 @@
 import PokeballIcon from "@/assets/icons/pokeball_side_icon_1.png";
 import Button from "@/components/ui/button";
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
-import { OnBoardInfoType } from "../users/data/models";
+import { OnBoardInfoType } from "./data/models";
 import { PokemonDataType, PokemonSchema } from "@/features/pokemon/data/models"
 
 
@@ -12,7 +12,7 @@ interface ChoosePokemonProps {
 }
 
 
-export const ChoosePokemon = ({ onBoardInfo, updateOnBoardInfo }: ChoosePokemonProps) => { 
+export const ChooseStartOffPokemon = ({ onBoardInfo, updateOnBoardInfo }: ChoosePokemonProps) => { 
     
     
     const onChoosePokemon = (pokemonData: PokemonDataType) => () => {
