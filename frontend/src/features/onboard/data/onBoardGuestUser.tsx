@@ -21,7 +21,9 @@ export const useOnBoardGuestUser = () => {
 
         queryClient.setQueryData([QueryKeys.GUEST_USER], validatedGuestData);
 
-        navigate(AppRoutes.onboard);
+        const chosenPokemonId = validatedGuestData.owned_pokemons[0];
+
+        navigate(AppRoutes.pokemon(chosenPokemonId));
     };
 
     return { completeOnboarding };
