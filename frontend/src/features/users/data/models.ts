@@ -1,12 +1,21 @@
 import { z } from "zod";
 
 
+// Schemas
 export const GuestUserSchema = z.object({
     name: z.string().min(3),
     owned_pokemons: z.array(z.number()),
 });
 
-export const GuestUserNameFormSchema = GuestUserSchema.pick({ name: true });
+
+
+// Types
+
+export type GuestUserType = z.infer<typeof GuestUserSchema>;
+
+export type OnBoardInfoType = GuestUserType & {
+    step: number
+};
 
 
 

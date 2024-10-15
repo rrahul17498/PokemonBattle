@@ -1,26 +1,36 @@
-import { AuthLayout } from "@/components/layouts/authLayout";
-import Input from "@/components/ui/input";
 import Form from "@/components/ui/form";
+import { OnBoardInfoType, GuestUserSchema } from "./data/models";
 import Button from "@/components/ui/button";
-import { GuestUserNameFormSchema } from "./data/models";
-import { useOnBoardGuestUser } from "./data/onBoardGuestUser";
+import Input from "@/components/ui/input";
 import { z } from "zod";
 
 
-export const Guest = () => {
 
-    const { cacheUserName } =  useOnBoardGuestUser();
+interface GuestFormProps {
+    onBoardInfo: OnBoardInfoType,
+    updateOnBoardInfo: (data: OnBoardInfoType) => void
+}
 
-    const onSubmit = (data: z.infer<typeof GuestUserNameFormSchema>) => {
-        cacheUserName(data);
+const GuestFormSchema = GuestUserSchema.pick({ name: true });
+
+type GuestFormValuesType = z.infer<typeof GuestFormSchema>
+
+export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) => {
+
+    const onSubmit = (data: GuestFormValuesType) => {
+
+        console.log("onSubmit data: ", data);
+
+        updateOnBoardInfo({
+            ...onBoardInfo,
+            ...data
+        });
     }
 
     return (
-        <AuthLayout>
-            <div className="">
                 <Form
                   id="guest_account_name"
-                  schema={GuestUserNameFormSchema}
+                  schema={GuestFormSchema}
                   defaultValues={{ name: "" }}
                   onSubmit={onSubmit}
                 >
@@ -43,10 +53,5 @@ export const Guest = () => {
                     )}
                    
                 </Form>
-            </div>
-        </AuthLayout>
     );
-
 };
-
- 

@@ -13,13 +13,6 @@ import AppRoutes from "./routes";
         }
     },
     {
-        path: AppRoutes.guest,
-        lazy: async() => {
-          const { Guest } = await import("@/features/users/guest");  
-          return { Component: Guest };
-        }
-    },
-    {
       path: AppRoutes.onboard,
       lazy: async() => {
         const { OnBoard } = await import("@/features/users/onBoard");  
