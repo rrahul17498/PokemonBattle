@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { GuestUserSchema } from './data/models';
 import { z } from 'zod';
 import PokemonLogo from '@/assets/logos/pokemon.png';
-import { ChooseStartOffPokemon } from '@/features/onboarding/chooseStartOffPokemon';
+import { ChooseStartOffPokemon } from '@/features/onboard/chooseStartOffPokemon';
 import { GuestForm } from './guestForm';
 import { useOnBoardGuestUser } from './data/onBoardGuestUser';
 

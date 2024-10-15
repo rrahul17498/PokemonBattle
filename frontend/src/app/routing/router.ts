@@ -15,7 +15,7 @@ import AppRoutes from "./routes";
     {
       path: AppRoutes.onboard,
       lazy: async() => {
-        const { OnBoard } = await import("@/features/onboarding");  
+        const { OnBoard } = await import("@/features/onboard");  
         return { Component: OnBoard };
       }
     },
