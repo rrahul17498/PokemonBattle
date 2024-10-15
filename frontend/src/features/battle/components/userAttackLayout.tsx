@@ -8,7 +8,6 @@ import { isNull } from "lodash";
 
 
 
-
 export const UserAttackWindowLayout = () => {
     const [selectedPokemon, setSelectedPokemon] = useState<PokemonType | null>(null);
 
@@ -20,13 +19,25 @@ export const UserAttackWindowLayout = () => {
         // setAttackSrc(attack_src);
     };
 
+    const getHealthStatusColor = (healthValue: number) => {
+
+        if (healthValue < 50) {
+            return "var(--pokemon-health-low)";
+        }
+
+        return "var(--pokemon-health-high)";
+    };
+
     return (
         <section className="border-border border flex flex-col justify-end">
         {!isNull(selectedPokemon) ? <div className="mb-4">
-            <div className="w-2/3 bg-gray-200 rounded-full h-2.5 mx-auto mb-20 dark:bg-gray-700">
-                 <div className="bg-blue-600 h-2.5 rounded-full dark:bg-blue-500" style={{ width: "80%" }}></div>
+            <div className="w-2/3 bg-gray-200 rounded-full h-2.5 mx-auto mb-12 dark:bg-gray-700">
+                 <div className="h-2.5 rounded-full" style={{ width: "40%", backgroundColor: getHealthStatusColor(40) }}></div>
             </div>
-            <img className="max-w-60 mx-auto" src={selectedPokemon?.image} />
+            <div className="mb-6">
+                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold">HIT !</h3>
+            </div>
+            <img className="max-w-60 mx-auto animate-shake" src={selectedPokemon?.image} />
             <h3 className="mt-3 p-3 font-semibold text-2xl">{selectedPokemon?.name}</h3>
             <h4 className="px-3 text-lg font-medium mb-2">Moves</h4>
             <ul className="flex flex-wrap p-3">

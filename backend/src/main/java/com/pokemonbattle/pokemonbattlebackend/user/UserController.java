@@ -15,7 +15,6 @@ public class UserController {
         this.userService = userService;
     }
 
-
     @GetMapping("")
     List<User> getAllUsers() {
         return this.userService.getAllUsers();
@@ -26,7 +25,7 @@ public class UserController {
         return this.userService.getAllUserPokemons(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     void createUser(@RequestBody User user) {
         this.userService.createUser(user);
     }
@@ -34,5 +33,14 @@ public class UserController {
     @PutMapping("/{id}")
     void updateUser(@PathVariable Long id, @RequestBody User user) {
         this.userService.updateUser(id, user);
+    }
+
+    @PostMapping("/guest")
+    void createGuestUser(@RequestBody GuestUserDTO guestUserDTO) {
+        this.userService.createGuestUser(guestUserDTO);
+    }
+    @GetMapping("/guest/{id}")
+    GuestUserDTO getGuestUser(@PathVariable Long id) {
+        return this.userService.getGuestUser(id);
     }
 }

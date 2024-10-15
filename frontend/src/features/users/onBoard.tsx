@@ -1,23 +1,56 @@
-import { AuthLayout } from '@/components/layouts/authLayout';
-import PokeballIcon from "@/assets/icons/pokeball_side_icon_1.png";
-import { Link } from '@/components/ui/link';
-import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
+import { useMemo, useState } from 'react';
+import { GuestUserSchema } from './data/models';
+import { z } from 'zod';
+import PokemonLogo from '@/assets/logos/pokemon.png';
+import { ChoosePokemon } from '@/features/pokemon/choosePokemon';
+import { GuestForm } from './guestForm';
+import { useOnBoardGuestUser } from './data/onBoardGuestUser';
 
 
-export const OnBoard = () => {
+type OnBoardInfoType = z.infer<typeof GuestUserSchema> & {
+    step: number
+};
+
+const ONBOARD_STEPS = [
+    {
+        component: GuestForm,
+        hasLogo: true,
+    },
+    {
+        component: ChoosePokemon,
+        hasLogo: false,
+    }
+];
+
+export const OnBoard = () => {  
+  
+  const [onBoardInfo, setOnBoardInfo] = useState<OnBoardInfoType>({ name: "", owned_pokemons: [], step: 0 });  
+
+  const { completeOnboarding } = useOnBoardGuestUser();
+
+
+    const updateOnBoardInfo = (data: OnBoardInfoType) => {
+        const lastStep = ONBOARD_STEPS.length - 1;
+
+        if (data.step > lastStep) {
+            completeOnboarding(data);
+        } else if(data.step >= 0 && data.step <= lastStep) {
+
+            setOnBoardInfo({ ...data, step: data.step + 1 });
+        }
+    };
+
+
+  const { component: Component, hasLogo } = useMemo(() => (ONBOARD_STEPS[onBoardInfo.step]), [onBoardInfo.step]);
 
   return (
-    <AuthLayout hideLogo={true}>
-        <div>
-            <h2 className="text-2xl font-semibold text-center mb-3">Choose Your Pokemon</h2>
-            <div className="flex justify-between">
-                {START_OFF_POKEMONS.data.map((pokemonData) => (
-                    <Link className="mx-8 cursor-pointer" to={`/pokemon/${pokemonData.id}`}>
-                        <img className="h-20 w-auto mx-auto mt-8 mb-4" src={PokeballIcon} alt="Pokeball" />
-                    </Link>
-                ))}
+    <main className="flex flex-col justify-center min-h-screen bg-background">
+        <section className="sm:shadow sm:rounded-lg sm:mx-auto">
+            {hasLogo && <img className="h-24 w-auto mx-auto mt-8 mb-4" src={PokemonLogo} alt="Pokemon Battle" />}
+            <div className="px-12 py-8 w-fit min-w-96">
+                <Component onBoardInfo={onBoardInfo} updateOnBoardInfo={updateOnBoardInfo}  />
             </div>
-        </div>
-    </AuthLayout>
+        </section>
+    </main>
   );
 };

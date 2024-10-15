@@ -1,23 +1,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, SubmitHandler, useForm, UseFormReturn } from "react-hook-form";
-import { Schema, z } from "zod";
+import { DefaultValues, FieldValues, SubmitHandler, useForm, UseFormReturn } from "react-hook-form";
+import { ZodType } from "zod";
 
-type Props =  {
+type Props<TFormValues extends FieldValues,Schema extends ZodType<TFormValues>> =  {
     id: string,
     className?: string,
-    schema: Schema
-    children: (methods: UseFormReturn) => React.ReactNode,
-    onSubmit: SubmitHandler<FieldValues>
+    schema: Schema,
+    defaultValues: DefaultValues<TFormValues>,
+    children: (methods: UseFormReturn<TFormValues>) => React.ReactNode,
+    onSubmit: SubmitHandler<TFormValues>
 }
 
-const Form = ({
+const Form = <
+TFormValues extends FieldValues,
+Schema extends ZodType<TFormValues>,
+>({
     id,
     className,
     schema,
+    defaultValues,
     onSubmit,
     children
-}: Props) => {
-    const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema), mode: "onChange" });
+}: Props<TFormValues, Schema>) => {
+    const form = useForm<TFormValues>({ resolver: zodResolver(schema), defaultValues, mode: "onChange" });
 
     console.log("formState: ", form.formState.isValid);
     return (

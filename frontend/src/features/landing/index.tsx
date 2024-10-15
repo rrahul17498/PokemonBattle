@@ -8,7 +8,7 @@ export const LandingPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        navigate(AppRoutes.trial);
+        navigate(AppRoutes.onboard);
     }, [navigate]);
 
     return (

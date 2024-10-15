@@ -1,34 +1,37 @@
-
-import { z } from "zod";
-import { AuthLayout } from "@/components/layouts/authLayout";
-import Input from "@/components/ui/input";
 import Form from "@/components/ui/form";
+import { OnBoardInfoType, GuestUserSchema } from "./data/models";
 import Button from "@/components/ui/button";
-import { FieldValues } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import AppRoutes from "@/app/routing/routes";
+import Input from "@/components/ui/input";
+import { z } from "zod";
 
 
-const TrialUserFormSchema = z.object({
-    name: z.string().min(3)
-});
 
-export const Trial = () => {
+interface GuestFormProps {
+    onBoardInfo: OnBoardInfoType,
+    updateOnBoardInfo: (data: OnBoardInfoType) => void
+}
 
-    const navigate = useNavigate();
+const GuestFormSchema = GuestUserSchema.pick({ name: true });
 
-    const onSubmit = (data: FieldValues) => {
-        console.log("name: ", data.name);
+type GuestFormValuesType = z.infer<typeof GuestFormSchema>
 
-        navigate(AppRoutes.onboard);
+export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) => {
+
+    const onSubmit = (data: GuestFormValuesType) => {
+
+        console.log("onSubmit data: ", data);
+
+        updateOnBoardInfo({
+            ...onBoardInfo,
+            ...data
+        });
     }
 
     return (
-        <AuthLayout>
-            <div className="">
                 <Form
-                  id="trial_account"
-                  schema={TrialUserFormSchema}
+                  id="guest_account_name"
+                  schema={GuestFormSchema}
+                  defaultValues={{ name: "" }}
                   onSubmit={onSubmit}
                 >
                     {({ register, formState }) => (
@@ -50,10 +53,5 @@ export const Trial = () => {
                     )}
                    
                 </Form>
-            </div>
-        </AuthLayout>
     );
-
 };
-
- 
