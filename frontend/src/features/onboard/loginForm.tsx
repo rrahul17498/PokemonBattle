@@ -4,7 +4,6 @@ import { OnBoardInfoType, GuestUserSchema } from "./data/models";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/form/input";
 import PokemonLogo from '@/assets/logos/pokemon.png';
-import { Link } from "@/components/ui/link";
 
 
 interface GuestFormProps {
@@ -35,7 +34,6 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                   id="guest_account_name"
                   schema={GuestFormSchema}
                   defaultValues={{ name: "" }}
-                  className="max-w-64 mx-auto"
                   onSubmit={onSubmit}
                 >
                     {({ register, formState }) => (
@@ -43,22 +41,21 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                             <Input
                              type="text"
                              placeholder="Enter your name"
-                             autoComplete="off"
-                             className="text-center mx-auto"
-                             error={formState.errors["name"]}
+                             autoComplete={"name"}
+                             className="text-center max-w-64 mx-auto"
                              {...register("name")}
                               />
-                            <div className="mt-2 mb-4">
+                            <div className="mt-7 mb-4">
                                 <Button
                                 type="submit"
                                 name="Go to battle"
+                                disabled={!formState.isValid}
                                 >Submit</Button>
                             </div>
                          </>
                     )}
                    
                 </Form>
-                <Link to="/" className="mt-6">Have an account ?</Link>
             </div>
     );
 };
