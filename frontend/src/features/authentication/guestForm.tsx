@@ -5,6 +5,7 @@ import Button from "@/components/ui/button";
 import Input from "@/components/ui/form/input";
 import PokemonLogo from '@/assets/logos/pokemon.png';
 import { Link } from "@/components/ui/link";
+import AppRoutes from "@/app/routing/routes";
 
 
 interface GuestFormProps {
@@ -44,7 +45,6 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                              type="text"
                              placeholder="Enter your name"
                              autoComplete="off"
-                             className="text-center mx-auto"
                              error={formState.errors["name"]}
                              {...register("name")}
                               />
@@ -58,7 +58,7 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                     )}
                    
                 </Form>
-                <Link to="/" className="mt-6">Have an account ?</Link>
+                <Link to={AppRoutes.login}className="mt-6">Have an account ?</Link>
             </div>
     );
 };

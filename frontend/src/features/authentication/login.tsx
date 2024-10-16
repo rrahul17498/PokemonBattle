@@ -46,7 +46,7 @@ export const Login = () => {
                                     error={formState.errors["password"]}
                                     {...register("password")}
                                 />
-                                <div className="mb-4">
+                                <div className="mt-2 mb-4">
                                     <Button
                                     type="submit"
                                     name="Go to battle"
