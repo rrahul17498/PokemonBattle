@@ -1,9 +1,9 @@
+import { z } from "zod";
 import Form from "@/components/ui/form";
 import { OnBoardInfoType, GuestUserSchema } from "./data/models";
 import Button from "@/components/ui/button";
 import Input from "@/components/ui/input";
-import { z } from "zod";
-
+import PokemonLogo from '@/assets/logos/pokemon.png';
 
 
 interface GuestFormProps {
@@ -28,6 +28,8 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
     }
 
     return (
+            <div className="px-20">
+                <img className="h-24 w-auto mx-auto mb-12" src={PokemonLogo} alt="Pokemon Battle" />
                 <Form
                   id="guest_account_name"
                   schema={GuestFormSchema}
@@ -40,6 +42,7 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                              type="text"
                              placeholder="Enter your name"
                              autoComplete={"name"}
+                             className="text-center max-w-64 mx-auto"
                              {...register("name")}
                               />
                             <div className="mt-7 mb-4">
@@ -47,11 +50,12 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                                 type="submit"
                                 name="Go to battle"
                                 disabled={!formState.isValid}
-                                >Go to battle</Button>
+                                >Submit</Button>
                             </div>
                          </>
                     )}
                    
                 </Form>
+            </div>
     );
 };

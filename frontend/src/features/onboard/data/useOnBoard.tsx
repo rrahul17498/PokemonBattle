@@ -8,8 +8,17 @@ export enum QueryKeys {
     GUEST_USER = "guestUser",
 }
 
+const API_REGISTER_GUEST = `/`;
 
-export const useOnBoardGuestUser = () => {
+const registerGuestUser = async () => {
+
+    
+
+
+};
+
+
+export const useOnBoard = () => {
 
     const queryClient = useQueryClient();
 

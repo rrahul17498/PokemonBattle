@@ -2,10 +2,7 @@ import AppRoutes from '@/app/routing/routes';
 import { AuthLayout } from '@/components/layouts/authLayout';
 import Button from '@/components/ui/button';
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
-import { useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { QueryKeys } from '../onboard/data/onBoardGuestUser';
-import { GuestUserType } from '../onboard/data/models';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PokemonSchema } from './data/models';
 
 export const SELECTED_POKEMON = START_OFF_POKEMONS.data[0];
@@ -21,18 +18,14 @@ export type PokemonType = {
 
 export const Pokemon = () => {
 
-     const queryClient = useQueryClient();
-   
-     const data: GuestUserType | undefined = queryClient.getQueryData([QueryKeys.GUEST_USER]);
+     const navigate = useNavigate();
+     const { pokemonId } = useParams(); 
 
      const selectedPokemon = START_OFF_POKEMONS.data.find((pokemon) => {
         const validatedPokemonData = PokemonSchema.parse(pokemon);
-        return (validatedPokemonData.id == data?.owned_pokemons[0]);
+        return (validatedPokemonData.id == Number(pokemonId));
     });
 
-    console.log("data: ", data);
-
-     const navigate = useNavigate();  
 
      const goToBattle = () => {
         navigate(AppRoutes.connectToBattle);
@@ -45,7 +38,7 @@ export const Pokemon = () => {
                 <img
                 src={selectedPokemon?.image}
                 alt={"Pokemon Image"}
-                className="h-48 mx-5"
+                className="w-48 mx-5"
                 />
                 <div className="ml-6">
                     <h2 className="text-2xl font-bold">

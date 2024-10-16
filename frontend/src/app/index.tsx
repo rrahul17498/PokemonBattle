@@ -11,7 +11,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {import.meta.env.DEV && <ReactQueryDevtools />}
+      {/* {import.meta.env.DEV && <ReactQueryDevtools />} */}
       <ThemeProvider theme={theme}>
          <RouterProvider router={router}/>
       </ThemeProvider>

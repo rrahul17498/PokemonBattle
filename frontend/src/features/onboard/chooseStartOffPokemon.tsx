@@ -25,7 +25,7 @@ export const ChooseStartOffPokemon = ({ onBoardInfo, updateOnBoardInfo }: Choose
 
     return (
           <div>
-              <h2 className="text-2xl font-semibold text-center mb-3">Choose Your Pokemon</h2>
+              <h2 className="text-3xl font-semibold text-center mb-10">Choose Your Pokemon</h2>
               <div className="flex justify-between">
                   {START_OFF_POKEMONS.data.map((pokemonData, i) => {
 
@@ -36,7 +36,7 @@ export const ChooseStartOffPokemon = ({ onBoardInfo, updateOnBoardInfo }: Choose
                         key={`choose_pokemon_${i}`}
                         variant="container"
                         name={`choose_pokemon_${i}`}
-                        className="mx-5 hover:scale-110 transform transition-transform duration-200"
+                        className="hover:scale-110 transform transition-transform duration-200"
                         onClick={onChoosePokemon(validatedPokemonData)}
                         >
                           <img className="h-20 w-auto mx-auto mt-8 mb-4" src={PokeballIcon} alt="Pokeball" />

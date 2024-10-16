@@ -20,7 +20,7 @@ import AppRoutes from "./routes";
       }
     },
     {
-      path: AppRoutes.pokemon(":id"),
+      path: AppRoutes.pokemon(":pokemonId"),
       lazy: async() => {
         const { Pokemon } = await import("@/features/pokemon");  
         return { Component: Pokemon };
