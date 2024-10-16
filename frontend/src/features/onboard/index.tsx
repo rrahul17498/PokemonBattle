@@ -1,14 +1,9 @@
 import { useMemo, useState } from 'react';
-import { GuestUserSchema } from './data/models';
-import { z } from 'zod';
+import { OnBoardInfoType } from './data/models';
 import { ChooseStartOffPokemon } from '@/features/onboard/chooseStartOffPokemon';
 import { GuestForm } from './guestForm';
 import { useOnBoard } from './data/useOnBoard';
 
-
-type OnBoardInfoType = z.infer<typeof GuestUserSchema> & {
-    step: number
-};
 
 const ONBOARD_STEPS = [
     {
@@ -40,7 +35,7 @@ export const OnBoard = () => {
     };
 
 
-  const { component: Component, hasLogo } = useMemo(() => (ONBOARD_STEPS[onBoardInfo.step]), [onBoardInfo.step]);
+  const { component: Component } = useMemo(() => (ONBOARD_STEPS[onBoardInfo.step]), [onBoardInfo.step]);
 
   return (
     <main className="h-full flex justify-center items-center">

@@ -10,7 +10,6 @@ export const GuestUserSchema = z.object({
 
 
 // Types
-
 export type GuestUserType = z.infer<typeof GuestUserSchema>;
 
 export type OnBoardInfoType = GuestUserType & {
