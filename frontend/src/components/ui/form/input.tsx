@@ -28,7 +28,7 @@ const Input = forwardRef<HTMLInputElement, Props>(({
             name={name}
             placeholder={placeholder}
             className={cn(
-              "flex h-11 w-full rounded-md border bg-transparent text-base px-3 py-0 shadow-sm outline-none",
+              "flex h-11 w-full rounded-md border bg-transparent text-base px-3 py-0 mx-auto shadow-sm outline-none",
               className
               )}
             readOnly={readOnly}

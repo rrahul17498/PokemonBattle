@@ -5,7 +5,6 @@ import PokemonLogo from '@/assets/logos/pokemon.png';
 import { UserSchema } from "./data/models";
 import Input from "@/components/ui/form/input";
 import Form from "@/components/ui/form";
-import { Link } from "@/components/ui/link";
 
 
 const LoginFormSchema = UserSchema.pick({ email: true, password: true });
@@ -35,31 +34,29 @@ export const Login = () => {
                             <>
                                 <Input
                                     type="text"
-                                    placeholder="Enter your name"
+                                    placeholder="Email"
                                     autoComplete="off"
-                                    className="text-center mx-auto"
                                     error={formState.errors["email"]}
                                     {...register("email")}
                                 />
                                  <Input
                                     type="text"
-                                    placeholder="Enter your name"
+                                    placeholder="Password"
                                     autoComplete="off"
-                                    className="text-center mx-auto"
                                     error={formState.errors["password"]}
                                     {...register("password")}
                                 />
-                                <div className="mt-2 mb-4">
+                                <div className="mb-4">
                                     <Button
                                     type="submit"
                                     name="Go to battle"
+                                    disabled={!formState.isValid}
                                     >Submit</Button>
                                 </div>
                             </>
                         )}
                     
                     </Form>
-                    <Link to="/" className="mt-6">Have an account ?</Link>
                 </div>
         </AuthLayout>
       );
