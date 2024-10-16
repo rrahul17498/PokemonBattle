@@ -15,8 +15,15 @@ import AppRoutes from "./routes";
     {
       path: AppRoutes.onboard,
       lazy: async() => {
-        const { OnBoard } = await import("@/features/onboard");  
+        const { OnBoard } = await import("@/features/authentication");  
         return { Component: OnBoard };
+      }
+    },
+    {
+      path: AppRoutes.login,
+      lazy: async() => {
+        const { Login } = await import("@/features/authentication");  
+        return { Component: Login };
       }
     },
     {
