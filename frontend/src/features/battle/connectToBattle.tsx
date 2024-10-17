@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 
 
-export const ConnectToBattle = () => {
+const ConnectToBattle = () => {
     
     const createBattle = () => {
     };
@@ -37,4 +37,7 @@ export const ConnectToBattle = () => {
       </main>
     );
   };
+
+export default ConnectToBattle;   
+
   
