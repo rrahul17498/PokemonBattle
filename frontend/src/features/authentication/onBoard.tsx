@@ -21,16 +21,15 @@ export const OnBoard = () => {
   
   const [onBoardInfo, setOnBoardInfo] = useState<OnBoardInfoType>({ name: "", owned_pokemons: [], step: 0 });  
 
-  const { completeOnboarding } = useOnBoard();
+  const { createGuestUser } = useOnBoard();
 
 
     const updateOnBoardInfoAndGoToNextStep = (data: OnBoardInfoType) => {
         const lastStep = ONBOARD_STEPS.length - 1;
 
         if (data.step == lastStep) {
-            completeOnboarding(data);
+            createGuestUser(data);
         } else if(data.step >= 0 && data.step < lastStep) {
-
             setOnBoardInfo({ ...data, step: data.step + 1 });
         }
     };

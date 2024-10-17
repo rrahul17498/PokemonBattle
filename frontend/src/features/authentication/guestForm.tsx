@@ -21,8 +21,6 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
 
     const onSubmit = (data: GuestFormValuesType) => {
 
-        console.log("onSubmit data: ", data);
-
         updateOnBoardInfo({
             ...onBoardInfo,
             ...data
@@ -46,6 +44,7 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                              placeholder="Enter your name"
                              autoComplete="off"
                              error={formState.errors["name"]}
+                             className="text-center"
                              {...register("name")}
                               />
                             <div className="mt-2 mb-4">
