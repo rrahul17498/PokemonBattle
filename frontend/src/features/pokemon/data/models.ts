@@ -3,9 +3,9 @@ import { z } from "zod";
 // Schemas
 
 enum PokemonType {
-    FIRE,
-    WATER,
-    GRASS,
+    FIRE = "FIRE",
+    WATER = "WATER",
+    GRASS = "GRASS",
 };
 
 export const PokemonAttackSchema = z.object({

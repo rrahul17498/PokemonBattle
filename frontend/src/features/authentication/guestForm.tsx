@@ -1,9 +1,11 @@
+import { z } from "zod";
 import Form from "@/components/ui/form";
 import { OnBoardInfoType, GuestUserSchema } from "./data/models";
 import Button from "@/components/ui/button";
-import Input from "@/components/ui/input";
-import { z } from "zod";
-
+import Input from "@/components/ui/form/input";
+import PokemonLogo from '@/assets/logos/pokemon.png';
+import { Link } from "@/components/ui/link";
+import AppRoutes from "@/app/routing/routes";
 
 
 interface GuestFormProps {
@@ -19,8 +21,6 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
 
     const onSubmit = (data: GuestFormValuesType) => {
 
-        console.log("onSubmit data: ", data);
-
         updateOnBoardInfo({
             ...onBoardInfo,
             ...data
@@ -28,10 +28,13 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
     }
 
     return (
+            <div className="px-20">
+                <img className="h-24 w-auto mx-auto mb-12" src={PokemonLogo} alt="Pokemon Battle" />
                 <Form
                   id="guest_account_name"
                   schema={GuestFormSchema}
                   defaultValues={{ name: "" }}
+                  className="max-w-64 mx-auto"
                   onSubmit={onSubmit}
                 >
                     {({ register, formState }) => (
@@ -39,19 +42,22 @@ export const GuestForm = ({ onBoardInfo, updateOnBoardInfo }: GuestFormProps) =>
                             <Input
                              type="text"
                              placeholder="Enter your name"
-                             autoComplete={"name"}
+                             autoComplete="off"
+                             error={formState.errors["name"]}
+                             className="text-center"
                              {...register("name")}
                               />
-                            <div className="mt-7 mb-4">
+                            <div className="mt-2 mb-4">
                                 <Button
                                 type="submit"
                                 name="Go to battle"
-                                disabled={!formState.isValid}
-                                >Go to battle</Button>
+                                >Submit</Button>
                             </div>
                          </>
                     )}
                    
                 </Form>
+                <Link to={AppRoutes.login}className="mt-6">Have an account ?</Link>
+            </div>
     );
 };

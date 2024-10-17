@@ -1,7 +1,7 @@
 import PokeballIcon from "@/assets/icons/pokeball_side_icon_1.png";
-import Button, { VariantType } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
-import { OnBoardInfoType } from "../users/data/models";
+import { OnBoardInfoType } from "./data/models";
 import { PokemonDataType, PokemonSchema } from "@/features/pokemon/data/models"
 
 
@@ -12,7 +12,7 @@ interface ChoosePokemonProps {
 }
 
 
-export const ChoosePokemon = ({ onBoardInfo, updateOnBoardInfo }: ChoosePokemonProps) => { 
+export const ChooseStartOffPokemon = ({ onBoardInfo, updateOnBoardInfo }: ChoosePokemonProps) => { 
     
     
     const onChoosePokemon = (pokemonData: PokemonDataType) => () => {
@@ -25,19 +25,18 @@ export const ChoosePokemon = ({ onBoardInfo, updateOnBoardInfo }: ChoosePokemonP
 
     return (
           <div>
-              <h2 className="text-2xl font-semibold text-center mb-3">Choose Your Pokemon</h2>
+              <h2 className="text-3xl font-semibold text-center mb-10">Choose Your Pokemon</h2>
               <div className="flex justify-between">
                   {START_OFF_POKEMONS.data.map((pokemonData, i) => {
 
                     const validatedPokemonData = PokemonSchema.parse(pokemonData);
-
-                    console.log("pokemonData: ", pokemonData);
                     
                     return (
                       <Button
-                        variant={VariantType.CONTAINER}
+                        key={`choose_pokemon_${i}`}
+                        variant="container"
                         name={`choose_pokemon_${i}`}
-                        className="mx-8 cursor-pointer"
+                        className="hover:scale-110 transform transition-transform duration-200"
                         onClick={onChoosePokemon(validatedPokemonData)}
                         >
                           <img className="h-20 w-auto mx-auto mt-8 mb-4" src={PokeballIcon} alt="Pokeball" />

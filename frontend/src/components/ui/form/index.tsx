@@ -22,7 +22,7 @@ Schema extends ZodType<TFormValues>,
     onSubmit,
     children
 }: Props<TFormValues, Schema>) => {
-    const form = useForm<TFormValues>({ resolver: zodResolver(schema), defaultValues, mode: "onChange" });
+    const form = useForm<TFormValues>({ resolver: zodResolver(schema), defaultValues, mode: "onSubmit" });
 
     console.log("formState: ", form.formState.isValid);
     return (
