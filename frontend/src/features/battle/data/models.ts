@@ -1,3 +1,4 @@
+import { PokemonType } from "@/features/pokemon"
 
 
 enum BattleStatus {
@@ -6,24 +7,24 @@ enum BattleStatus {
     COMPLETED = "COMPLETED"
 }
 
-type BattleAttack = {
-    id: number,
-    name: string,
-    sourcePokemon: number,
-    sourceUser: number,
-    targetPokemon: number,
-    targetUser: number
-}
+// type BattleAttack = {
+//     id: number,
+//     name: string,
+//     sourcePokemon: number,
+//     sourceUser: number,
+//     targetPokemon: number,
+//     targetUser: number
+// }
 
 
 export type Battle = {
     id: number,
     status: BattleStatus,
-    firstPlayerId: number,
-    firstPlayerPokemon: number,
-    secondPlayerId:  number,
-    secondPlayerPokemon: number,
-    currentTurn: number,
-    battleAttacksLog: BattleAttack[],
+    first_player_id: number,
+    first_player_name: string,
+    first_player_owned_pokemons: PokemonType[],
+    second_player_id:  number,
+    second_player_name: string,
+    second_player_owned_pokemons: PokemonType[],
     winner: number,
 }

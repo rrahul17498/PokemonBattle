@@ -28,7 +28,8 @@ const useConnectBattle = () => {
 
     const battlesQuery = useQuery({
         queryKey: [QUERY_KEYS.battles],
-        queryFn: getAllBattles
+        queryFn: getAllBattles,
+        staleTime: 1000 * 10
     });
 
     const createBattleMutation = useMutation({
