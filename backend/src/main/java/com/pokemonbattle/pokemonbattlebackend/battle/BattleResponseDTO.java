@@ -2,8 +2,7 @@ package com.pokemonbattle.pokemonbattlebackend.battle;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
-import com.pokemonbattle.pokemonbattlebackend.user.User;
-import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemons;
+import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public record BattleResponseDTO(
 
 
 
-    static BattleResponseDTO createBattleResponse(Battle battle, UserWithPokemons firstPlayerData) {
+    static BattleResponseDTO createBattleResponse(Battle battle, UserWithPokemonsDTO firstPlayerData) {
         return new BattleResponseDTO(
                 battle.getId(),
                 battle.getStatus(),

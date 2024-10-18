@@ -2,18 +2,13 @@ package com.pokemonbattle.pokemonbattlebackend.battle;
 
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceInUseException;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceNotFoundException;
-import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
-import com.pokemonbattle.pokemonbattlebackend.user.User;
 import com.pokemonbattle.pokemonbattlebackend.user.UserRepository;
 import com.pokemonbattle.pokemonbattlebackend.user.UserService;
-import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemons;
+import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +21,7 @@ public class BattleService {
     BattleResponseDTO createBattle(CreateBattleDTO createBattleRequest){
 
 
-        UserWithPokemons firstPlayerData = this.userService.getUserWithPokemons(createBattleRequest.getUserId());
+        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(createBattleRequest.getUserId());
 
         Battle newBattle = new Battle();
         newBattle.setFirstPlayerId(firstPlayerData.id());

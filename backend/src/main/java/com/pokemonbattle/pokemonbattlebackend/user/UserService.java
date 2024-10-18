@@ -4,8 +4,6 @@ import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.PokemonRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -40,7 +38,7 @@ public class UserService {
         return this.pokemonRepository.findAllById(existingUser.get().getOwnedPokemons());
     }
 
-    public UserWithPokemons getUserWithPokemons(Long userId) {
+    public UserWithPokemonsDTO getUserWithPokemons(Long userId) {
         Optional<User> existingUser = this.userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
@@ -49,7 +47,7 @@ public class UserService {
 
         User user = existingUser.get();
 
-        return new UserWithPokemons(
+        return new UserWithPokemonsDTO(
                 user.getId(),
                 user.getName(),
                 this.pokemonRepository.findAllById(user.getOwnedPokemons())
