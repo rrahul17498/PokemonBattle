@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -36,8 +36,8 @@ public class UserController {
     }
 
     @PostMapping("/guest")
-    void createGuestUser(@RequestBody GuestUserDTO guestUserDTO) {
-        this.userService.createGuestUser(guestUserDTO);
+    GuestUserDTO createGuestUser(@RequestBody GuestUserDTO guestUserDTO) {
+        return this.userService.createGuestUser(guestUserDTO);
     }
     @GetMapping("/guest/{id}")
     GuestUserDTO getGuestUser(@PathVariable Long id) {

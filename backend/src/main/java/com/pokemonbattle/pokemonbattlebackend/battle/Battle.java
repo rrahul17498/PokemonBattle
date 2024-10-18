@@ -1,6 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pokemonbattle.pokemonbattlebackend.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,30 +24,26 @@ public class Battle {
     @Column(nullable = false)
     private BattleStatus status;
 
-    @JsonProperty("first_player")
-    @Column(name="first_player",nullable = false)
-    private Integer firstPlayerId;
+    @JsonProperty("first_player_id")
+    @Column(name="first_player_id",nullable = false)
+    private Long firstPlayerId;
 
-    @JsonProperty("first_player_pokemon")
-    @Column(name="first_player_pokemon")
-    private Integer firstPlayerPokemon;
+    @JsonProperty("first_player_name")
+    @Column(name="first_player_name",nullable = false)
+    private String firstPlayerName;
 
-    @JsonProperty("second_player")
-    @Column(name="second_player")
-    private Integer secondPlayerId;
+    @JsonProperty("second_player_id")
+    @Column(name="second_player_id")
+    private Long secondPlayerId;
 
-    @JsonProperty("second_player_pokemon")
-    @Column(name="second_player_pokemon")
-    private Integer secondPlayerPokemon;
+    @JsonProperty("second_player_name")
+    @Column(name="second_player_name")
+    private String secondPlayerName;
 
-    @JsonProperty("current_turn")
-    @Column(name = "current_turn",nullable = false)
-    private Integer currentTurn = 1;
+    private Long winner;
 
     @JsonProperty("battle_attacks_log")
     @Column(name = "battle_attacks_log",nullable = false)
-    private List<Integer> battleAttacksLog = List.of();
+    private List<Integer> battleMessagesLog = List.of();
 
-    private Integer winner;
-    
 }

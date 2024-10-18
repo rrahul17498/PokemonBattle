@@ -2,25 +2,35 @@ package com.pokemonbattle.pokemonbattlebackend.battle;
 
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceInUseException;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceNotFoundException;
+import com.pokemonbattle.pokemonbattlebackend.user.UserRepository;
+import com.pokemonbattle.pokemonbattlebackend.user.UserService;
+import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class BattleService {
 
     private final BattleRepository battleRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    Battle createBattle(CreateBattleDTO createBattleRequest){
+    BattleResponseDTO createBattle(CreateBattleDTO createBattleRequest){
 
-        //  Validate user
+
+        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(createBattleRequest.getUserId());
 
         Battle newBattle = new Battle();
-
-        newBattle.setFirstPlayerId(createBattleRequest.getUserId());
+        newBattle.setFirstPlayerId(firstPlayerData.id());
+        newBattle.setFirstPlayerName(firstPlayerData.name());
         newBattle.setStatus(BattleStatus.CREATED);
 
-        return this.battleRepository.save(newBattle);
+        Battle savedBattle = this.battleRepository.save(newBattle);
+
+      return BattleResponseDTO.createBattleResponse(savedBattle, firstPlayerData);
     }
 
     Battle connectToBattle(ConnectBattleDTO battleConnect){
@@ -41,6 +51,11 @@ public class BattleService {
         existingBattle.setStatus(BattleStatus.IN_PROGRESS);
 
         return this.battleRepository.save(existingBattle);
+    }
+
+
+    List<Battle> getAllBattles() {
+        return this.battleRepository.findAll();
     }
 
 }

@@ -12,13 +12,13 @@ const getUserDetails = async () => {
 
 
 const useUser = () => {
-    const getUserQuery = useQuery({
+    const userQuery = useQuery({
         queryKey: [QUERY_KEYS.user],
         queryFn: getUserDetails,
         enabled: false
     });
 
-    return { getUserQuery }
+    return { userQuery }
 
     
 };

@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button";
 import { PokemonType } from "@/features/pokemon";
 import { useState } from "react";
-import STARTOFF_POKEMONS from "../../pokemon/startoffPokemons.json";
+import STARTOFF_POKEMONS from "../pokemon/startoffPokemons.json";
 import PokeballIcon from '@/assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '@/assets/icons/pokeball_open_1.png';
 import { isNull } from "lodash";
