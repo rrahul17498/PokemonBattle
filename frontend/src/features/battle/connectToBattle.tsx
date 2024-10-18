@@ -1,13 +1,26 @@
 import AppRoutes from "@/app/routing/routes";
 import Button from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import useBattle from "./data/useConnectBattle";
+import useUser from "@/hooks/useUser";
 
 
 
 const ConnectToBattle = () => {
+
+    const { createBattleMutation, battlesQuery } = useBattle();
+    const { getUserQuery } = useUser();
     
-    const createBattle = () => {
+    const onCreateBattle = () => {
+        const { data } = getUserQuery;
+
+        if (data.id) {
+            createBattleMutation.mutate({ user_id: data.id });
+        }
     };
+
+
+    console.log("battlesQuery data:", battlesQuery.data);
 
     return (
       <main className="flex min-h-screen w-screen">
@@ -29,7 +42,7 @@ const ConnectToBattle = () => {
                     </article>
                 </div>
                 <div className="py-10">
-                    <Button name="create_battle" onClick={createBattle}>Create Battle</Button>
+                    <Button name="create_battle" onClick={onCreateBattle}>Create Battle</Button>
                 </div>
              
             </div>
