@@ -7,7 +7,7 @@ import { PokemonType } from "../pokemon/index";
 import PokeballIcon from '@/assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '@/assets/icons/pokeball_open_1.png';
 import Video from "@/components/ui/video";
-import { UserAttackWindowLayout } from "./components/userAttackLayout";
+import { UserAttackWindowLayout } from "./userAttackLayout";
 
 
 
