@@ -7,7 +7,8 @@ export const API_END_POINTS = {
         get: "",
     },
     battle: {
-        create: "/battle/create",
-        connect: "/battle/connect",
+        create: "/battles/create",
+        connect: "/battles/connect",
+        getAll: "/battles",
     }
 } as const;

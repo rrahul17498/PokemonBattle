@@ -3,5 +3,6 @@
 
 export const QUERY_KEYS = {
     user: "user",
-    battle: "battle"
+    battles: "battles",
+    activeBattle: "activeBattle"
 } as const;
