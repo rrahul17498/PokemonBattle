@@ -9,5 +9,5 @@ public class CreateBattleDTO {
 
     @JsonProperty("user_id")
     @Column(name = "user_id", nullable = false)
-    private Integer userId;
+    private Long userId;
 }
