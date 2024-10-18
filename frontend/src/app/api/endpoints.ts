@@ -5,5 +5,10 @@ export const API_END_POINTS = {
         createGuest: "/users/guest",
         create: "",
         get: "",
+    },
+    battle: {
+        create: "/battles/create",
+        connect: "/battles/connect",
+        getAll: "/battles",
     }
 } as const;

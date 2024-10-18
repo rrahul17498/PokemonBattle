@@ -47,15 +47,15 @@ import { ProtectedRoute } from "./protectedRoute";
         {
           path: AppRoutes.protected.connectBattle.nestedPath,
           lazy: async() => {
-            const { ConnectToBattle } = await import("@/features/battle/connectToBattle");  
+            const { ConnectToBattle } = await import("@/features/battle");  
             return { Component: ConnectToBattle };
           }
         },
         {
           path: AppRoutes.protected.battle(":id").nestedPath,
           lazy: async() => {
-            const { Battle } = await import("@/features/battle");  
-            return { Component: Battle };
+            const { BattleArena } = await import("@/features/battle");  
+            return { Component: BattleArena };
           }
         }
       ]
