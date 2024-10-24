@@ -22,7 +22,7 @@ public class BattleController {
     }
 
     @PostMapping("/connect")
-    public Battle connectToBattle(@RequestBody ConnectBattleDTO connectBattleRequest) {
+    public BattleResponseHandler connectToBattle(@RequestBody ConnectBattleDTO connectBattleRequest) {
         return this.battleService.connectToBattle(connectBattleRequest);
     }
 

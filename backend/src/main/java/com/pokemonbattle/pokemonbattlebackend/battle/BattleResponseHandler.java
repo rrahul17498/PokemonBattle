@@ -2,6 +2,7 @@ package com.pokemonbattle.pokemonbattlebackend.battle;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
+import com.pokemonbattle.pokemonbattlebackend.user.User;
 import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 
 import java.util.List;
@@ -34,17 +35,33 @@ public record BattleResponseHandler(
 
 
 
-    static BattleResponseHandler createBattleResponse(Battle battle, UserWithPokemonsDTO firstPlayerData) {
+    static BattleResponseHandler createBattleResponse(Battle battle, User firstPlayer) {
+        return new BattleResponseHandler(
+                battle.getId(),
+                battle.getStatus(),
+                firstPlayer.getId(),
+                firstPlayer.getName(),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    static BattleResponseHandler connectBattleResponse(
+            Battle battle, UserWithPokemonsDTO firstPlayerData, UserWithPokemonsDTO secondPlayerData
+    ) {
         return new BattleResponseHandler(
                 battle.getId(),
                 battle.getStatus(),
                 firstPlayerData.id(),
                 firstPlayerData.name(),
                 firstPlayerData.ownedPokemons(),
-                null,
-                null,
-                null,
-                battle.getWinner()
+                secondPlayerData.id(),
+                secondPlayerData.name(),
+                secondPlayerData.ownedPokemons(),
+                null
         );
     }
 
