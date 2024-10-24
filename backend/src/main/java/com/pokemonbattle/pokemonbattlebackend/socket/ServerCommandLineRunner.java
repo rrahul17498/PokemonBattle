@@ -1,6 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.socket;
 
 import com.corundumstudio.socketio.SocketIOServer;
+import jakarta.annotation.PreDestroy;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,13 @@ public class ServerCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception{
-          server.start();
+          this.server.start();
+    }
+
+    @PreDestroy
+    public void onExit(){
+        if(this.server != null) {
+            this.server.stop();
+        }
     }
 }

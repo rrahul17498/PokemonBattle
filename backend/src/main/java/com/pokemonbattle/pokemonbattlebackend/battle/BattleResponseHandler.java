@@ -6,7 +6,7 @@ import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 
 import java.util.List;
 
-public record BattleResponseDTO(
+public record BattleResponseHandler(
         Integer id,
 
         BattleStatus status,
@@ -34,8 +34,8 @@ public record BattleResponseDTO(
 
 
 
-    static BattleResponseDTO createBattleResponse(Battle battle, UserWithPokemonsDTO firstPlayerData) {
-        return new BattleResponseDTO(
+    static BattleResponseHandler createBattleResponse(Battle battle, UserWithPokemonsDTO firstPlayerData) {
+        return new BattleResponseHandler(
                 battle.getId(),
                 battle.getStatus(),
                 firstPlayerData.id(),
