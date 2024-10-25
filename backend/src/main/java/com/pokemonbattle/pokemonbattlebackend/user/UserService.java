@@ -38,6 +38,16 @@ public class UserService {
         return this.pokemonRepository.findAllById(existingUser.get().getOwnedPokemons());
     }
 
+    public User getUser(Long userId) {
+        Optional<User> existingUser = this.userRepository.findById(userId);
+
+        if (existingUser.isEmpty()) {
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return existingUser.get();
+    }
+
     public UserWithPokemonsDTO getUserWithPokemons(Long userId) {
         Optional<User> existingUser = this.userRepository.findById(userId);
 

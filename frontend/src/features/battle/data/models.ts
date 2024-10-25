@@ -1,5 +1,9 @@
 import { PokemonType } from "@/features/pokemon"
 
+export enum BattleEvents {
+    BATTLE_CREATED = "BATTLE_CREATED",
+}
+
 
 enum BattleStatus {
     CREATED = "CREATED",

@@ -1,5 +1,5 @@
 import Button from "@/components/ui/button";
-import useBattle from "./data/useConnectBattle";
+import useConnectBattle from "./data/useConnectBattle";
 import useUser from "@/hooks/useUser";
 import { Battle } from "./data/models";
 
@@ -7,7 +7,8 @@ import { Battle } from "./data/models";
 
 const ConnectToBattle = () => {
 
-    const { createBattleMutation, battlesQuery } = useBattle();
+    const { createBattleMutation, battlesQuery } = useConnectBattle();
+    
     const { userQuery: { data: userData } } = useUser();
     
     const onCreateBattle = () => {
@@ -22,9 +23,6 @@ const ConnectToBattle = () => {
 
     };
 
-
-    console.log("battlesQuery data:", battlesQuery.data);
-
     return (
       <main className="flex min-h-screen w-screen">
         <section className="w-full py-16">
@@ -35,18 +33,13 @@ const ConnectToBattle = () => {
                      ? (
                         <div>Loading</div>
                      ) : (
-                        battlesQuery.data.map((battleData: Battle) => {
+                        battlesQuery.data.map((battleData: Battle, i) => {
 
                             const userId = userData?.id;
-
                             const isBattleCreatedByUser = userId && userId == battleData.first_player_id;
-
-                            console.log("userId: ", userId);
-                            console.log("first_player_id: ", battleData.first_player_id);
-
                             
                             return (
-                            <article className="border-border/60 border-b h-fit p-4 flex items-center justify-between">
+                            <article key={`battle_${i}`} className="border-border/60 border-b h-fit p-4 flex items-center justify-between">
                                 <p className="text-lg">{battleData.first_player_name}'s Battle</p>
                                 <div>
                                     {isBattleCreatedByUser
