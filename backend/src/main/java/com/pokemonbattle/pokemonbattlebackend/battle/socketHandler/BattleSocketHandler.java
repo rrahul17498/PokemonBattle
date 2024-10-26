@@ -5,21 +5,19 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.pokemonbattle.pokemonbattlebackend.battle.BattleStateDTO;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
-@Service
-public class BattleSocketEventHandler {
+@Component
+public class BattleEventHandler {
 
     private final SocketIOServer server;
     private final Integer numberOfUsersPerRoom = 2;
 
-    public BattleSocketEventHandler(SocketIOServer server) {
+    public BattleEventHandler(SocketIOServer server) {
         this.server = server;
         this.server.addConnectListener(onUserConnect());
         this.server.addDisconnectListener(onUserDisconnect());
@@ -58,6 +56,12 @@ public class BattleSocketEventHandler {
 
         };
     }
+
+//    public DataListener<String> goToBattle() {
+//        return (client, roomId, ackClient) -> {
+//            this.server.getRoomOperations(roomId).sendEvent(BattleEvents.GO_TO_BATTLE.name(), );
+//        };
+//    }
 
     public void broadcastBattleCreation(Integer battleId) {
         this.server.getBroadcastOperations().sendEvent(BattleEvents.BROADCAST_BATTLE_CREATED.name(), battleId);
