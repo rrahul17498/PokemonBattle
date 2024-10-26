@@ -63,10 +63,11 @@ const useConnectBattle = () => {
 
     const connectBattleMutation = useMutation({
         mutationFn: connectToBattle,
-        onSuccess: ({ room_id: roomId }) => {
-            socket.emit(BattleEvents.JOIN_BATTLE_ROOM, roomId,({ didJoinRoom }: JoinRoomResult) => {
-                if (didJoinRoom) {
-                    navigate(AppRoutes.protected.battle(roomId).full)
+        onSuccess: (data) => {
+            socket.emit(BattleEvents.JOIN_BATTLE_ROOM, data.room_id,({ didJoinRoom }: JoinRoomResult) => {
+                console.log("INITIATE_BATTLE_LOAD: ", didJoinRoom);
+                if (didJoinRoom) {  
+                    socket.emit(BattleEvents.INITIATE_BATTLE_LOAD, { room_id: data.room_id ,battle_id: data.battle_id });
                 }
             });
         },
@@ -88,8 +89,14 @@ const useConnectBattle = () => {
                 console.log("BROADCAST_BATTLE_CONNECTED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
+
+            socket.on(BattleEvents.LOAD_BATTLE, (data: { room_id: string, battle_id: number }) => {
+                console.log("LOAD_BATTLE_RESOURCES: ", data);
+                const routingSubString = `${data.battle_id}/${data.room_id}`;
+                navigate(AppRoutes.protected.battle(routingSubString).full, { replace: true })
+            });
         }
-    },[socket, isConnected, queryClient]);
+    },[socket, isConnected, queryClient, navigate]);
 
 
     return { createBattleMutation, connectBattleMutation, battlesQuery };

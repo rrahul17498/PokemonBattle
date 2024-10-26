@@ -1,10 +1,24 @@
 import { PokemonSchema } from "@/features/pokemon/data/models";
 import { z } from "zod"
 
+
+// Player Data
+
+export const PlayerData = z.object({
+    userId: z.number(),
+    userName: z.string(),
+    ownedPokemons: z.array(PokemonSchema)
+});
+
+export type PlayerDataType = z.infer<typeof PlayerData>;
+
+// Battle
 export enum BattleEvents {
     BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
     BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",
-    JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM"
+    JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM",
+    INITIATE_BATTLE_LOAD = "INITIATE_BATTLE_LOAD",
+    LOAD_BATTLE = "LOAD_BATTLE"
 }
 
 
@@ -25,7 +39,7 @@ enum BattleStatus {
 
 
 const Battle = z.object({
-    id: z.number(),
+    battle_id: z.number(),
     room_id: z.string(),
     status: z.nativeEnum(BattleStatus),
     first_player_id: z.number(),

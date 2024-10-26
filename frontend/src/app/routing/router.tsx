@@ -52,7 +52,7 @@ import { ProtectedRoute } from "./protectedRoute";
           }
         },
         {
-          path: AppRoutes.protected.battle(":id").nestedPath,
+          path: AppRoutes.protected.battle(":battleId/:roomId").nestedPath,
           lazy: async() => {
             const { BattleArena } = await import("@/features/battle");  
             return { Component: BattleArena };

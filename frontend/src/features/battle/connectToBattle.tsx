@@ -41,7 +41,7 @@ const ConnectToBattle = () => {
                                     {isBattleCreatedByUser
                                      ? <p className="text-subtleStatus">Waiting for second player</p>
                                      : <Button
-                                        onClick={onJoinBattleClick(battleData.id)}
+                                        onClick={onJoinBattleClick(battleData.battle_id)}
                                         name="join_battle"
                                         variant="small"
                                         disabled={isBattleCreatedByUser}
