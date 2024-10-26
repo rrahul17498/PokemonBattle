@@ -18,7 +18,9 @@ public class Battle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @JsonProperty("battle_id")
+    @Column(name="battle_id")
+    private Integer battleId;
 
     @JsonProperty("room_id")
     @Column(name="room_id")

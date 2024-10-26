@@ -12,17 +12,17 @@ import java.util.Collection;
 
 @Slf4j
 @Component
-public class BattleEventHandler {
+public class BattleSocketHandler {
 
     private final SocketIOServer server;
     private final Integer numberOfUsersPerRoom = 2;
 
-    public BattleEventHandler(SocketIOServer server) {
+    public BattleSocketHandler(SocketIOServer server) {
         this.server = server;
         this.server.addConnectListener(onUserConnect());
         this.server.addDisconnectListener(onUserDisconnect());
-
         this.server.addEventListener(BattleEvents.JOIN_BATTLE_ROOM.name(), String.class,onJoinBattleRoom());
+        this.server.addEventListener(BattleEvents.INITIATE_BATTLE_LOAD.name(), InitiateBattleLoadDTO.class, initiateBattleLoad());
     }
 
     public ConnectListener onUserConnect() {
@@ -57,11 +57,12 @@ public class BattleEventHandler {
         };
     }
 
-//    public DataListener<String> goToBattle() {
-//        return (client, roomId, ackClient) -> {
-//            this.server.getRoomOperations(roomId).sendEvent(BattleEvents.GO_TO_BATTLE.name(), );
-//        };
-//    }
+    public DataListener<InitiateBattleLoadDTO> initiateBattleLoad() {
+        return (client, initiateBattleLoadDTO, ackClient) -> {
+            log.info("Initiate battle[{}] in room[{}]", initiateBattleLoadDTO.battleId(), initiateBattleLoadDTO.roomId());
+            this.server.getRoomOperations(initiateBattleLoadDTO.roomId()).sendEvent(BattleEvents.LOAD_BATTLE.name(), initiateBattleLoadDTO);
+        };
+    }
 
     public void broadcastBattleCreation(Integer battleId) {
         this.server.getBroadcastOperations().sendEvent(BattleEvents.BROADCAST_BATTLE_CREATED.name(), battleId);

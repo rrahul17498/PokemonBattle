@@ -17,7 +17,7 @@ public class BattleController {
     private final BattleSocketHandler battleSocketHandler;
 
     @PostMapping("/create")
-    public BattleStateDTO createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
+    public Battle createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
        return this.battleService.createBattle(createBattleRequest);
     }
 
@@ -26,9 +26,9 @@ public class BattleController {
         return this.battleService.connectToBattle(connectBattleRequest);
     }
 
-    @GetMapping("/load")
-    public Battle loadBattleResources(@RequestBody ConnectBattleDTO connectBattleRequest) {
-//        return this.battleService.connectToBattle(connectBattleRequest);
+    @GetMapping("/{battleId}")
+    public BattleStateDTO connectToBattle(@PathVariable Integer battleId) {
+        return this.battleService.getBattle(battleId);
     }
 
     @GetMapping

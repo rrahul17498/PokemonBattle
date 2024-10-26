@@ -7,11 +7,11 @@ import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 import java.util.List;
 
 public record BattleStateDTO(
-        @JsonProperty("room_id")
-        String roomId,
-
         @JsonProperty("battle_id")
         Integer battleId,
+
+        @JsonProperty("room_id")
+        String roomId,
 
         BattleStatus status,
 
