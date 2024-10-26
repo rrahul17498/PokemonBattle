@@ -1,7 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
 
-import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketHandler;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketEventHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +14,15 @@ import java.util.List;
 public class BattleController {
 
     private final BattleService battleService;
-    private final BattleSocketHandler battleSocketHandler;
+    private final BattleSocketEventHandler battleSocketHandler;
 
     @PostMapping("/create")
-    public BattleResponseHandler createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
+    public BattleStateDTO createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
        return this.battleService.createBattle(createBattleRequest);
     }
 
     @PostMapping("/connect")
-    public BattleResponseHandler connectToBattle(@RequestBody ConnectBattleDTO connectBattleRequest) {
+    public BattleStateDTO connectToBattle(@RequestBody ConnectBattleDTO connectBattleRequest) {
         return this.battleService.connectToBattle(connectBattleRequest);
     }
 

@@ -1,6 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
-import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketHandler;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketEventHandler;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceInUseException;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.user.User;
@@ -19,24 +19,37 @@ public class BattleService {
     private final BattleRepository battleRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final BattleSocketHandler battleSocketHandler;
+    private final BattleSocketEventHandler battleSocketHandler;
 
-    BattleResponseHandler createBattle(CreateBattleDTO createBattleRequest){
+    BattleStateDTO createBattle(CreateBattleDTO createBattleRequest){
         User firstPlayer = this.userService.getUser(createBattleRequest.getUserId());
 
         Battle newBattle = new Battle();
         newBattle.setFirstPlayerId(firstPlayer.getId());
+        newBattle.setFirstPlayerName(firstPlayer.getName());
         newBattle.setStatus(BattleStatus.CREATED);
 
         Battle createdBattle = this.battleRepository.save(newBattle);
-        BattleResponseHandler createdBattleResponse = BattleResponseHandler.createBattleResponse(createdBattle, firstPlayer);
 
-        this.battleSocketHandler.broadcastBattleCreation(createdBattleResponse);
+        BattleStateDTO battleState = new BattleStateDTO(
+                createdBattle.getId().toString(),
+                createdBattle.getId(),
+                createdBattle.getStatus(),
+                createdBattle.getFirstPlayerId(),
+                createdBattle.getFirstPlayerName(),
+                null,
+                createdBattle.getSecondPlayerId(),
+                createdBattle.getSecondPlayerName(),
+                null,
+                createdBattle.getWinner()
+        );
 
-      return createdBattleResponse;
+        this.battleSocketHandler.broadcastBattleCreation(battleState.battleId());
+
+      return battleState;
     }
 
-    BattleResponseHandler connectToBattle(ConnectBattleDTO battleConnect){
+    BattleStateDTO connectToBattle(ConnectBattleDTO battleConnect){
         Battle existingBattle = this.battleRepository.findById(battleConnect.getBattleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleConnect.getBattleId() + " does not exist")
                 );
@@ -44,21 +57,38 @@ public class BattleService {
             throw new ResourceInUseException("A battle with id " + battleConnect.getBattleId() + " in progress");
         }
 
-        existingBattle.setSecondPlayerId(battleConnect.getUserId());
+        // Querying here to check user id validity and getting user name for battle object
+        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(battleConnect.getUserId());
+
+        existingBattle.setSecondPlayerId(secondPlayerData.id());
+        existingBattle.setSecondPlayerName(secondPlayerData.name());
         existingBattle.setStatus(BattleStatus.IN_PROGRESS);
 
         Battle savedBattle = this.battleRepository.save(existingBattle);
 
-        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(savedBattle.getSecondPlayerId());
         UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(savedBattle.getFirstPlayerId());
 
-        BattleResponseHandler connectBattleResponse = BattleResponseHandler.connectBattleResponse(savedBattle, firstPlayerData, secondPlayerData);
-        return connectBattleResponse;
+        BattleStateDTO updatedBattleState = new BattleStateDTO(
+                savedBattle.getId().toString(),
+                savedBattle.getId(),
+                savedBattle.getStatus(),
+                firstPlayerData.id(),
+                firstPlayerData.name(),
+                firstPlayerData.ownedPokemons(),
+                secondPlayerData.id(),
+                secondPlayerData.name(),
+                secondPlayerData.ownedPokemons(),
+                savedBattle.getWinner()
+        );
+
+        this.battleSocketHandler.broadcastBattleConnection(updatedBattleState.battleId());
+
+        return updatedBattleState;
     }
 
 
     List<Battle> getAllBattles() {
-        return this.battleRepository.findAll();
+        return this.battleRepository.findByStatus(BattleStatus.CREATED);
     }
 
 }
