@@ -49,41 +49,21 @@ public class BattleService {
       return battleState;
     }
 
-    BattleStateDTO connectToBattle(ConnectBattleDTO battleConnect){
+    Battle connectToBattle(ConnectBattleDTO battleConnect){
         Battle existingBattle = this.battleRepository.findById(battleConnect.getBattleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleConnect.getBattleId() + " does not exist")
                 );
+
         if (existingBattle.getSecondPlayerId() != null) {
             throw new ResourceInUseException("A battle with id " + battleConnect.getBattleId() + " in progress");
         }
 
-        // Querying here to check user id validity and getting user name for battle object
-        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(battleConnect.getUserId());
-
-        existingBattle.setSecondPlayerId(secondPlayerData.id());
-        existingBattle.setSecondPlayerName(secondPlayerData.name());
+        User secondPlayer = this.userService.getUser(battleConnect.getUserId());
+        existingBattle.setSecondPlayerId(secondPlayer.getId());
+        existingBattle.setSecondPlayerName(secondPlayer.getName());
         existingBattle.setStatus(BattleStatus.IN_PROGRESS);
 
-        Battle savedBattle = this.battleRepository.save(existingBattle);
-
-        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(savedBattle.getFirstPlayerId());
-
-        BattleStateDTO updatedBattleState = new BattleStateDTO(
-                savedBattle.getId().toString(),
-                savedBattle.getId(),
-                savedBattle.getStatus(),
-                firstPlayerData.id(),
-                firstPlayerData.name(),
-                firstPlayerData.ownedPokemons(),
-                secondPlayerData.id(),
-                secondPlayerData.name(),
-                secondPlayerData.ownedPokemons(),
-                savedBattle.getWinner()
-        );
-
-        this.battleSocketHandler.broadcastBattleConnection(updatedBattleState.battleId());
-
-        return updatedBattleState;
+        return this.battleRepository.save(existingBattle);
     }
 
 

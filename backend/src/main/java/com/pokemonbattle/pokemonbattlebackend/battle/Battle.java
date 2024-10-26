@@ -20,6 +20,10 @@ public class Battle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonProperty("room_id")
+    @Column(name="room_id")
+    private String roomId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BattleStatus status;
