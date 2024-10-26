@@ -1,10 +1,12 @@
 import apiClient from "@/app/api/apiClient";
 import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
-import { useSocket } from "@/hooks/useSocket";
+import { useSocketIO } from "@/hooks/useSocketIO";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { BattleEvents } from "./models";
+import { BattleEvents, JoinRoomResult } from "./models";
+import { useNavigate } from "react-router-dom";
+import AppRoutes from "@/app/routing/routes";
 
 
 
@@ -18,6 +20,17 @@ const createNewBattle = async(data: CreateBattleRequest) => {
     return response.data;
 };
 
+interface ConnectBattleRequest {
+    user_id: number,
+    battle_id: number
+};
+
+const connectToBattle = async(data: ConnectBattleRequest) => {
+    const response = await apiClient.post(API_END_POINTS.battle.connect, data);
+
+    return response.data;
+};
+
 const getAllBattles = async () => {
     const response = await apiClient.get(API_END_POINTS.battle.getAll);
     return response.data;
@@ -26,6 +39,10 @@ const getAllBattles = async () => {
 
 
 const useConnectBattle = () => {
+
+    const { socket, isConnected } = useSocketIO();
+    const navigate = useNavigate();
+
     const queryClient = useQueryClient();
     const battlesQuery = useQuery({
         queryKey: [QUERY_KEYS.battles],
@@ -35,24 +52,47 @@ const useConnectBattle = () => {
 
     const createBattleMutation = useMutation({
         mutationFn: createNewBattle,
+        onSuccess: ({ room_id: roomId }) => {
+            socket.emit(BattleEvents.JOIN_BATTLE_ROOM, roomId);
+        },
         onError: (e) => {
             console.error(e.message);
         }
     });
 
-    const { socket, isConnected } = useSocket({ room: "battles_to_connect", userId: 1 });
+
+    const connectBattleMutation = useMutation({
+        mutationFn: connectToBattle,
+        onSuccess: ({ room_id: roomId }) => {
+            socket.emit(BattleEvents.JOIN_BATTLE_ROOM, roomId,({ didJoinRoom }: JoinRoomResult) => {
+                if (didJoinRoom) {
+                    navigate(AppRoutes.protected.battle(roomId).full)
+                }
+            });
+        },
+        onError: (e) => {
+            console.error(e.message);
+        }
+    });
+
 
     useEffect(() => {
         if (socket && isConnected) {
-            socket.on(BattleEvents.BATTLE_CREATED, (battleObj: object) => {
-                console.log("Socket recieved", battleObj);
+
+            socket.on(BattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
+                console.log("BROADCAST_BATTLE_CREATED: ", battleId);
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
+            });
+
+            socket.on(BattleEvents.BROADCAST_BATTLE_CONNECTED, (battleId: number) => {
+                console.log("BROADCAST_BATTLE_CONNECTED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
         }
     },[socket, isConnected, queryClient]);
 
-    return { createBattleMutation, battlesQuery };
 
+    return { createBattleMutation, connectBattleMutation, battlesQuery };
 };
 
 

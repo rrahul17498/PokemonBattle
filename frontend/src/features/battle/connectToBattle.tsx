@@ -7,33 +7,29 @@ import { Battle } from "./data/models";
 
 const ConnectToBattle = () => {
 
-    const { createBattleMutation, battlesQuery } = useConnectBattle();
+    const { createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle();
     
     const { userQuery: { data: userData } } = useUser();
     
     const onCreateBattle = () => {
-        if (userData.id) {
-            createBattleMutation.mutate({ user_id: userData.id });
-        }
+        createBattleMutation.mutate({ user_id: userData.id });
     };
 
     const onJoinBattleClick = (battleId: number) => () => {
-
-        console.log("Go to battle: ", battleId);
-
+        connectBattleMutation.mutate({ user_id: userData.id, battle_id: battleId });
     };
 
     return (
       <main className="flex min-h-screen w-screen">
         <section className="w-full py-16">
             <div className="shadow rounded-lg overflow-hidden h-full w-1/2 mx-auto">
-                <h1 className="text-2xl font-bold text-center py-4 bg-teal-500">Create / Join Battle</h1>
+                <h1 className="text-2xl font-semibold text-center py-4 bg-teal-500">Create / Join Battle</h1>
                 <div>
                     {battlesQuery.isLoading
                      ? (
                         <div>Loading</div>
                      ) : (
-                        battlesQuery.data.map((battleData: Battle, i) => {
+                        battlesQuery.data.map((battleData: Battle, i: number) => {
 
                             const userId = userData?.id;
                             const isBattleCreatedByUser = userId && userId == battleData.first_player_id;
