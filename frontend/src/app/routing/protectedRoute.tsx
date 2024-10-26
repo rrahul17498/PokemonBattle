@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import AppRoutes from "./routes";
 import useUser from "@/hooks/useUser";
+import { SocketProvider } from "../socketIO";
 
 
 
@@ -10,20 +11,20 @@ import useUser from "@/hooks/useUser";
 export const ProtectedRoute = () => {
     const navigate = useNavigate();
 
-    const { getUserQuery: { data } } = useUser();
+    const { userQuery } = useUser();
  
     useEffect(() => {
 
-        if (!data) {
-            navigate(AppRoutes.landing);
-        }
+        // if (!data) {
+        //     navigate(AppRoutes.landing);
+        // }
         
-    }, [data, navigate]);
+    }, [navigate, userQuery.data]);
 
 
     return (
-    <>
+    <SocketProvider userId={userQuery.data?.id}>
         <Outlet />
-    </>
+    </SocketProvider>
     );
 };
