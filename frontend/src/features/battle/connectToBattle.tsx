@@ -34,9 +34,7 @@ const ConnectToBattle = () => {
                         <div>Loading</div>
                      ) : (
                         battlesQuery.data.map((battleData: Battle, i: number) => {
-
-                            const userId = userData?.id;
-                            const isBattleCreatedByUser = userId && userId == battleData.first_player_id;
+                            const isBattleCreatedByUser = userSessionData?.id == battleData.first_player_id;
                             
                             return (
                             <article key={`battle_${i}`} className="border-border/60 border-b h-fit p-4 flex items-center justify-between">
