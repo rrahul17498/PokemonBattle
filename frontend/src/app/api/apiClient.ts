@@ -1,4 +1,7 @@
 import axios from "axios";
+import { queryClient } from "../query/client";
+import { QUERY_KEYS } from "../query/queryKeys";
+import { UserSession } from "../query/models";
 
 
 const apiClient = axios.create({
@@ -10,7 +13,12 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
-         // Add authentication token config
+         // Token config for apis
+        const userSession =  queryClient.getQueryData<UserSession>([QUERY_KEYS.userSession]);
+        const token = userSession?.token;
+         if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+         }
          return config;
     },
     (error) => Promise.reject(error)

@@ -16,7 +16,7 @@ export const SocketIOContext = createContext<SocketContext>(defaultSocketIOData)
 
 type SocketProvider = {
     children: ReactElement,
-    userId: number
+    userId: number | undefined
 };
 
 export const SocketProvider = ({ children, userId }: SocketProvider) => {
@@ -24,29 +24,30 @@ export const SocketProvider = ({ children, userId }: SocketProvider) => {
     const [isConnected, setIsConnected] = useState<boolean>(defaultSocketIOData.isConnected);
 
     useEffect(() => {
-        console.log("Initiating socket connection...");
-        const socketBaseUrl = import.meta.env.VITE_SOCKET_BASE_URL;
-        const newSocket = io(socketBaseUrl, { reconnection: false, query: { user_id: userId  } });
- 
-        newSocket.on("connect", () => {
-         console.log(`Socket connection successful`);
-         setIsConnected(true);
-        });
- 
-        newSocket.on("disconnect", () => {
-         console.log(`Socket disconnected`);
-         setIsConnected(false);
-        });
- 
-        setSocket(newSocket);
- 
-        return () => {
-         newSocket.disconnect();
-         setSocket(null);
-         setIsConnected(false);
-        };
- 
-     }, []);
+        if(userId) {
+            console.log("Initiating socket connection...");
+            const socketBaseUrl = import.meta.env.VITE_SOCKET_BASE_URL;
+            const newSocket = io(socketBaseUrl, { reconnection: false, query: { user_id: userId  } });
+     
+            newSocket.on("connect", () => {
+             console.log(`Socket connection successful`);
+             setIsConnected(true);
+            });
+     
+            newSocket.on("disconnect", () => {
+             console.log(`Socket disconnected`);
+             setIsConnected(false);
+            });
+     
+            setSocket(newSocket);
+     
+            return () => {
+             newSocket.disconnect();
+             setSocket(null);
+             setIsConnected(false);
+            };
+        }
+     }, [userId]);
 
      
     return(

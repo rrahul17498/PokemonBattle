@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppRoutes, { protectedRoutesConfig } from "./routes";
 import { ProtectedRoute } from "./protectedRoute";
+import useUserSession from "@/hooks/useUserSession";
 
 
 
@@ -16,7 +17,8 @@ import { ProtectedRoute } from "./protectedRoute";
     {
       path: AppRoutes.onboard,
       lazy: async() => {
-        const { OnBoard } = await import("@/features/authentication");  
+        const { OnBoard } = await import("@/features/authentication"); 
+         
         return { Component: OnBoard };
       }
     },

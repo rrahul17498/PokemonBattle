@@ -4,6 +4,7 @@ import { ChooseStartOffPokemon } from '@/features/authentication/chooseStartOffP
 import { GuestForm } from './guestForm';
 import { useOnBoard } from './data/useOnBoard';
 import { AuthLayout } from '@/components/layouts/authLayout';
+import useUserSession from '@/hooks/useUserSession';
 
 
 const ONBOARD_STEPS = [
@@ -24,7 +25,7 @@ export const OnBoard = () => {
   const { createGuestUser } = useOnBoard();
 
 
-    const updateOnBoardInfoAndGoToNextStep = (data: OnBoardInfoType) => {
+  const updateOnBoardInfoAndGoToNextStep = (data: OnBoardInfoType) => {
         const lastStep = ONBOARD_STEPS.length - 1;
 
         if (data.step == lastStep) {
