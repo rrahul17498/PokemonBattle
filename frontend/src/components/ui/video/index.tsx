@@ -9,10 +9,6 @@ interface Props {
 }
 
 const Video = forwardRef<HTMLVideoElement, Props>(({ src, autoPlay, hide, onEnded }: Props, ref) => {
-   
-   console.log("Hide: ", hide);
-   console.log("Source: ", src);
-
     return (
       <S.BaseVideo
        ref={ref}

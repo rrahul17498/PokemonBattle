@@ -66,15 +66,12 @@ const BattleArena = () => {
     };
 
     useEffect(() => {
-        console.log("attackID: ", attackSrc);
         if (!isNull(attackSrc) && videoRef.current) {
             videoRef.current.load();
             videoRef.current.play();
         } 
     },[attackSrc]);
 
-
-    console.log("battleState: ", battleState);
     
   return (
     <main className="min-h-screen grid grid-cols-1-2-1">

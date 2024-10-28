@@ -15,8 +15,6 @@ type LoginFormValuesType = z.infer<typeof LoginFormSchema>;
 export const Login = () => {
 
     const onSubmit = (data: LoginFormValuesType) => {
-
-        console.log("onSubmit data: ", data);
     }
 
     return (
