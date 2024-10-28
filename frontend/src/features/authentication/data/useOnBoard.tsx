@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { GuestUserSchema, GuestUserType, OnBoardInfoType } from "./models";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 import AppRoutes from "@/app/routing/routes";
 import apiClient from "@/app/api/apiClient";
 import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
+import { GuestUserSchema, GuestUserType, OnBoardInfoType } from "./models";
 
 
 
@@ -22,12 +23,15 @@ export const useOnBoard = () => {
 
     const navigate = useNavigate();
 
+    const storeTokenInCookies = (token: string) => {
+        Cookies.set("token", token, { expires: 7, sameSite: "Strict", secure: true }); 
+    };
+
     const mutation = useMutation({
         mutationFn: registerGuestUser,
         onSuccess: (registeredGuestData) => {
-
-        queryClient.setQueryData([QUERY_KEYS.user],registeredGuestData);
-
+        storeTokenInCookies(registeredGuestData.token);   
+        queryClient.setQueryData([QUERY_KEYS.userSession],registeredGuestData);
         const chosenPokemonId = registeredGuestData?.owned_pokemons[0];
         navigate(AppRoutes.pokemon(chosenPokemonId));
         },
@@ -37,9 +41,7 @@ export const useOnBoard = () => {
     });
 
     const createGuestUser = async (data: OnBoardInfoType) => {
-
         const validatedGuestData = GuestUserSchema.parse(data);
-
         mutation.mutate(validatedGuestData);
     };
 

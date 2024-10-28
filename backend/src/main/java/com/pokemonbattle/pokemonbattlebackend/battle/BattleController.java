@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 @RestController
 @RequestMapping("/api/battles")
 @AllArgsConstructor
@@ -17,17 +17,22 @@ public class BattleController {
     private final BattleSocketHandler battleSocketHandler;
 
     @PostMapping("/create")
-    public BattleResponseHandler createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
+    public Battle createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
        return this.battleService.createBattle(createBattleRequest);
     }
 
     @PostMapping("/connect")
-    public BattleResponseHandler connectToBattle(@RequestBody ConnectBattleDTO connectBattleRequest) {
+    public Battle connectToBattle(@RequestBody ConnectBattleDTO connectBattleRequest) {
         return this.battleService.connectToBattle(connectBattleRequest);
     }
 
+    @GetMapping("/{battleId}")
+    public BattleStateDTO connectToBattle(@PathVariable Integer battleId) {
+        return this.battleService.getBattle(battleId);
+    }
+
     @GetMapping
-    public List<Battle> getAllBattles() {
+    public List<BattleResponseDTO> getAllBattles() {
         return this.battleService.getAllBattles();
     }
 }

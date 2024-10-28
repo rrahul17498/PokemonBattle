@@ -24,7 +24,6 @@ Schema extends ZodType<TFormValues>,
 }: Props<TFormValues, Schema>) => {
     const form = useForm<TFormValues>({ resolver: zodResolver(schema), defaultValues, mode: "onSubmit" });
 
-    console.log("formState: ", form.formState.isValid);
     return (
         <form
           id={id}

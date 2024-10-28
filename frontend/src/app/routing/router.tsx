@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import AppRoutes, { protectedRoutesConfig } from "./routes";
 import { ProtectedRoute } from "./protectedRoute";
+import useUserSession from "@/hooks/useUserSession";
 
 
 
@@ -16,7 +17,8 @@ import { ProtectedRoute } from "./protectedRoute";
     {
       path: AppRoutes.onboard,
       lazy: async() => {
-        const { OnBoard } = await import("@/features/authentication");  
+        const { OnBoard } = await import("@/features/authentication"); 
+         
         return { Component: OnBoard };
       }
     },
@@ -52,7 +54,7 @@ import { ProtectedRoute } from "./protectedRoute";
           }
         },
         {
-          path: AppRoutes.protected.battle(":id").nestedPath,
+          path: AppRoutes.protected.battle(":battleId/:roomId").nestedPath,
           lazy: async() => {
             const { BattleArena } = await import("@/features/battle");  
             return { Component: BattleArena };

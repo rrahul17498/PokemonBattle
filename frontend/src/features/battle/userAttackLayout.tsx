@@ -5,13 +5,16 @@ import STARTOFF_POKEMONS from "../pokemon/startoffPokemons.json";
 import PokeballIcon from '@/assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '@/assets/icons/pokeball_open_1.png';
 import { isNull } from "lodash";
+import { PokemonDataType } from "../pokemon/data/models";
+import { PlayerDataType } from "./data/models";
 
 
 
-export const UserAttackWindowLayout = () => {
-    const [selectedPokemon, setSelectedPokemon] = useState<PokemonType | null>(null);
+export const UserAttackWindowLayout = ({ userId, userName, ownedPokemons = [] }: PlayerDataType) => {
 
-    const onChoose = (pokemonDetails: PokemonType) => () => {
+    const [selectedPokemon, setSelectedPokemon] = useState<PokemonDataType | null>(null);
+
+    const onChoose = (pokemonDetails: PokemonDataType) => () => {
         setSelectedPokemon(pokemonDetails.id == selectedPokemon?.id ? null : pokemonDetails);
     };
 
@@ -46,7 +49,7 @@ export const UserAttackWindowLayout = () => {
                         <Button
                          name={`user_trigger_attack_${index}`}
                          variant="small"
-                         onClick={onTrigger(attack.src)}
+                         onClick={onTrigger(attack.mediaSrc)}
                          >
                             {attack.name}
                         </Button>
@@ -55,10 +58,10 @@ export const UserAttackWindowLayout = () => {
             </ul>
         </div> : null}
         <div>
-            <h3 className="text-xl font-medium p-3">Rahul Radhakrishna</h3>
+            <h3 className="text-xl font-medium p-3">{userName}</h3>
             <ul className="grid grid-cols-3 p-3">
                  {
-                    STARTOFF_POKEMONS.data.map((pokemon, i) => {
+                    ownedPokemons.map((pokemon, i) => {
                         const isPokemonSelected = pokemon.id == selectedPokemon?.id;
                         return (
                         <li key={`user_pokemon_${i}`}>

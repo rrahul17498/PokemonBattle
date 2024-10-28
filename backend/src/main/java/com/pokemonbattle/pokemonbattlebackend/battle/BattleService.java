@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -21,44 +22,67 @@ public class BattleService {
     private final UserService userService;
     private final BattleSocketHandler battleSocketHandler;
 
-    BattleResponseHandler createBattle(CreateBattleDTO createBattleRequest){
+    Battle createBattle(CreateBattleDTO createBattleRequest){
         User firstPlayer = this.userService.getUser(createBattleRequest.getUserId());
 
         Battle newBattle = new Battle();
         newBattle.setFirstPlayerId(firstPlayer.getId());
+        newBattle.setFirstPlayerName(firstPlayer.getName());
         newBattle.setStatus(BattleStatus.CREATED);
+        newBattle.setRoomId(UUID.randomUUID().toString());
 
         Battle createdBattle = this.battleRepository.save(newBattle);
-        BattleResponseHandler createdBattleResponse = BattleResponseHandler.createBattleResponse(createdBattle, firstPlayer);
 
-        this.battleSocketHandler.broadcastBattleCreation(createdBattleResponse);
+        this.battleSocketHandler.broadcastBattleCreation(createdBattle.getBattleId());
 
-      return createdBattleResponse;
+      return createdBattle;
     }
 
-    BattleResponseHandler connectToBattle(ConnectBattleDTO battleConnect){
+    Battle connectToBattle(ConnectBattleDTO battleConnect){
         Battle existingBattle = this.battleRepository.findById(battleConnect.getBattleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleConnect.getBattleId() + " does not exist")
                 );
+
         if (existingBattle.getSecondPlayerId() != null) {
             throw new ResourceInUseException("A battle with id " + battleConnect.getBattleId() + " in progress");
         }
 
-        existingBattle.setSecondPlayerId(battleConnect.getUserId());
+        User secondPlayer = this.userService.getUser(battleConnect.getUserId());
+        existingBattle.setSecondPlayerId(secondPlayer.getId());
+        existingBattle.setSecondPlayerName(secondPlayer.getName());
         existingBattle.setStatus(BattleStatus.IN_PROGRESS);
 
         Battle savedBattle = this.battleRepository.save(existingBattle);
 
-        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(savedBattle.getSecondPlayerId());
-        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(savedBattle.getFirstPlayerId());
+        this.battleSocketHandler.broadcastBattleConnection(savedBattle.getBattleId());
 
-        BattleResponseHandler connectBattleResponse = BattleResponseHandler.connectBattleResponse(savedBattle, firstPlayerData, secondPlayerData);
-        return connectBattleResponse;
+        return savedBattle;
+    }
+
+    BattleStateDTO getBattle(Integer battleId){
+       Battle existingBattle = this.battleRepository.findById(battleId)
+               .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleId + " does not exist"));
+
+       UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(existingBattle.getFirstPlayerId());
+       UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(existingBattle.getSecondPlayerId());
+
+       return new BattleStateDTO(
+               existingBattle.getBattleId(),
+               existingBattle.getRoomId(),
+               existingBattle.getStatus(),
+               firstPlayerData.id(),
+               firstPlayerData.name(),
+               firstPlayerData.ownedPokemons(),
+               secondPlayerData.id(),
+               secondPlayerData.name(),
+               secondPlayerData.ownedPokemons(),
+               existingBattle.getWinner()
+       );
     }
 
 
-    List<Battle> getAllBattles() {
-        return this.battleRepository.findAll();
+    List<BattleResponseDTO> getAllBattles() {
+        return this.battleRepository.findByStatus(BattleStatus.CREATED);
     }
 
 }
