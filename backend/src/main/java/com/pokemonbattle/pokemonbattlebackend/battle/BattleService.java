@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -82,7 +81,7 @@ public class BattleService {
     }
 
 
-    List<Battle> getAllBattles() {
+    List<BattleResponseDTO> getAllBattles() {
         return this.battleRepository.findByStatus(BattleStatus.CREATED);
     }
 

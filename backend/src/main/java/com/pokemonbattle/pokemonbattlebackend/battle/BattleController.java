@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 @RestController
 @RequestMapping("/api/battles")
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class BattleController {
     }
 
     @GetMapping
-    public List<Battle> getAllBattles() {
+    public List<BattleResponseDTO> getAllBattles() {
         return this.battleService.getAllBattles();
     }
 }

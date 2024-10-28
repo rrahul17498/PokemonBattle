@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface BattleRepository extends JpaRepository<Battle,Integer>{
-    List<Battle> findByStatus(BattleStatus status);
+    List<BattleResponseDTO> findByStatus(BattleStatus status);
 }
