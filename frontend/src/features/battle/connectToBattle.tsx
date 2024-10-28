@@ -1,7 +1,7 @@
 import Button from "@/components/ui/button";
 import useConnectBattle from "./data/useConnectBattle";
-import useUser from "@/hooks/useUser";
 import { Battle } from "./data/models";
+import useUserSession from "@/hooks/useUserSession";
 
 
 
@@ -9,14 +9,18 @@ const ConnectToBattle = () => {
 
     const { createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle();
     
-    const { userQuery: { data: userData } } = useUser();
+    const userSessionData = useUserSession();
     
     const onCreateBattle = () => {
-        createBattleMutation.mutate({ user_id: userData.id });
+        if (userSessionData?.id) {
+            createBattleMutation.mutate({ user_id: userSessionData.id });
+        }
     };
 
     const onJoinBattleClick = (battleId: number) => () => {
-        connectBattleMutation.mutate({ user_id: userData.id, battle_id: battleId });
+        if (userSessionData?.id && battleId) {
+            connectBattleMutation.mutate({ user_id: userSessionData.id, battle_id: battleId });
+        }
     };
 
     return (
