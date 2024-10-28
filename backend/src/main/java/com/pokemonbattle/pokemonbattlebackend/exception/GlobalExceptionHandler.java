@@ -12,7 +12,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException (ResourceNotFoundException e) {
-        System.out.println("I reached here");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 e.getMessage()
@@ -21,7 +20,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceInUseException.class)
     public ResponseEntity<ApiErrorResponse> handleResourceInUseException(ResourceInUseException e) {
-        System.out.println("I reached here also");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiErrorResponse(
                 HttpStatus.CONFLICT.value(),
                 e.getMessage()

@@ -1,19 +1,18 @@
 package com.pokemonbattle.pokemonbattlebackend.user;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("")
     List<User> getAllUsers() {
@@ -25,20 +24,6 @@ public class UserController {
         return this.userService.getAllUserPokemons(id);
     }
 
-    @PostMapping("")
-    void createUser(@RequestBody User user) {
-        this.userService.createUser(user);
-    }
-
-    @PutMapping("/{id}")
-    void updateUser(@PathVariable Long id, @RequestBody User user) {
-        this.userService.updateUser(id, user);
-    }
-
-    @PostMapping("/guest")
-    GuestUserDTO createGuestUser(@RequestBody GuestUserDTO guestUserDTO) {
-        return this.userService.createGuestUser(guestUserDTO);
-    }
     @GetMapping("/guest/{id}")
     GuestUserDTO getGuestUser(@PathVariable Long id) {
         return this.userService.getGuestUser(id);

@@ -1,6 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pokemonbattle.pokemonbattlebackend.auth.GuestRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,7 +32,7 @@ public class User {
     @Column(name = "is_guest")
     private Boolean isGuest;
 
-    public User(GuestUserDTO guestUser) {
+    public User(GuestRequestDTO guestUser) {
         this.name = guestUser.name();
         this.ownedPokemons = guestUser.ownedPokemons();
         this.isGuest = true;

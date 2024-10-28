@@ -1,5 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.user;
 
+import com.pokemonbattle.pokemonbattlebackend.auth.GuestRequestDTO;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.PokemonRepository;
 import org.springframework.http.HttpStatus;
@@ -88,8 +89,8 @@ public class UserService {
         this.userRepository.save(newUser);
     }
 
-    GuestUserDTO createGuestUser(GuestUserDTO guestUserDTO) {
-        User newUser = new User(guestUserDTO);
+    public GuestUserDTO createGuestUser(GuestRequestDTO guestUserRequest) {
+        User newUser = new User(guestUserRequest);
 
         User savedUser = this.userRepository.save(newUser);
         return GuestUserDTO.fromUser(savedUser);
