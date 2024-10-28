@@ -6,6 +6,7 @@ import apiClient from "@/app/api/apiClient";
 import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { GuestUserSchema, GuestUserType, OnBoardInfoType } from "./models";
+import toast from "react-hot-toast";
 
 
 
@@ -42,7 +43,14 @@ export const useOnBoard = () => {
 
     const createGuestUser = async (data: OnBoardInfoType) => {
         const validatedGuestData = GuestUserSchema.parse(data);
-        mutation.mutate(validatedGuestData);
+        toast.promise(
+            mutation.mutateAsync(validatedGuestData),
+             {
+                 loading: "Creating Guest...",
+                 success: ({ name }) => <b>Welcome {name}</b>,
+                 error: <b>Guest creation failed</b>
+            }
+            );
     };
 
     return { createGuestUser };

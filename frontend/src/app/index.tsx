@@ -5,6 +5,7 @@ import { queryClient } from "./query/client";
 import router from './routing/router';
 import theme from './theme';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'react-hot-toast';
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       {import.meta.env.DEV && <ReactQueryDevtools />}
       <ThemeProvider theme={theme}>
          <RouterProvider router={router}/>
+         <Toaster />
       </ThemeProvider>
     </QueryClientProvider>
   );
