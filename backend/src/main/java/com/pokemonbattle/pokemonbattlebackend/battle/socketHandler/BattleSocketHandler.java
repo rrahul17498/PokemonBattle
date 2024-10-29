@@ -21,8 +21,9 @@ public class BattleSocketHandler {
         this.server = server;
         this.server.addConnectListener(onUserConnect());
         this.server.addDisconnectListener(onUserDisconnect());
-        this.server.addEventListener(BattleEvents.JOIN_BATTLE_ROOM.name(), String.class,onJoinBattleRoom());
-        this.server.addEventListener(BattleEvents.INITIATE_BATTLE_LOAD.name(), InitiateBattleLoadDTO.class, initiateBattleLoad());
+        this.server.addEventListener(ConnectBattleEvents.JOIN_BATTLE_ROOM.name(), String.class,onJoinBattleRoom());
+        this.server.addEventListener(ConnectBattleEvents.INITIATE_BATTLE_LOAD.name(), InitiateBattleLoadDTO.class, initiateBattleLoad());
+        this.server.addEventListener(BattleEvents.USER_ACTION.name(), UserActionDTO.class, BattleActionHandler.executeUserAction());
     }
 
     public ConnectListener onUserConnect() {
@@ -60,15 +61,15 @@ public class BattleSocketHandler {
     public DataListener<InitiateBattleLoadDTO> initiateBattleLoad() {
         return (client, initiateBattleLoadDTO, ackClient) -> {
             log.info("Initiate battle[{}] in room[{}]", initiateBattleLoadDTO.battleId(), initiateBattleLoadDTO.roomId());
-            this.server.getRoomOperations(initiateBattleLoadDTO.roomId()).sendEvent(BattleEvents.LOAD_BATTLE.name(), initiateBattleLoadDTO);
+            this.server.getRoomOperations(initiateBattleLoadDTO.roomId()).sendEvent(ConnectBattleEvents.LOAD_BATTLE.name(), initiateBattleLoadDTO);
         };
     }
 
     public void broadcastBattleCreation(Integer battleId) {
-        this.server.getBroadcastOperations().sendEvent(BattleEvents.BROADCAST_BATTLE_CREATED.name(), battleId);
+        this.server.getBroadcastOperations().sendEvent(ConnectBattleEvents.BROADCAST_BATTLE_CREATED.name(), battleId);
     }
 
     public void broadcastBattleConnection(Integer battleId) {
-        this.server.getBroadcastOperations().sendEvent(BattleEvents.BROADCAST_BATTLE_CONNECTED.name(), battleId);
+        this.server.getBroadcastOperations().sendEvent(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED.name(), battleId);
     }
 }
