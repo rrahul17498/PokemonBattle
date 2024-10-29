@@ -2,7 +2,7 @@ import apiClient from "@/app/api/apiClient";
 import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { Battle } from "./models";
 
 
 const getBattleState = (battleId: number) => async() => {
@@ -11,21 +11,15 @@ const getBattleState = (battleId: number) => async() => {
 };
 
 
-export const useBattle = (battleId: number) => {
-    const [enableBattleStateQuery, setEnableBattleStateQuery] = useState(true);
 
-    const { data: battleState, isSuccess } = useQuery({
+export const useBattle = (battleId: number) => {
+
+    const { data: battleState } = useQuery({
         queryKey: [QUERY_KEYS.battleState, battleId],
         queryFn: getBattleState(battleId),
-        enabled: enableBattleStateQuery,
+        staleTime: Infinity,
+        gcTime: Infinity
     });
 
-    useEffect(() => {
-        if(isSuccess) {
-            setEnableBattleStateQuery(false);
-        }
-    }, [isSuccess]);
-
-
-    return { battleState };
+    return { battleState } as { battleState: Battle };
 };
