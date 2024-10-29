@@ -13,7 +13,7 @@ export const PlayerData = z.object({
 export type PlayerDataType = z.infer<typeof PlayerData>;
 
 // Battle
-export enum BattleEvents {
+export enum ConnectBattleEvents {
     BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
     BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",
     JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM",
@@ -21,8 +21,32 @@ export enum BattleEvents {
     LOAD_BATTLE = "LOAD_BATTLE"
 }
 
+export enum BattleEvents {
+    USER_ACTION = "USER_ACTION",
+    USER_ACTION_RESULT = "USER_ACTION_RESULT",
+    POKEMON_ACTION = "POKEMON_ACTION",
+}
 
-enum BattleStatus {
+export enum USER_ACTION_TYPES {
+    CHOOSE_POKEMON = "CHOOSE_POKEMON",
+    WITHDRAW_POKEMON = "WITHDRAW_POKEMON"
+}
+
+export type UserAction = {
+    type: string,
+    source: number,
+    payload: object | number | string,
+};
+
+export type UserActionResult = {
+    roomId: string,
+    type: string,
+    source: number,
+    payload: object | number | string,
+};
+
+
+export enum BattleStatus {
     CREATED = "CREATED",
     IN_PROGRESS = "IN_PROGRESS",
     COMPLETED = "COMPLETED"

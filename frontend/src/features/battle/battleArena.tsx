@@ -15,9 +15,8 @@ const formatPlayerData = (userId: number, userName: string, ownedPokemons: Pokem
 const BattleArena = () => {
 
     const { battleId, roomId } = useParams();
-    const { battleState } = useBattle(Number(battleId));
+    const { battleState, sendUserActionEvent, userActionResultsList } = useBattle(Number(battleId), roomId as string);
     const userSessionData = useUserSession();
-    const [selectedPokemon, setSelectedPokemon] = useState<PokemonType | null>(null);
     const [attackSrc, setAttackSrc] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -46,14 +45,6 @@ const BattleArena = () => {
     }, [battleState, userSessionData]);
 
 
-    const onChoose = (pokemonDetails: PokemonType) => () => {
-        setSelectedPokemon(pokemonDetails.id == selectedPokemon?.id ? null : pokemonDetails);
-    };
-
-    const onTrigger = (attack_src: string) => () => {
-        setAttackSrc(attack_src);
-    };
-
     const onAttackEnd = () => {
         setAttackSrc(null);
     };
@@ -71,7 +62,11 @@ const BattleArena = () => {
     
   return (
     <main className="min-h-screen grid grid-cols-1-2-1">
-        <UserAttackWindowLayout {...playerData?.user} />
+        <UserAttackWindowLayout
+          sendUserActionEvent={sendUserActionEvent}
+          userActionResultsList={userActionResultsList}
+          {...playerData?.user}
+           />
         <section className="border-border border-x flex justify-around p-6 rounded bg-black">
              <Video
                 ref={videoRef}
@@ -81,7 +76,11 @@ const BattleArena = () => {
                 onEnded={onAttackEnd}
                 />
         </section>
-        <UserAttackWindowLayout {...playerData?.opponent} />
+        <UserAttackWindowLayout
+         readOnly={true}
+         userActionResultsList={userActionResultsList}
+         {...playerData?.opponent }
+          />
     </main>
   );
 };

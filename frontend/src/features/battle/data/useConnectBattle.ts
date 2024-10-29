@@ -4,7 +4,7 @@ import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useSocketIO } from "@/hooks/useSocketIO";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { BattleEvents, JoinRoomResult } from "./models";
+import { ConnectBattleEvents, JoinRoomResult } from "./models";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "@/app/routing/routes";
 
@@ -53,7 +53,7 @@ const useConnectBattle = () => {
     const createBattleMutation = useMutation({
         mutationFn: createNewBattle,
         onSuccess: ({ room_id: roomId }) => {
-            socket.emit(BattleEvents.JOIN_BATTLE_ROOM, roomId);
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, roomId);
         },
         onError: (e) => {
             console.error(e.message);
@@ -64,10 +64,10 @@ const useConnectBattle = () => {
     const connectBattleMutation = useMutation({
         mutationFn: connectToBattle,
         onSuccess: (data) => {
-            socket.emit(BattleEvents.JOIN_BATTLE_ROOM, data.room_id,({ didJoinRoom }: JoinRoomResult) => {
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, data.room_id,({ didJoinRoom }: JoinRoomResult) => {
                 console.log("INITIATE_BATTLE_LOAD: ", didJoinRoom);
                 if (didJoinRoom) {  
-                    socket.emit(BattleEvents.INITIATE_BATTLE_LOAD, { room_id: data.room_id ,battle_id: data.battle_id });
+                    socket.emit(ConnectBattleEvents.INITIATE_BATTLE_LOAD, { room_id: data.room_id ,battle_id: data.battle_id });
                 }
             });
         },
@@ -80,17 +80,17 @@ const useConnectBattle = () => {
     useEffect(() => {
         if (socket && isConnected) {
 
-            socket.on(BattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
+            socket.on(ConnectBattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
                 console.log("BROADCAST_BATTLE_CREATED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
 
-            socket.on(BattleEvents.BROADCAST_BATTLE_CONNECTED, (battleId: number) => {
+            socket.on(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED, (battleId: number) => {
                 console.log("BROADCAST_BATTLE_CONNECTED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
 
-            socket.on(BattleEvents.LOAD_BATTLE, (data: { room_id: string, battle_id: number }) => {
+            socket.on(ConnectBattleEvents.LOAD_BATTLE, (data: { room_id: string, battle_id: number }) => {
                 console.log("LOAD_BATTLE_RESOURCES: ", data);
                 const routingSubString = `${data.battle_id}/${data.room_id}`;
                 navigate(AppRoutes.protected.battle(routingSubString).full, { replace: true })
