@@ -44,9 +44,9 @@ module.exports = {
         water: {
           DEFAULT: "var(--water-theme)",
         },
-        pokemonHealth: {
-          low: "var(--pokemon-health-low)",
-          high: "var(--pokemon-health-high)",
+        health: {
+          low: "var(--health-low)",
+          high: "var(--health-high)",
         }
       },
       animation: {

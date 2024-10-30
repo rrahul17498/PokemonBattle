@@ -1,6 +1,6 @@
 import AppRoutes from '@/app/routing/routes';
-import { AuthLayout } from '@/components/layouts/authLayout';
-import Button from '@/components/ui/button';
+import { AuthLayout } from '@/features/authentication/authLayout';
+import Button from '@/components/base/button';
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
 import { useNavigate, useParams } from 'react-router-dom';
 import { PokemonSchema } from './data/models';

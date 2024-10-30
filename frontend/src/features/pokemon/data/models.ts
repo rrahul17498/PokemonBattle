@@ -9,6 +9,7 @@ enum PokemonType {
 };
 
 export const PokemonAttackSchema = z.object({
+    id: z.number(),
     name: z.string(),
     mediaSrc: z.string(),
     power: z.number(),
