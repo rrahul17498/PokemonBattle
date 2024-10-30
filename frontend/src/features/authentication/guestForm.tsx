@@ -1,10 +1,10 @@
 import { z } from "zod";
-import Form from "@/components/ui/form";
+import Form from "@/components/base/form";
 import { OnBoardInfoType, GuestUserSchema } from "./data/models";
-import Button from "@/components/ui/button";
-import Input from "@/components/ui/form/input";
+import Button from "@/components/base/button";
+import Input from "@/components/base/form/input";
 import PokemonLogo from '@/assets/logos/pokemon.png';
-import { Link } from "@/components/ui/link";
+import { Link } from "@/components/base/link";
 import AppRoutes from "@/app/routing/routes";
 import useUserSession from "@/hooks/useUserSession";
 

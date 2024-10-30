@@ -1,9 +1,10 @@
 package com.pokemonbattle.pokemonbattlebackend.battle.socketHandler;
 
-public record UserActionDTO(
+public record BattleActionDTO(
         String roomId,
         String type,
-        Long source,
-        String payload
+        Long userId,
+        Long pokemonId,
+        Integer payload
 ) {
 }

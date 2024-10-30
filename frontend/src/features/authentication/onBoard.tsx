@@ -3,7 +3,7 @@ import { OnBoardInfoType } from './data/models';
 import { ChooseStartOffPokemon } from '@/features/authentication/chooseStartOffPokemon';
 import { GuestForm } from './guestForm';
 import { useOnBoard } from './data/useOnBoard';
-import { AuthLayout } from '@/components/layouts/authLayout';
+import { AuthLayout } from '@/features/authentication/authLayout';
 import useUserSession from '@/hooks/useUserSession';
 
 

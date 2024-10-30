@@ -1,5 +1,5 @@
 import PokeballIcon from "@/assets/icons/pokeball_side_icon_1.png";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
 import { OnBoardInfoType } from "./data/models";
 import { PokemonDataType, PokemonSchema } from "@/features/pokemon/data/models"
