@@ -2,7 +2,7 @@ import apiClient from "@/app/api/apiClient";
 import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { Battle, BattleEvents, UserAction, UserActionResult } from "./models";
+import { Battle, BattleEvents, PokemonAction, PokemonActionResult, UserAction, UserActionResult } from "./models";
 import { useSocketIO } from "@/hooks/useSocketIO";
 import { useEffect, useState } from "react";
 
@@ -12,17 +12,20 @@ const getBattleState = (battleId: number) => async() => {
     return response.data;
 };
 
-type UseBattleHookData = {
+type UseBattleService = {
     battleState: Battle,
     sendUserActionEvent: (action: UserAction) => void,
-    userActionResultsList: UserActionResult[]
+    sendPokemonActionEvent: (action: PokemonAction) => void,
+    userActionResultsList: UserActionResult[],
+    pokemonActionResultsList: PokemonActionResult[]
 };
 
-export const useBattle = (battleId: number, roomId: string): UseBattleHookData => {
+export const useBattle = (battleId: number, roomId: string): UseBattleService => {
 
     const { socket, isConnected } = useSocketIO();
 
     const [userActionResultsList, setUserActionResultsList] = useState<UserActionResult[]>([]);
+    const [pokemonActionResultsList, setPokemonActionResultsList] = useState<PokemonActionResult[]>([]);
 
     const { data: battleState } = useQuery({
         queryKey: [QUERY_KEYS.battleState, battleId],
@@ -36,6 +39,10 @@ export const useBattle = (battleId: number, roomId: string): UseBattleHookData =
             socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
+
+            socket.on(BattleEvents.POKEMON_ACTION_RESULT, (action: PokemonActionResult) => {
+                setUserActionResultsList((prev) => ([...prev, action]));
+            });
         }
     },[socket, isConnected]);
 
@@ -43,9 +50,9 @@ export const useBattle = (battleId: number, roomId: string): UseBattleHookData =
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId })
     };
 
-    // const sendPokemonActionEvent = () => {
-        
-    // };
+    const sendPokemonActionEvent = (action: UserAction) => {
+        socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId })
+    };
 
-    return { battleState, sendUserActionEvent, userActionResultsList };
+    return { battleState, sendUserActionEvent, sendPokemonActionEvent, userActionResultsList, pokemonActionResultsList };
 };

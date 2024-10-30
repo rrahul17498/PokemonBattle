@@ -18,7 +18,6 @@ const getProtectedRoute = (nestedPath: string): ProtectedRoute => {
 const AppRoutes =  {
     landing: "/",
     onboard: "/onboard",
-    login: "/login",
     pokemon: (id: number | string) => `/pokemon/${id}`,
 
     protected: {

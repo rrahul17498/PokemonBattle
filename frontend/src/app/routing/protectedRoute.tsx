@@ -8,7 +8,7 @@ import apiClient from "../api/apiClient";
 import { API_END_POINTS } from "../api/endpoints";
 import { queryClient } from "../query/client";
 import { AxiosError } from "axios";
-import Spinner from "@/components/ui/spinner";
+import Spinner from "@/components/base/spinner";
 import useUserSession from "@/hooks/useUserSession";
 import { AllowedUserSession } from "../query/models";
 

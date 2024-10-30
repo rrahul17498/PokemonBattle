@@ -23,13 +23,6 @@ import useUserSession from "@/hooks/useUserSession";
       }
     },
     {
-      path: AppRoutes.login,
-      lazy: async() => {
-        const { Login } = await import("@/features/authentication");  
-        return { Component: Login };
-      }
-    },
-    {
       path: AppRoutes.pokemon(":pokemonId"),
       lazy: async() => {
         const { Pokemon } = await import("@/features/pokemon");  

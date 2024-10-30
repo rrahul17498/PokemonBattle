@@ -1,4 +1,4 @@
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import useConnectBattle from "./data/useConnectBattle";
 import { Battle } from "./data/models";
 import useUserSession from "@/hooks/useUserSession";

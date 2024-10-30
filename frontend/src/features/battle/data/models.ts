@@ -13,39 +13,6 @@ export const PlayerData = z.object({
 export type PlayerDataType = z.infer<typeof PlayerData>;
 
 // Battle
-export enum ConnectBattleEvents {
-    BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
-    BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",
-    JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM",
-    INITIATE_BATTLE_LOAD = "INITIATE_BATTLE_LOAD",
-    LOAD_BATTLE = "LOAD_BATTLE"
-}
-
-export enum BattleEvents {
-    USER_ACTION = "USER_ACTION",
-    USER_ACTION_RESULT = "USER_ACTION_RESULT",
-    POKEMON_ACTION = "POKEMON_ACTION",
-}
-
-export enum USER_ACTION_TYPES {
-    CHOOSE_POKEMON = "CHOOSE_POKEMON",
-    WITHDRAW_POKEMON = "WITHDRAW_POKEMON"
-}
-
-export type UserAction = {
-    type: string,
-    source: number,
-    payload: object | number | string,
-};
-
-export type UserActionResult = {
-    roomId: string,
-    type: string,
-    source: number,
-    payload: object | number | string,
-};
-
-
 export enum BattleStatus {
     CREATED = "CREATED",
     IN_PROGRESS = "IN_PROGRESS",
@@ -80,4 +47,54 @@ export type Battle = z.infer<typeof Battle>;
 
 export type JoinRoomResult = {
     didJoinRoom: boolean
+};
+
+export enum ConnectBattleEvents {
+    BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
+    BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",
+    JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM",
+    INITIATE_BATTLE_LOAD = "INITIATE_BATTLE_LOAD",
+    LOAD_BATTLE = "LOAD_BATTLE"
+}
+
+export enum BattleEvents {
+    USER_ACTION = "USER_ACTION",
+    USER_ACTION_RESULT = "USER_ACTION_RESULT",
+    POKEMON_ACTION = "POKEMON_ACTION",
+    POKEMON_ACTION_RESULT = "POKEMON_ACTION_RESULT"
+}
+
+export enum USER_ACTION_TYPES {
+    CHOOSE_POKEMON = "CHOOSE_POKEMON",
+    WITHDRAW_POKEMON = "WITHDRAW_POKEMON"
+}
+
+export enum POKEMON_ACTION_TYPES {
+    ATTACK = "ATTACK",
+}
+
+export type UserAction = {
+    type: string,
+    sourceId: number,
+    payload: object | number | string,
+};
+
+export type UserActionResult = {
+    roomId: string,
+    type: string,
+    sourceId: number,
+    payload: object | number | string,
+};
+
+export type PokemonAction = {
+    type: string,
+    sourceId: number,
+    payload: object | number | string,
+};
+
+export type PokemonActionResult = {
+    roomId: string,
+    type: string,
+    sourceId: number,
+    payload: object | number | string,
 };
