@@ -90,8 +90,7 @@ const useConnectBattle = () => {
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
 
-            socket.on(ConnectBattleEvents.LOAD_BATTLE, (data: { room_id: string, battle_id: number }) => {
-                console.log("LOAD_BATTLE_RESOURCES: ", data);
+            socket.on(ConnectBattleEvents.LOAD_BATTLE_RESOURCES, (data: { room_id: string, battle_id: number }) => {
                 const routingSubString = `${data.battle_id}/${data.room_id}`;
                 navigate(AppRoutes.protected.battle(routingSubString).full, { replace: true })
             });
