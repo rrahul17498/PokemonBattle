@@ -1,7 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
 
-import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketHandler;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class BattleController {
 
     private final BattleService battleService;
-    private final BattleSocketHandler battleSocketHandler;
+    private final BattleConnectionHandler battleSocketHandler;
 
     @PostMapping("/create")
     public Battle createBattle(@RequestBody CreateBattleDTO createBattleRequest) {

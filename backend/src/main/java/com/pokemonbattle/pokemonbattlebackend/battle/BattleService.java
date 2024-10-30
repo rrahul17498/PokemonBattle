@@ -1,6 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
-import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketHandler;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceInUseException;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.user.User;
@@ -20,7 +20,7 @@ public class BattleService {
     private final BattleRepository battleRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private final BattleSocketHandler battleSocketHandler;
+    private final BattleConnectionHandler battleSocketHandler;
 
     Battle createBattle(CreateBattleDTO createBattleRequest){
         User firstPlayer = this.userService.getUser(createBattleRequest.getUserId());
