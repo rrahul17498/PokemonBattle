@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record BattleConnectionDTO(
         @JsonProperty("user_id")
-        String userId,
+        Long userId,
         @JsonProperty("room_id")
         String roomId,
         @JsonProperty("battle_id")
@@ -13,5 +13,13 @@ public record BattleConnectionDTO(
         Boolean didJoinRoom
 ) {
 
+        static BattleConnectionDTO createAcknowledgement(BattleConnectionDTO battleConnectionDTO, Boolean joinRoomStatus) {
+                return new BattleConnectionDTO(
+                        battleConnectionDTO.userId(),
+                        battleConnectionDTO.roomId(),
+                        battleConnectionDTO.battleId(),
+                        joinRoomStatus
+                );
+        }
 
 }

@@ -19,7 +19,7 @@ public class BattleConnectionHandler {
         this.server.addConnectListener(onUserSocketConnect());
         this.server.addDisconnectListener(onUserSocketDisconnect());
         this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleConnectionDTO.class,onJoinBattleRoom());
-        this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE_LOAD.name(), BattleConnectionDTO.class, loadBattleResources());
+        this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE_LOAD.name(), BattleConnectionDTO.class, initiateLoadBattleResources());
         this.server.addEventListener(BattleActionEvents.USER_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserAction());
         this.server.addEventListener(BattleActionEvents.POKEMON_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserPokemonAction());
     }
@@ -43,16 +43,16 @@ public class BattleConnectionHandler {
             int numOfClients =  this.server.getRoomOperations(battleConnectionDTO.roomId()).getClients().size();
             if (numOfClients < this.allowedUsersPerRoom) {
                 client.joinRoom(battleConnectionDTO.roomId());
-                ackClient.sendAckData(true);
+                ackClient.sendAckData(BattleConnectionDTO.createAcknowledgement(battleConnectionDTO, true));
                 log.info("User[{}] joined room[{}]", battleConnectionDTO.userId(), battleConnectionDTO.roomId());
             } else {
-                ackClient.sendAckData(new JoinRoomAcknowledgeDTO(false));
+                ackClient.sendAckData(BattleConnectionDTO.createAcknowledgement(battleConnectionDTO, false));
                 log.info("Room[{}] is full", battleConnectionDTO.roomId());
             }
         };
     }
 
-    public DataListener<BattleConnectionDTO> loadBattleResources() {
+    public DataListener<BattleConnectionDTO> initiateLoadBattleResources() {
         return (client, battleConnectionDTO, ackClient) -> {
             log.info("Initiate battle[{}] in room[{}]", battleConnectionDTO.battleId(), battleConnectionDTO.roomId());
             this.server.getRoomOperations(battleConnectionDTO.roomId()).sendEvent(BattleConnectionEvents.LOAD_BATTLE_RESOURCES.name(), battleConnectionDTO);
