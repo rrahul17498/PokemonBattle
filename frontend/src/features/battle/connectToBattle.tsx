@@ -6,10 +6,9 @@ import useUserSession from "@/hooks/useUserSession";
 
 
 const ConnectToBattle = () => {
-
-    const { createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle();
     
     const userSessionData = useUserSession();
+    const { createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle(userSessionData?.id as number);
     
     const onCreateBattle = () => {
         if (userSessionData?.id) {

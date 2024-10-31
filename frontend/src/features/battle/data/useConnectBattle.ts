@@ -4,9 +4,10 @@ import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useSocketIO } from "@/hooks/useSocketIO";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { ConnectBattleEvents, JoinRoomResult } from "./models";
+import { ConnectBattle, ConnectBattleEvents, JoinRoomResult } from "./models";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "@/app/routing/routes";
+import toast from "react-hot-toast";
 
 
 
@@ -38,7 +39,7 @@ const getAllBattles = async () => {
 
 
 
-const useConnectBattle = () => {
+const useConnectBattle = (userId: number) => {
 
     const { socket, isConnected } = useSocketIO();
     const navigate = useNavigate();
@@ -52,8 +53,15 @@ const useConnectBattle = () => {
 
     const createBattleMutation = useMutation({
         mutationFn: createNewBattle,
-        onSuccess: ({ room_id: roomId }) => {
-            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, roomId);
+        onSuccess: (data) => {
+            const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: data.room_id, battle_id: data.battle_id, did_join_room: false }
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload, (result: ConnectBattle) => {
+                if (result.did_join_room) {  
+                    return toast.success("Battle created");
+                }
+
+                return toast.error("Failed to join battle room");
+            });
         },
         onError: (e) => {
             console.error(e.message);
@@ -64,10 +72,10 @@ const useConnectBattle = () => {
     const connectBattleMutation = useMutation({
         mutationFn: connectToBattle,
         onSuccess: (data) => {
-            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, data.room_id,({ didJoinRoom }: JoinRoomResult) => {
-                console.log("INITIATE_BATTLE_LOAD: ", didJoinRoom);
-                if (didJoinRoom) {  
-                    socket.emit(ConnectBattleEvents.INITIATE_BATTLE_LOAD, { room_id: data.room_id ,battle_id: data.battle_id });
+            const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: data.room_id, battle_id: data.battle_id, did_join_room: false };
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
+                if (result.did_join_room) {  
+                    socket.emit(ConnectBattleEvents.INITIATE_BATTLE_LOAD, result);
                 }
             });
         },

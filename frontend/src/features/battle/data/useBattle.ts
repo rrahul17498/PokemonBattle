@@ -37,10 +37,12 @@ export const useBattle = (battleId: number, roomId: string): UseBattleService =>
     useEffect(() => {
         if (socket && isConnected) {
             socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
+                console.log("USER_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
 
             socket.on(BattleEvents.POKEMON_ACTION_RESULT, (action: PokemonActionResult) => {
+                console.log("POKEMON_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
         }

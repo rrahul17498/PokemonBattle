@@ -2,6 +2,15 @@ import { PokemonSchema } from "@/features/pokemon/data/models";
 import { z } from "zod"
 
 
+// Connect Battle
+
+export type ConnectBattle = {
+    user_id: number,
+    room_id: string,
+    battle_id: number,
+    did_join_room: boolean
+}
+
 // Player Data
 
 export const PlayerData = z.object({
@@ -18,16 +27,6 @@ export enum BattleStatus {
     IN_PROGRESS = "IN_PROGRESS",
     COMPLETED = "COMPLETED"
 }
-
-// type BattleAttack = {
-//     id: number,
-//     name: string,
-//     sourcePokemon: number,
-//     sourceUser: number,
-//     targetPokemon: number,
-//     targetUser: number
-// }
-
 
 const Battle = z.object({
     battle_id: z.number(),

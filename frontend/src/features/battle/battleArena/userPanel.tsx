@@ -30,24 +30,24 @@ export const UserPanel = (
 
 
     useEffect(() => {
-        // const latestAction = userActionResultsList[userActionResultsList.length - 1];
+        const latestAction = userActionResultsList[userActionResultsList.length - 1];
 
-        // if (latestAction && latestAction.sourceId == userId) {
+        if (latestAction && latestAction.sourceId == userId) {
 
-        //     if (latestAction.type == USER_ACTION_TYPES.CHOOSE_POKEMON) {
-        //         const pokemonData = ownedPokemons.find((pokemon) => latestAction.payload == pokemon.id);
-        //         if (pokemonData) {
-        //             setChosenPokemon(pokemonData);
-        //         } else {
-        //             console.error("Invalid pokemon id recieved: ", latestAction.payload);
-        //         }
-        //     }
+            if (latestAction.type == USER_ACTION_TYPES.CHOOSE_POKEMON) {
+                const pokemonData = ownedPokemons.find((pokemon) => latestAction.payload == pokemon.id);
+                if (pokemonData) {
+                    setChosenPokemon(pokemonData);
+                } else {
+                    console.error("Invalid pokemon id recieved: ", latestAction.payload);
+                }
+            }
 
-        //     if (latestAction.type == USER_ACTION_TYPES.WITHDRAW_POKEMON) {
-        //         setChosenPokemon(null);
-        //     }
+            if (latestAction.type == USER_ACTION_TYPES.WITHDRAW_POKEMON) {
+                setChosenPokemon(null);
+            }
            
-        // }
+        }
 
     }, [userId, ownedPokemons,userActionResultsList]);
 
