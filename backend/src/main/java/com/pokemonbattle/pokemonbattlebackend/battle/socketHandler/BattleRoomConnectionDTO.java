@@ -2,7 +2,7 @@ package com.pokemonbattle.pokemonbattlebackend.battle.socketHandler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record BattleConnectionDTO(
+public record BattleRoomConnectionDTO(
         @JsonProperty("user_id")
         Long userId,
         @JsonProperty("room_id")
@@ -13,8 +13,8 @@ public record BattleConnectionDTO(
         Boolean didJoinRoom
 ) {
 
-        static BattleConnectionDTO createAcknowledgement(BattleConnectionDTO battleConnectionDTO, Boolean joinRoomStatus) {
-                return new BattleConnectionDTO(
+        static BattleRoomConnectionDTO createAcknowledgement(BattleRoomConnectionDTO battleConnectionDTO, Boolean joinRoomStatus) {
+                return new BattleRoomConnectionDTO(
                         battleConnectionDTO.userId(),
                         battleConnectionDTO.roomId(),
                         battleConnectionDTO.battleId(),

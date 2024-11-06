@@ -18,8 +18,8 @@ public class BattleConnectionHandler {
         this.server = server;
         this.server.addConnectListener(onUserSocketConnect());
         this.server.addDisconnectListener(onUserSocketDisconnect());
-        this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleConnectionDTO.class,onJoinBattleRoom());
-        this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE_LOAD.name(), BattleConnectionDTO.class, initiateLoadBattleResources());
+        this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleRoomConnectionDTO.class,onJoinBattleRoom());
+        this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE_LOAD.name(), BattleRoomConnectionDTO.class, initiateLoadBattleResources());
         this.server.addEventListener(BattleActionEvents.USER_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserAction());
         this.server.addEventListener(BattleActionEvents.POKEMON_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserPokemonAction());
     }
@@ -38,24 +38,24 @@ public class BattleConnectionHandler {
         };
     }
 
-    public DataListener<BattleConnectionDTO> onJoinBattleRoom() {
-        return (client, battleConnectionDTO, ackClient) -> {
-            int numOfClients =  this.server.getRoomOperations(battleConnectionDTO.roomId()).getClients().size();
+    public DataListener<BattleRoomConnectionDTO> onJoinBattleRoom() {
+        return (client, battleRoomConnectionDTO, ackClient) -> {
+            int numOfClients =  this.server.getRoomOperations(battleRoomConnectionDTO.roomId()).getClients().size();
             if (numOfClients < this.allowedUsersPerRoom) {
-                client.joinRoom(battleConnectionDTO.roomId());
-                ackClient.sendAckData(BattleConnectionDTO.createAcknowledgement(battleConnectionDTO, true));
-                log.info("User[{}] joined room[{}]", battleConnectionDTO.userId(), battleConnectionDTO.roomId());
+                client.joinRoom(battleRoomConnectionDTO.roomId());
+                ackClient.sendAckData(BattleRoomConnectionDTO.createAcknowledgement(battleRoomConnectionDTO, true));
+                log.info("User[{}] joined room[{}]", battleRoomConnectionDTO.userId(), battleRoomConnectionDTO.roomId());
             } else {
-                ackClient.sendAckData(BattleConnectionDTO.createAcknowledgement(battleConnectionDTO, false));
-                log.info("Room[{}] is full", battleConnectionDTO.roomId());
+                ackClient.sendAckData(BattleRoomConnectionDTO.createAcknowledgement(battleRoomConnectionDTO, false));
+                log.info("Room[{}] is full", battleRoomConnectionDTO.roomId());
             }
         };
     }
 
-    public DataListener<BattleConnectionDTO> initiateLoadBattleResources() {
-        return (client, battleConnectionDTO, ackClient) -> {
-            log.info("Initiate battle[{}] in room[{}]", battleConnectionDTO.battleId(), battleConnectionDTO.roomId());
-            this.server.getRoomOperations(battleConnectionDTO.roomId()).sendEvent(BattleConnectionEvents.LOAD_BATTLE_RESOURCES.name(), battleConnectionDTO);
+    public DataListener<BattleRoomConnectionDTO> initiateLoadBattleResources() {
+        return (client, battleRoomConnectionDTO, ackClient) -> {
+            log.info("Initiate battle[{}] in room[{}]", battleRoomConnectionDTO.battleId(), battleRoomConnectionDTO.roomId());
+            this.server.getRoomOperations(battleRoomConnectionDTO.roomId()).sendEvent(BattleConnectionEvents.LOAD_BATTLE_RESOURCES.name(), battleRoomConnectionDTO);
         };
     }
 

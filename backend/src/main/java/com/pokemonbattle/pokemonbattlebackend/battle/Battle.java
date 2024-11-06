@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name="Battles")
+@Table(name="battles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -47,9 +47,5 @@ public class Battle {
     private String secondPlayerName;
 
     private Long winner;
-
-    @JsonProperty("battle_attacks_log")
-    @Column(name = "battle_attacks_log",nullable = false)
-    private List<Integer> battleMessagesLog = List.of();
 
 }

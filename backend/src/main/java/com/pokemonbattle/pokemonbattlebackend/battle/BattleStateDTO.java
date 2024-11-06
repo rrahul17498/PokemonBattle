@@ -35,4 +35,34 @@ public record BattleStateDTO(
 
         Long winner
 ) {
+        static BattleStateDTO getCreatedState(Battle battle) {
+                return new BattleStateDTO(
+                        battle.getBattleId(),
+                        battle.getRoomId(),
+                        battle.getStatus(),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+        }
+
+        static BattleStateDTO getInProgressState(Battle battle, UserWithPokemonsDTO firstPlayerData, UserWithPokemonsDTO secondPlayerData) {
+                return new BattleStateDTO(
+                        battle.getBattleId(),
+                        battle.getRoomId(),
+                        battle.getStatus(),
+                        firstPlayerData.id(),
+                        firstPlayerData.name(),
+                        firstPlayerData.ownedPokemons(),
+                        secondPlayerData.id(),
+                        secondPlayerData.name(),
+                        secondPlayerData.ownedPokemons(),
+                        battle.getWinner()
+                );
+        }
+
 }
