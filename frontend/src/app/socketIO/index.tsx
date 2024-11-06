@@ -1,15 +1,19 @@
-import { createContext, ReactElement, useEffect, useState } from "react";
+import { createContext, Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
 import io from "socket.io-client";
 
 
 type SocketContext = {
     socket: typeof io | null,
-    isConnected: boolean
+    isConnected: boolean,
+    joinedBattleRoom: boolean,
+    setJoinedBattleRoom: Dispatch<SetStateAction<boolean>>
 };
 
 const defaultSocketIOData = {
     socket: null,
     isConnected: false,
+    joinedBattleRoom: false,
+    setJoinedBattleRoom: () => {},
 };
 
 export const SocketIOContext = createContext<SocketContext>(defaultSocketIOData);
@@ -22,6 +26,7 @@ type SocketProvider = {
 export const SocketProvider = ({ children, userId }: SocketProvider) => {
     const [socket, setSocket] = useState<typeof io | null>(defaultSocketIOData.socket);
     const [isConnected, setIsConnected] = useState<boolean>(defaultSocketIOData.isConnected);
+    const [joinedBattleRoom, setJoinedBattleRoom] = useState<boolean>(defaultSocketIOData.joinedBattleRoom);
 
     useEffect(() => {
         if(userId) {
@@ -51,7 +56,7 @@ export const SocketProvider = ({ children, userId }: SocketProvider) => {
 
      
     return(
-        <SocketIOContext.Provider value={{ socket, isConnected }}>
+        <SocketIOContext.Provider value={{ socket, isConnected, joinedBattleRoom, setJoinedBattleRoom }}>
             {children}
         </SocketIOContext.Provider>
     );

@@ -42,11 +42,16 @@ const getActiveBattle = async (userId: number) => {
     return response.data;
 }
 
+const deleteActiveBattle = async (battleId: number) => {
+    const response = await apiClient.delete(API_END_POINTS.battle.deleteBattle(battleId));
+    return response.data;
+}
+
 
 
 const useConnectBattle = (userId: number) => {
 
-    const { socket, isConnected } = useSocketIO();
+    const { socket, isConnected, joinedBattleRoom, setJoinedBattleRoom } = useSocketIO();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [isEventsRegistered, setIsEventsRegistered] = useState<boolean>(false);
@@ -65,8 +70,9 @@ const useConnectBattle = (userId: number) => {
 
     const createBattleMutation = useMutation({
         mutationFn: async() => { return await createNewBattle({ user_id: userId }); },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activeBattle]}); 
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activeBattle]});
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles] }); 
         },
         onError: (e) => {
             console.error(e.message);
@@ -89,9 +95,24 @@ const useConnectBattle = (userId: number) => {
         }
     });
 
+    const deleteCreatedBattle = async () => {
+        try {
+            if (!activeBattleQuery.data) {
+                return console.error("No active battles");
+            }
+            const result = await deleteActiveBattle(activeBattleQuery.data?.battle_id);
+            queryClient.removeQueries({ queryKey: [QUERY_KEYS.activeBattle]});
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles] });
+            return result;
+          } catch (error) {
+            console.error("Failed to delete battle:", error);
+            toast.error("Failed to delete battle");
+          }
+    };
+
 
     useEffect(() => {
-        if (socket && isConnected) {
+        if (socket && isConnected && !isEventsRegistered) {
             console.log("RUN")
             socket.on(ConnectBattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
                 console.log("BROADCAST_BATTLE_CREATED: ", battleId);
@@ -115,23 +136,24 @@ const useConnectBattle = (userId: number) => {
                 socket.off(ConnectBattleEvents.LOAD_BATTLE_RESOURCES);
             };
         }
-    },[userId, socket, isConnected, queryClient, navigate, setIsEventsRegistered]);
+    },[userId, socket, isConnected, queryClient, navigate, isEventsRegistered, setIsEventsRegistered]);
 
     useEffect(() => {
-        if(isEventsRegistered && activeBattleQuery.data) {
+        if(isEventsRegistered && activeBattleQuery.data && !joinedBattleRoom) {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: activeBattleQuery.data.room_id, battle_id: activeBattleQuery.data.battle_id, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
-                    console.log("User joined battle room")
+                    setJoinedBattleRoom(true);
+                    console.log("User joined battle room");
                     return toast.success("Battle created");
                 }
                 return toast.error("Failed to join battle room");
             });
         }
-    }, [userId, socket, isEventsRegistered, activeBattleQuery.data]);
+    }, [userId, socket, isEventsRegistered, activeBattleQuery.data, joinedBattleRoom, setJoinedBattleRoom]);
 
 
-    return { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery };
+    return { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle };
 };
 
 

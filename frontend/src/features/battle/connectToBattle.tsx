@@ -9,13 +9,14 @@ import Spinner from "@/components/base/spinner";
 const ConnectToBattle = () => {
 
     const userSessionData = useUserSession();
-    const { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle(userSessionData?.id as number);
+    const { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle } = useConnectBattle(userSessionData?.id as number);
     
     const onCreateBattle = () => {
             createBattleMutation.mutate();
     };
 
     const onCancelBattle = () => {
+      deleteCreatedBattle();
     };
 
     const onJoinBattleClick = (battleId: number) => () => {
