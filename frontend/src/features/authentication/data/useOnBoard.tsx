@@ -7,6 +7,7 @@ import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { GuestUserSchema, GuestUserType, OnBoardInfoType } from "./models";
 import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 
 
@@ -52,6 +53,11 @@ export const useOnBoard = () => {
             }
             );
     };
+
+    useEffect(() => {
+        Cookies.remove("token");
+        queryClient.clear();
+    }, [queryClient]);
 
     return { createGuestUser };
 

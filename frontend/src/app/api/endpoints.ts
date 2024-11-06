@@ -10,6 +10,7 @@ export const API_END_POINTS = {
         create: "/battles/create",
         connect: "/battles/connect",
         getAll: "/battles",
-        getBattle: (id: number | string) => `/battles/${id}`
+        getBattle: (id: number | string) => `/battles/${id}`,
+        getActiveBattle: (userId: number | string) => `/battles/active/${userId}`,
     }
 } as const;

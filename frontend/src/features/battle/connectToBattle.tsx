@@ -2,24 +2,24 @@ import Button from "@/components/base/button";
 import useConnectBattle from "./data/useConnectBattle";
 import { Battle } from "./data/models";
 import useUserSession from "@/hooks/useUserSession";
+import Spinner from "@/components/base/spinner";
 
 
 
 const ConnectToBattle = () => {
-    
+
     const userSessionData = useUserSession();
-    const { createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle(userSessionData?.id as number);
+    const { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery } = useConnectBattle(userSessionData?.id as number);
     
     const onCreateBattle = () => {
-        if (userSessionData?.id) {
-            createBattleMutation.mutate({ user_id: userSessionData.id });
-        }
+            createBattleMutation.mutate();
+    };
+
+    const onCancelBattle = () => {
     };
 
     const onJoinBattleClick = (battleId: number) => () => {
-        if (userSessionData?.id && battleId) {
-            connectBattleMutation.mutate({ user_id: userSessionData.id, battle_id: battleId });
-        }
+            connectBattleMutation.mutate(battleId);
     };
 
     return (
@@ -27,13 +27,13 @@ const ConnectToBattle = () => {
         <section className="w-full py-16">
             <div className="shadow rounded-lg overflow-hidden h-full w-1/2 mx-auto">
                 <h1 className="text-2xl font-semibold text-center py-4 bg-teal-500">Create / Join Battle</h1>
-                <div>
+                <div className="min-h-48">
                     {battlesQuery.isLoading
                      ? (
-                        <div>Loading</div>
+                        <div className="h-48"><Spinner message="Loading Battles..." /></div>
                      ) : (
                         battlesQuery.data.map((battleData: Battle, i: number) => {
-                            const isBattleCreatedByUser = userSessionData?.id == battleData.first_player_id;
+                            const isBattleCreatedByUser = activeBattleQuery.data?.battle_id == battleData.battle_id;
                             
                             return (
                             <article key={`battle_${i}`} className="border-border/60 border-b h-fit p-4 flex items-center justify-between">
@@ -56,7 +56,10 @@ const ConnectToBattle = () => {
                     
                 </div>
                 <div className="py-10">
-                    <Button name="create_battle" onClick={onCreateBattle}>Create Battle</Button>
+                    {activeBattleQuery.data
+                     ? <Button name="cancel_battle" onClick={onCancelBattle}>Cancel Battle</Button>
+                     : <Button name="create_battle" onClick={onCreateBattle}>Create Battle</Button>
+                    }
                 </div>
              
             </div>

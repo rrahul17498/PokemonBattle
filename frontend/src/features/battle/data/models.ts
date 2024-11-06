@@ -44,10 +44,6 @@ const Battle = z.object({
 
 export type Battle = z.infer<typeof Battle>;
 
-export type JoinRoomResult = {
-    didJoinRoom: boolean
-};
-
 export enum ConnectBattleEvents {
     BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
     BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",

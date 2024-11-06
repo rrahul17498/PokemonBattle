@@ -31,7 +31,6 @@ export const useBattle = (battleId: number, roomId: string): UseBattleService =>
         queryKey: [QUERY_KEYS.battleState, battleId],
         queryFn: getBattleState(battleId),
         staleTime: Infinity,
-        gcTime: Infinity
     });
 
     useEffect(() => {
@@ -45,6 +44,11 @@ export const useBattle = (battleId: number, roomId: string): UseBattleService =>
                 console.log("POKEMON_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
+
+            return () => {
+                socket.off(BattleEvents.USER_ACTION_RESULT);
+                socket.off(BattleEvents.POKEMON_ACTION_RESULT);
+            };
         }
     },[socket, isConnected]);
 

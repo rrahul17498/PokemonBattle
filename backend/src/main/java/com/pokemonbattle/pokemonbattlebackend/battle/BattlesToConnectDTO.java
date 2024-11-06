@@ -3,7 +3,7 @@ package com.pokemonbattle.pokemonbattlebackend.battle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public record BattleResponseDTO(
+public record BattleMinimal(
         @JsonProperty("battle_id")
         Integer battleId,
         BattleStatus status,
@@ -12,4 +12,6 @@ public record BattleResponseDTO(
         @JsonProperty("first_player_name")
         String firstPlayerName
 ) {
+
+
 }
