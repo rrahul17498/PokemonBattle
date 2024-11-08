@@ -66,4 +66,8 @@ public class BattleConnectionHandler {
     public void broadcastBattleConnection(Integer battleId) {
         this.server.getBroadcastOperations().sendEvent(BattleConnectionEvents.BROADCAST_BATTLE_CONNECTED.name(), battleId);
     }
+
+    public void broadcastBattleDeletion(Integer battleId) {
+        this.server.getBroadcastOperations().sendEvent(BattleConnectionEvents.BROADCAST_BATTLE_DELETED.name(), battleId);
+    }
 }

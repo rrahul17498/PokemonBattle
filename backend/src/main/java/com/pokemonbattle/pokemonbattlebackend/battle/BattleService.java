@@ -93,6 +93,7 @@ public class BattleService {
 
     void deleteBattle(Integer battleId) {
         this.battleRepository.deleteById(battleId);
+        this.battleSocketHandler.broadcastBattleDeletion(battleId);
     }
 
 
