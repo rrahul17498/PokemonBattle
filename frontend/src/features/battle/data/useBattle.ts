@@ -30,7 +30,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     });
 
     useEffect(() => {
-        if (socket && isConnected) {
+        if (socket && isConnected && !isEventsRegistered) {
             socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
                 console.log("USER_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
@@ -41,15 +41,20 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
 
+            return setIsEventsRegistered(true);
+        }
+
+        if (isEventsRegistered) {
             return () => {
                 socket.off(BattleEvents.USER_ACTION_RESULT);
                 socket.off(BattleEvents.POKEMON_ACTION_RESULT);
             };
         }
-    },[socket, isConnected]);
+
+    },[socket, isConnected, isEventsRegistered]);
 
     useEffect(() => {
-        if (isEventsRegistered && battleState && !joinedBattleRoom) {
+        if (isEventsRegistered && !joinedBattleRoom && battleState) {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: battleState.room_id, battle_id: battleState.battle_id, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
@@ -60,7 +65,9 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 return toast.error("Failed to join battle room");
             });
         }
-    }, [battleState, joinedBattleRoom, setJoinedBattleRoom, isEventsRegistered, socket, userId])
+    }, [battleState, joinedBattleRoom, setJoinedBattleRoom, isEventsRegistered, socket, userId]);
+
+    useEffect(() => {}, []);
 
     const sendUserActionEvent = (action: UserAction) => {
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId })

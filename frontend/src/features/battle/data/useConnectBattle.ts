@@ -68,7 +68,6 @@ const useConnectBattle = (userId: number) => {
 
     useEffect(() => {
         if (socket && isConnected && !isEventsRegistered) {
-            console.log("RUN");
             socket.on(ConnectBattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
                 console.log("BROADCAST_BATTLE_CREATED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
@@ -89,9 +88,19 @@ const useConnectBattle = (userId: number) => {
                 navigate(APP_ROUTES.protected.battle(routingSubString).fullPath);
             });
             
-            setIsEventsRegistered(true);
+            return setIsEventsRegistered(true);
         }
-    },[userId, socket, isConnected, queryClient, navigate, isEventsRegistered, setIsEventsRegistered]);
+
+        if (isEventsRegistered) {
+            return () => {
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CREATED);
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED);
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_DELETED);
+                socket.off(ConnectBattleEvents.LOAD_BATTLE_RESOURCES);
+            };
+        }
+ 
+    },[queryClient, navigate, userId, socket, isConnected, isEventsRegistered]);
 
     useEffect(() => {
         if(isEventsRegistered && !joinedBattleRoom && activeBattleQuery.data) {
@@ -102,21 +111,11 @@ const useConnectBattle = (userId: number) => {
                     console.log("User joined battle room");
                     return toast.success("Battle session ready");
                 }
-                return toast.error("Failed to join battle room");
+                return toast.error("Failed to join battle session");
             });
         }
     }, [userId, socket, isEventsRegistered, activeBattleQuery.data, joinedBattleRoom, setJoinedBattleRoom]);
 
-    useEffect(() => {
-        if (socket) {
-            return () => {
-                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CREATED);
-                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED);
-                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_DELETED);
-                socket.off(ConnectBattleEvents.LOAD_BATTLE_RESOURCES);
-            };
-        }
-    }, [socket]);
 
 
     return { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle };

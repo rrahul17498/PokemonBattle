@@ -15,14 +15,14 @@ const formatPlayerData = (userId: number, userName: string, ownedPokemons: Pokem
 const BattleArena = () => {
 
     const { battleId, roomId } = useParams();
-    const userSessionData = useUser();
-    const battleService = useBattle(Number(battleId), roomId as string, userSessionData?.id as number);
+    const userData = useUser();
+    const battleService = useBattle(Number(battleId), roomId as string, userData?.id as number);
     const [attackSrc, setAttackSrc] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
 
     const playerData = useMemo<{ user: PlayerDataType, opponent: PlayerDataType } | null>(() => {
-        if(userSessionData && battleService.battleState) {
+        if(userData && battleService.battleState) {
             const {
                 first_player_id,
                 first_player_name,
@@ -32,7 +32,7 @@ const BattleArena = () => {
                 second_player_owned_pokemons,
             } = battleService.battleState;
             
-            const isUserFirstPlayer = userSessionData?.id == battleService.battleState?.first_player_id;
+            const isUserFirstPlayer = userData?.id == battleService.battleState?.first_player_id;
             const formattedFirstPlayer = formatPlayerData(first_player_id, first_player_name, first_player_owned_pokemons);
             const formattedSecondPlayer = formatPlayerData(second_player_id, second_player_name, second_player_owned_pokemons);
     
@@ -42,7 +42,7 @@ const BattleArena = () => {
         }
 
         return null;
-    }, [battleService.battleState, userSessionData]);
+    }, [battleService.battleState, userData]);
 
     useEffect(() => {
       // const latestAction = battleService.pokemonActionResultsList[battleService.pokemonActionResultsList.length - 1];
