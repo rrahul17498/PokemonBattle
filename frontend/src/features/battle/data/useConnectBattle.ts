@@ -23,13 +23,13 @@ const useConnectBattle = (userId: number) => {
         queryKey: [QUERY_KEYS.activeBattle],
         queryFn: BattleAPIs.getActiveBattle(userId),
         staleTime: Infinity,
+        retry: false
     });
 
     const createBattleMutation = useMutation({
         mutationFn: async() => { return await BattleAPIs.createNewBattle({ user_id: userId }); },
-        onSuccess: (data) => {
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activeBattle]});
-            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles] }); 
         },
         onError: (e) => {
             console.error(e.message);
@@ -68,7 +68,7 @@ const useConnectBattle = (userId: number) => {
 
     useEffect(() => {
         if (socket && isConnected && !isEventsRegistered) {
-            console.log("RUN")
+            console.log("RUN");
             socket.on(ConnectBattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
                 console.log("BROADCAST_BATTLE_CREATED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
@@ -79,18 +79,17 @@ const useConnectBattle = (userId: number) => {
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
 
+            socket.on(ConnectBattleEvents.BROADCAST_BATTLE_DELETED, (battleId: number) => {
+                console.log("BROADCAST_BATTLE_DELETED: ", battleId);
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
+            });
+
             socket.on(ConnectBattleEvents.LOAD_BATTLE_RESOURCES, (data: { room_id: string, battle_id: number }) => {
                 const routingSubString = `${data.battle_id}/${data.room_id}`;
                 navigate(APP_ROUTES.protected.battle(routingSubString).fullPath);
             });
             
             setIsEventsRegistered(true);
-
-            return () => {
-                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CREATED);
-                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED);
-                socket.off(ConnectBattleEvents.LOAD_BATTLE_RESOURCES);
-            };
         }
     },[userId, socket, isConnected, queryClient, navigate, isEventsRegistered, setIsEventsRegistered]);
 
@@ -107,6 +106,17 @@ const useConnectBattle = (userId: number) => {
             });
         }
     }, [userId, socket, isEventsRegistered, activeBattleQuery.data, joinedBattleRoom, setJoinedBattleRoom]);
+
+    useEffect(() => {
+        if (socket) {
+            return () => {
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CREATED);
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED);
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_DELETED);
+                socket.off(ConnectBattleEvents.LOAD_BATTLE_RESOURCES);
+            };
+        }
+    }, [socket]);
 
 
     return { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle };
