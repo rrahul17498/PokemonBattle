@@ -1,33 +1,39 @@
-import { createContext, ReactElement, useEffect, useState } from "react";
+import useUser from "@/hooks/useUser";
+import { createContext, Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
 import io from "socket.io-client";
 
 
 type SocketContext = {
     socket: typeof io | null,
-    isConnected: boolean
+    isConnected: boolean,
+    joinedBattleRoom: boolean,
+    setJoinedBattleRoom: Dispatch<SetStateAction<boolean>>
 };
 
 const defaultSocketIOData = {
     socket: null,
     isConnected: false,
+    joinedBattleRoom: false,
+    setJoinedBattleRoom: () => {},
 };
 
 export const SocketIOContext = createContext<SocketContext>(defaultSocketIOData);
 
 type SocketProvider = {
     children: ReactElement,
-    userId: number | undefined
 };
 
-export const SocketProvider = ({ children, userId }: SocketProvider) => {
+export const SocketProvider = ({ children }: SocketProvider) => {
+    const userData = useUser();
     const [socket, setSocket] = useState<typeof io | null>(defaultSocketIOData.socket);
     const [isConnected, setIsConnected] = useState<boolean>(defaultSocketIOData.isConnected);
+    const [joinedBattleRoom, setJoinedBattleRoom] = useState<boolean>(defaultSocketIOData.joinedBattleRoom);
 
     useEffect(() => {
-        if(userId) {
+        if(userData) {
             console.log("Initiating socket connection...");
             const socketBaseUrl = import.meta.env.VITE_SOCKET_BASE_URL;
-            const newSocket = io(socketBaseUrl, { reconnection: false, query: { user_id: userId  } });
+            const newSocket = io(socketBaseUrl, { reconnection: false, query: { user_id: userData.id  } });
      
             newSocket.on("connect", () => {
              console.log(`Socket connection successful`);
@@ -47,11 +53,11 @@ export const SocketProvider = ({ children, userId }: SocketProvider) => {
              setIsConnected(false);
             };
         }
-     }, [userId]);
+     }, [userData]);
 
      
     return(
-        <SocketIOContext.Provider value={{ socket, isConnected }}>
+        <SocketIOContext.Provider value={{ socket, isConnected, joinedBattleRoom, setJoinedBattleRoom }}>
             {children}
         </SocketIOContext.Provider>
     );

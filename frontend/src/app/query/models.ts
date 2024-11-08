@@ -1,14 +1,8 @@
 
 
-export type UserSession = {
-    token: string,
+export type UserQueryData = {
     id: number,
     name: string,
-    owned_pokemons: number[]
-};
-
-export type AllowedUserSession = {
-    id: number,
-    name: string,
-    owned_pokemons: number[]
+    owned_pokemons: number[],
+    isValid: boolean;
 };

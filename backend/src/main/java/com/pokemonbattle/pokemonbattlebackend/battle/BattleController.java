@@ -1,8 +1,9 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
 
-import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleSocketHandler;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class BattleController {
 
     private final BattleService battleService;
-    private final BattleSocketHandler battleSocketHandler;
+    private final BattleConnectionHandler battleSocketHandler;
 
     @PostMapping("/create")
     public Battle createBattle(@RequestBody CreateBattleDTO createBattleRequest) {
@@ -27,12 +28,24 @@ public class BattleController {
     }
 
     @GetMapping("/{battleId}")
-    public BattleStateDTO connectToBattle(@PathVariable Integer battleId) {
-        return this.battleService.getBattle(battleId);
+    public BattleStateDTO getBattleById(@PathVariable Integer battleId) {
+        return this.battleService.getBattleById(battleId);
+    }
+
+    @GetMapping("/active/{userId}")
+    public BattleStateDTO getActiveBattleByUserId(@PathVariable Long userId) {
+        return this.battleService.getActiveBattleByUserId(userId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{battleId}")
+    public void deleteBattle(@PathVariable Integer battleId) {
+        this.battleService.deleteBattle(battleId);
     }
 
     @GetMapping
-    public List<BattleResponseDTO> getAllBattles() {
-        return this.battleService.getAllBattles();
+    public List<BattlesToConnectDTO> getAllBattles()
+    {
+        return this.battleService.getCreatedBattles();
     }
 }

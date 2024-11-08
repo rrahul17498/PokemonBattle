@@ -29,8 +29,8 @@
     --grass-theme: #119822;
     --water-theme: #4D79FF;
 
-    --pokemon-health-high: #00A36C;
-    --pokemon-health-low: #de2154;
+    --health-high: #00A36C;
+    --health-low: #de2154;
   }
 }
 

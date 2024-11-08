@@ -1,73 +1,47 @@
-import apiClient from "@/app/api/apiClient";
-import { API_END_POINTS } from "@/app/api/endpoints";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
-import { useSocketIO } from "@/hooks/useSocketIO";
+import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { ConnectBattleEvents, JoinRoomResult } from "./models";
+import { useEffect, useState } from "react";
+import { Battle, ConnectBattle, ConnectBattleEvents } from "./models";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "@/app/routing/routes";
+import APP_ROUTES from "@/app/routing/routes";
+import toast from "react-hot-toast";
+import * as BattleAPIs from "./battleAPIs";
 
+const useConnectBattle = (userId: number) => {
 
-
-interface CreateBattleRequest {
-    user_id: number
-};
-
-const createNewBattle = async(data: CreateBattleRequest) => {
-    const response = await apiClient.post(API_END_POINTS.battle.create, data);
-
-    return response.data;
-};
-
-interface ConnectBattleRequest {
-    user_id: number,
-    battle_id: number
-};
-
-const connectToBattle = async(data: ConnectBattleRequest) => {
-    const response = await apiClient.post(API_END_POINTS.battle.connect, data);
-
-    return response.data;
-};
-
-const getAllBattles = async () => {
-    const response = await apiClient.get(API_END_POINTS.battle.getAll);
-    return response.data;
-}
-
-
-
-const useConnectBattle = () => {
-
-    const { socket, isConnected } = useSocketIO();
     const navigate = useNavigate();
-
     const queryClient = useQueryClient();
+    const { socket, isConnected, joinedBattleRoom, setJoinedBattleRoom } = useSocketIO();
+    const [isEventsRegistered, setIsEventsRegistered] = useState<boolean>(false);
+
     const battlesQuery = useQuery({
         queryKey: [QUERY_KEYS.battles],
-        queryFn: getAllBattles,
-        staleTime: 1000 * 10
+        queryFn: BattleAPIs.getAllBattles,
+    });
+    const activeBattleQuery = useQuery<Battle>({
+        queryKey: [QUERY_KEYS.activeBattle],
+        queryFn: BattleAPIs.getActiveBattle(userId),
+        staleTime: Infinity,
     });
 
     const createBattleMutation = useMutation({
-        mutationFn: createNewBattle,
-        onSuccess: ({ room_id: roomId }) => {
-            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, roomId);
+        mutationFn: async() => { return await BattleAPIs.createNewBattle({ user_id: userId }); },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activeBattle]});
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles] }); 
         },
         onError: (e) => {
             console.error(e.message);
         }
     });
-
-
     const connectBattleMutation = useMutation({
-        mutationFn: connectToBattle,
+        mutationFn: async(battleId: number) => { return await BattleAPIs.connectToBattle({ user_id: userId, battle_id: battleId }); },
         onSuccess: (data) => {
-            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, data.room_id,({ didJoinRoom }: JoinRoomResult) => {
-                console.log("INITIATE_BATTLE_LOAD: ", didJoinRoom);
-                if (didJoinRoom) {  
-                    socket.emit(ConnectBattleEvents.INITIATE_BATTLE_LOAD, { room_id: data.room_id ,battle_id: data.battle_id });
+            const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: data.room_id, battle_id: data.battle_id, did_join_room: false };
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
+                if (result.did_join_room) {  
+                    socket.emit(ConnectBattleEvents.INITIATE_BATTLE_LOAD, result);
                 }
             });
         },
@@ -76,10 +50,25 @@ const useConnectBattle = () => {
         }
     });
 
+    const deleteCreatedBattle = async () => {
+        try {
+            if (!activeBattleQuery.data) {
+                return console.error("No active battles");
+            }
+            const result = await BattleAPIs.deleteActiveBattle(activeBattleQuery.data?.battle_id);
+            queryClient.removeQueries({ queryKey: [QUERY_KEYS.activeBattle]});
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles] });
+            return result;
+          } catch (error) {
+            console.error("Failed to delete battle:", error);
+            toast.error("Failed to delete battle");
+          }
+    };
+
 
     useEffect(() => {
-        if (socket && isConnected) {
-
+        if (socket && isConnected && !isEventsRegistered) {
+            console.log("RUN")
             socket.on(ConnectBattleEvents.BROADCAST_BATTLE_CREATED, (battleId: number) => {
                 console.log("BROADCAST_BATTLE_CREATED: ", battleId);
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
@@ -90,16 +79,36 @@ const useConnectBattle = () => {
                 queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.battles]});
             });
 
-            socket.on(ConnectBattleEvents.LOAD_BATTLE, (data: { room_id: string, battle_id: number }) => {
-                console.log("LOAD_BATTLE_RESOURCES: ", data);
+            socket.on(ConnectBattleEvents.LOAD_BATTLE_RESOURCES, (data: { room_id: string, battle_id: number }) => {
                 const routingSubString = `${data.battle_id}/${data.room_id}`;
-                navigate(AppRoutes.protected.battle(routingSubString).full, { replace: true })
+                navigate(APP_ROUTES.protected.battle(routingSubString).full);
+            });
+            setIsEventsRegistered(true);
+
+            return () => {
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CREATED);
+                socket.off(ConnectBattleEvents.BROADCAST_BATTLE_CONNECTED);
+                socket.off(ConnectBattleEvents.LOAD_BATTLE_RESOURCES);
+            };
+        }
+    },[userId, socket, isConnected, queryClient, navigate, isEventsRegistered, setIsEventsRegistered]);
+
+    useEffect(() => {
+        if(isEventsRegistered && !joinedBattleRoom && activeBattleQuery.data) {
+            const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: activeBattleQuery.data.room_id, battle_id: activeBattleQuery.data.battle_id, did_join_room: false };
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
+                if (result.did_join_room) {  
+                    setJoinedBattleRoom(true);
+                    console.log("User joined battle room");
+                    return toast.success("Battle session ready");
+                }
+                return toast.error("Failed to join battle room");
             });
         }
-    },[socket, isConnected, queryClient, navigate]);
+    }, [userId, socket, isEventsRegistered, activeBattleQuery.data, joinedBattleRoom, setJoinedBattleRoom]);
 
 
-    return { createBattleMutation, connectBattleMutation, battlesQuery };
+    return { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle };
 };
 
 

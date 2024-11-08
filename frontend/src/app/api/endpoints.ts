@@ -6,10 +6,4 @@ export const API_END_POINTS = {
         create: "",
         get: (id: number | string) => `/users/guest/${id}`,
     },
-    battle: {
-        create: "/battles/create",
-        connect: "/battles/connect",
-        getAll: "/battles",
-        getBattle: (id: number | string) => `/battles/${id}`
-    }
 } as const;
