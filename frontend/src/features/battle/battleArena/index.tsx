@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { isNull } from "lodash";
 import Video from "@/components/base/video";
-import useSession from "@/hooks/useSession";
+import useUser from "@/hooks/useUser";
 import Spinner from "@/components/base/spinner";
 import { PlayerDataType, POKEMON_ACTION_TYPES } from "../data/models";
 import { PokemonDataType } from "../../pokemon/data/models";
@@ -15,7 +15,7 @@ const formatPlayerData = (userId: number, userName: string, ownedPokemons: Pokem
 const BattleArena = () => {
 
     const { battleId, roomId } = useParams();
-    const userSessionData = useSession();
+    const userSessionData = useUser();
     const battleService = useBattle(Number(battleId), roomId as string, userSessionData?.id as number);
     const [attackSrc, setAttackSrc] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);

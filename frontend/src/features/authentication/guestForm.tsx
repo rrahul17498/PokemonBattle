@@ -6,7 +6,7 @@ import Input from "@/components/base/form/input";
 import PokemonLogo from '@/assets/logos/pokemon.png';
 import { Link } from "@/components/base/link";
 import APP_ROUTES from "@/app/routing/routes";
-import useSession from "@/hooks/useSession";
+import useUser from "@/hooks/useUser";
 
 
 interface GuestFormProps {
