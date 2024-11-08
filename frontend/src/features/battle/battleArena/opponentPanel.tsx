@@ -61,9 +61,9 @@ export const OpponentPanel = (
                  {/* <div className={`w-2/5 h-2.5 rounded-full ${healthValue < 50 ? "bg-health-low" : "bg-health-high"}`}></div> */}
             </div>
             <div className="mb-6">
-                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold">HIT !</h3>
+                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold">I Choose You !</h3>
             </div>
-            <img className="max-w-60 mx-auto animate-shake" src={chosenPokemon?.image} />
+            <img className="max-w-60 mx-auto animate-pokemon-render" src={chosenPokemon?.image} />
             <h3 className="mt-3 p-3 font-semibold text-2xl">{chosenPokemon?.name}</h3>
             <h4 className="px-3 text-lg font-medium mb-2">Moves</h4>
             <ul className="flex flex-wrap p-3">
