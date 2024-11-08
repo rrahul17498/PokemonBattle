@@ -26,7 +26,6 @@ export const OpponentPanel = (
 
     const [chosenPokemon, setChosenPokemon] = useState<PokemonDataType | null>(null);
 
-
     useEffect(() => {
         const latestAction = userActionResultsList[userActionResultsList.length - 1];
 
@@ -61,11 +60,14 @@ export const OpponentPanel = (
                  {/* <div className={`w-2/5 h-2.5 rounded-full ${healthValue < 50 ? "bg-health-low" : "bg-health-high"}`}></div> */}
             </div>
             <div className="mb-6">
-                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold">I Choose You !</h3>
+                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold"></h3>
             </div>
             <img className="max-w-60 mx-auto animate-pokemon-render" src={chosenPokemon?.image} />
             <h3 className="mt-3 p-3 font-semibold text-2xl">{chosenPokemon?.name}</h3>
             <h4 className="px-3 text-lg font-medium mb-2">Moves</h4>
+            {/* <div className="min-h-20">
+
+            </div> */}
             <ul className="flex flex-wrap p-3">
                 {chosenPokemon?.attacks.map((attack, index) => (
                     <li key={`user_attack_${index}`} className="mx-2 my-1 list-none">

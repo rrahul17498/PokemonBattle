@@ -8,7 +8,7 @@ import * as BattleAPIs from "./battleAPIs";
 
 
 type UseBattleReturn = {
-    battleState: Battle,
+    battleState: Battle | undefined,
     sendUserActionEvent: (action: UserAction) => void,
     sendPokemonActionEvent: (action: PokemonAction) => void,
     userActionResultsList: UserActionResult[],
@@ -58,9 +58,9 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: battleState.room_id, battle_id: battleState.battle_id, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
-                    setJoinedBattleRoom(true);
+                    setJoinedBattleRoom(result.room_id);
                     console.log("User joined battle room");
-                    return toast.success("Joined battle room");
+                    return toast.success("Connected", { position: "top-left" });
                 }
                 return toast.error("Failed to join battle room");
             });

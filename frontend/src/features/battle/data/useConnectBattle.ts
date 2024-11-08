@@ -107,7 +107,7 @@ const useConnectBattle = (userId: number) => {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: activeBattleQuery.data.room_id, battle_id: activeBattleQuery.data.battle_id, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
-                    setJoinedBattleRoom(true);
+                    setJoinedBattleRoom(result.room_id);
                     console.log("User joined battle room");
                     return toast.success("Battle session ready");
                 }
