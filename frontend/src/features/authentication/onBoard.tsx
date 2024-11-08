@@ -4,7 +4,7 @@ import { ChooseStartOffPokemon } from '@/features/authentication/chooseStartOffP
 import { GuestForm } from './guestForm';
 import { useOnBoard } from './data/useOnBoard';
 import { AuthLayout } from '@/features/authentication/authLayout';
-import useUserSession from '@/hooks/useUserSession';
+import useSession from '@/hooks/useSession';
 
 
 const ONBOARD_STEPS = [

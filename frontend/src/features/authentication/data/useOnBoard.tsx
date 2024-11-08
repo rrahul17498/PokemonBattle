@@ -1,22 +1,11 @@
+import { useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import AppRoutes from "@/app/routing/routes";
-import apiClient from "@/app/api/apiClient";
-import { API_END_POINTS } from "@/app/api/endpoints";
-import { QUERY_KEYS } from "@/app/query/queryKeys";
-import { GuestUserSchema, GuestUserType, OnBoardInfoType } from "./models";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
-
-
-
-type RegisterUserAPIBodyType = GuestUserType;
-
-const registerGuestUser = async (data: RegisterUserAPIBodyType) => {
-    const result = await apiClient.post(API_END_POINTS.user.createGuest, data);
-    return result.data;
-};
+import APP_ROUTES from "@/app/routing/routes";
+import { GuestUserSchema, OnBoardInfoType } from "./models";
+import * as UserAPIs from "./userAPIs";
 
 
 export const useOnBoard = () => {
@@ -30,12 +19,11 @@ export const useOnBoard = () => {
     };
 
     const mutation = useMutation({
-        mutationFn: registerGuestUser,
-        onSuccess: (registeredGuestData) => {
-        storeTokenInCookies(registeredGuestData.token);   
-        queryClient.setQueryData([QUERY_KEYS.userSession],registeredGuestData);
+        mutationFn: UserAPIs.registerGuestUser,
+        onSuccess: ({ token, ...registeredGuestData }) => {
+        storeTokenInCookies(token);
         const chosenPokemonId = registeredGuestData?.owned_pokemons[0];
-        navigate(AppRoutes.pokemon(chosenPokemonId));
+        navigate(APP_ROUTES.pokemon(chosenPokemonId));
         },
         onError: (e) => {
             console.error(e.message);

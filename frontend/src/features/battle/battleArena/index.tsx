@@ -2,20 +2,21 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { isNull } from "lodash";
 import Video from "@/components/base/video";
-import useUserSession from "@/hooks/useUserSession";
+import useSession from "@/hooks/useSession";
 import Spinner from "@/components/base/spinner";
 import { PlayerDataType, POKEMON_ACTION_TYPES } from "../data/models";
 import { PokemonDataType } from "../../pokemon/data/models";
 import { UserPanel } from "./userPanel";
 import { useBattle } from "../data/useBattle";
+import { OpponentPanel } from "./opponentPanel";
 
 const formatPlayerData = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerDataType => ({ userId, userName, ownedPokemons });
 
 const BattleArena = () => {
 
     const { battleId, roomId } = useParams();
-    const battleService = useBattle(Number(battleId), roomId as string);
-    const userSessionData = useUserSession();
+    const userSessionData = useSession();
+    const battleService = useBattle(Number(battleId), roomId as string, userSessionData?.id as number);
     const [attackSrc, setAttackSrc] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -82,8 +83,7 @@ const BattleArena = () => {
                 onEnded={onAttackEnd}
                 />
         </section>
-        <UserPanel
-         readOnly={true}
+        <OpponentPanel
          {...playerData?.opponent }
          { ...battleService }
           />

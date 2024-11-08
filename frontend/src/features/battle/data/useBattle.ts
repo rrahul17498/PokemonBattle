@@ -1,18 +1,13 @@
-import apiClient from "@/app/api/apiClient";
-import { API_END_POINTS } from "@/app/api/endpoints";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { Battle, BattleEvents, PokemonAction, PokemonActionResult, UserAction, UserActionResult } from "./models";
+import { Battle, BattleEvents, ConnectBattle, ConnectBattleEvents, PokemonAction, PokemonActionResult, UserAction, UserActionResult } from "./models";
 import { useSocketIO } from "@/hooks/useSocketIO";
-import { useEffect, useState } from "react";
+import * as BattleAPIs from "./battleAPIs";
 
 
-const getBattleState = (battleId: number) => async() => {
-    const response = await apiClient.get(API_END_POINTS.battle.getBattle(battleId))
-    return response.data;
-};
-
-type UseBattleService = {
+type UseBattleReturn = {
     battleState: Battle,
     sendUserActionEvent: (action: UserAction) => void,
     sendPokemonActionEvent: (action: PokemonAction) => void,
@@ -20,16 +15,17 @@ type UseBattleService = {
     pokemonActionResultsList: PokemonActionResult[]
 };
 
-export const useBattle = (battleId: number, roomId: string): UseBattleService => {
+export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleReturn => {
 
-    const { socket, isConnected } = useSocketIO();
+    const { socket, isConnected, joinedBattleRoom, setJoinedBattleRoom } = useSocketIO();
+    const [isEventsRegistered, setIsEventsRegistered] = useState(false);
 
     const [userActionResultsList, setUserActionResultsList] = useState<UserActionResult[]>([]);
     const [pokemonActionResultsList, setPokemonActionResultsList] = useState<PokemonActionResult[]>([]);
 
-    const { data: battleState } = useQuery({
+    const { data: battleState } = useQuery<Battle>({
         queryKey: [QUERY_KEYS.battleState, battleId],
-        queryFn: getBattleState(battleId),
+        queryFn: BattleAPIs.getBattleState(battleId),
         staleTime: Infinity,
     });
 
@@ -51,6 +47,20 @@ export const useBattle = (battleId: number, roomId: string): UseBattleService =>
             };
         }
     },[socket, isConnected]);
+
+    useEffect(() => {
+        if (isEventsRegistered && battleState && !joinedBattleRoom) {
+            const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: battleState.room_id, battle_id: battleState.battle_id, did_join_room: false };
+            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
+                if (result.did_join_room) {  
+                    setJoinedBattleRoom(true);
+                    console.log("User joined battle room");
+                    return toast.success("Joined battle room");
+                }
+                return toast.error("Failed to join battle room");
+            });
+        }
+    }, [battleState, joinedBattleRoom, setJoinedBattleRoom, isEventsRegistered, socket, userId])
 
     const sendUserActionEvent = (action: UserAction) => {
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId })

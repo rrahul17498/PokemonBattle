@@ -1,4 +1,4 @@
-import AppRoutes from '@/app/routing/routes';
+import APP_ROUTES from '@/app/routing/routes';
 import { AuthLayout } from '@/features/authentication/authLayout';
 import Button from '@/components/base/button';
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
@@ -28,7 +28,7 @@ export const Pokemon = () => {
 
 
      const goToBattle = () => {
-        navigate(AppRoutes.protected.connectBattle.full);
+        navigate(APP_ROUTES.protected.connectBattle.full);
      };
 
   return (

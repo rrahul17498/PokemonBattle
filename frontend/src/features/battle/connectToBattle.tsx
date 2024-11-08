@@ -1,14 +1,14 @@
 import Button from "@/components/base/button";
 import useConnectBattle from "./data/useConnectBattle";
 import { Battle } from "./data/models";
-import useUserSession from "@/hooks/useUserSession";
+import useSession from "@/hooks/useSession";
 import Spinner from "@/components/base/spinner";
 
 
 
 const ConnectToBattle = () => {
 
-    const userSessionData = useUserSession();
+    const userSessionData = useSession();
     const { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle } = useConnectBattle(userSessionData?.id as number);
     
     const onCreateBattle = () => {
