@@ -81,8 +81,9 @@ const useConnectBattle = (userId: number) => {
 
             socket.on(ConnectBattleEvents.LOAD_BATTLE_RESOURCES, (data: { room_id: string, battle_id: number }) => {
                 const routingSubString = `${data.battle_id}/${data.room_id}`;
-                navigate(APP_ROUTES.protected.battle(routingSubString).full);
+                navigate(APP_ROUTES.protected.battle(routingSubString).fullPath);
             });
+            
             setIsEventsRegistered(true);
 
             return () => {

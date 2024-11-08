@@ -1,12 +1,12 @@
-import { getProtectedRoute } from "./protectedRoute/data";
+import { getProtectedRoute, protectedRoutesPrefix } from "./protectedRoute/data";
 
 
 const APP_ROUTES =  {
     landing: "/",
     pokemon: (id: number | string) => `/pokemon/${id}`,
     protected: {
-        connectBattle: getProtectedRoute("connect"),
-        battle: (id: number | string) => getProtectedRoute(`battle/${id}`),
+        connectBattle: getProtectedRoute(protectedRoutesPrefix.battle, "connect"),
+        battle: (id: number | string) => getProtectedRoute(protectedRoutesPrefix.battle, `battle/${id}`),
     }
  } as const;
 

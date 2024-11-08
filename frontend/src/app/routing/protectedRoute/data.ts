@@ -9,11 +9,11 @@ export const protectedRoutesPrefix = {
 
 type ProtectedRoute = {
     nestedPath: string;
-    full: string;
+    fullPath: string;
 };
 
-export const getProtectedRoute = (nestedPath: string): ProtectedRoute => {
-    return { nestedPath, full: `${protectedRoutesPrefix.root}/${nestedPath}` }
+export const getProtectedRoute = (prefix: string, nestedPath: string): ProtectedRoute => {
+    return { nestedPath, fullPath: `${prefix}/${nestedPath}` }
 };
 
 export const validateTokenAndGetUser = async () => {
