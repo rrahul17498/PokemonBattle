@@ -1,29 +1,20 @@
 import { createBrowserRouter } from "react-router-dom";
-import AppRoutes, { protectedRoutesConfig } from "./routes";
-import { ProtectedRoute } from "./protectedRoute";
-import useUserSession from "@/hooks/useUserSession";
-
+import APP_ROUTES from "./routes";
+import ProtectedRoute from "./protectedRoute/index";
+import { protectedRoutesConfig } from "./protectedRoute/data";
 
 
  const router = createBrowserRouter([
     // Open Routes
     {
-        path: AppRoutes.landing,
+        path: APP_ROUTES.landing,
         lazy: async() => {
-          const { LandingPage } = await import("@/features/landing");  
-          return { Component: LandingPage };
+          const { OnBoard } = await import("@/features/authentication"); 
+          return { Component: OnBoard };
         }
     },
     {
-      path: AppRoutes.onboard,
-      lazy: async() => {
-        const { OnBoard } = await import("@/features/authentication"); 
-         
-        return { Component: OnBoard };
-      }
-    },
-    {
-      path: AppRoutes.pokemon(":pokemonId"),
+      path: APP_ROUTES.pokemon(":pokemonId"),
       lazy: async() => {
         const { Pokemon } = await import("@/features/pokemon");  
         return { Component: Pokemon };
@@ -32,7 +23,6 @@ import useUserSession from "@/hooks/useUserSession";
 
 
     // Protected Routes
-
     {
       path: protectedRoutesConfig.root,
       element: (
@@ -40,14 +30,14 @@ import useUserSession from "@/hooks/useUserSession";
       ),
       children: [
         {
-          path: AppRoutes.protected.connectBattle.nestedPath,
+          path: APP_ROUTES.protected.connectBattle.nestedPath,
           lazy: async() => {
             const { ConnectToBattle } = await import("@/features/battle");  
             return { Component: ConnectToBattle };
           }
         },
         {
-          path: AppRoutes.protected.battle(":battleId/:roomId").nestedPath,
+          path: APP_ROUTES.protected.battle(":battleId/:roomId").nestedPath,
           lazy: async() => {
             const { BattleArena } = await import("@/features/battle");  
             return { Component: BattleArena };

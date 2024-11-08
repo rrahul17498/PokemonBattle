@@ -1,0 +1,35 @@
+import apiClient from "@/app/api/apiClient";
+import { AxiosError } from "axios";
+import Cookies from "js-cookie";
+
+export const protectedRoutesConfig = {
+    root: "/app",
+}
+
+type ProtectedRoute = {
+    nestedPath: string;
+    full: string;
+};
+
+export const getProtectedRoute = (nestedPath: string): ProtectedRoute => {
+    return { nestedPath, full: `${protectedRoutesConfig.root}/${nestedPath}` }
+};
+
+export const validateTokenAndGetUser = async () => {
+    const token = Cookies.get("token");
+    if (!token) {
+        return { isValid: false };
+    }
+
+    try {
+        // TO USE TOKEN VALIDATION API
+        const response = await apiClient.get(`/users/guest/${token}`);
+        return { ...response.data, isValid: true };
+    } catch(error) {
+        if (error instanceof AxiosError) {
+            console.error('Token validation failed:', error.response?.data.message); 
+         }
+         console.error('An unexpected error occurred:', error);
+         return { isValid: false };
+    }
+ };
