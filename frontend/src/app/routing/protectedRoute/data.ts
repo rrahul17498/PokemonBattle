@@ -2,8 +2,9 @@ import apiClient from "@/app/api/apiClient";
 import { AxiosError } from "axios";
 import Cookies from "js-cookie";
 
-export const protectedRoutesConfig = {
+export const protectedRoutesPrefix = {
     root: "/app",
+    battle: "/app/battle"
 }
 
 type ProtectedRoute = {
@@ -12,7 +13,7 @@ type ProtectedRoute = {
 };
 
 export const getProtectedRoute = (nestedPath: string): ProtectedRoute => {
-    return { nestedPath, full: `${protectedRoutesConfig.root}/${nestedPath}` }
+    return { nestedPath, full: `${protectedRoutesPrefix.root}/${nestedPath}` }
 };
 
 export const validateTokenAndGetUser = async () => {

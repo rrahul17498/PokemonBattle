@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from "@/app/query/queryKeys";
-import { useSocketIO } from "@/hooks/useSocketIO";
+import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Battle, ConnectBattle, ConnectBattleEvents } from "./models";
@@ -18,13 +18,11 @@ const useConnectBattle = (userId: number) => {
     const battlesQuery = useQuery({
         queryKey: [QUERY_KEYS.battles],
         queryFn: BattleAPIs.getAllBattles,
-        staleTime: 1000 * 10
     });
     const activeBattleQuery = useQuery<Battle>({
         queryKey: [QUERY_KEYS.activeBattle],
-        queryFn: async() => { return BattleAPIs.getActiveBattle(userId)},
+        queryFn: BattleAPIs.getActiveBattle(userId),
         staleTime: Infinity,
-        // enabled
     });
 
     const createBattleMutation = useMutation({
@@ -96,13 +94,13 @@ const useConnectBattle = (userId: number) => {
     },[userId, socket, isConnected, queryClient, navigate, isEventsRegistered, setIsEventsRegistered]);
 
     useEffect(() => {
-        if(isEventsRegistered && activeBattleQuery.data && !joinedBattleRoom) {
+        if(isEventsRegistered && !joinedBattleRoom && activeBattleQuery.data) {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: activeBattleQuery.data.room_id, battle_id: activeBattleQuery.data.battle_id, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
                     setJoinedBattleRoom(true);
                     console.log("User joined battle room");
-                    return toast.success("Battle created");
+                    return toast.success("Battle session ready");
                 }
                 return toast.error("Failed to join battle room");
             });

@@ -1,7 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 import APP_ROUTES from "./routes";
 import ProtectedRoute from "./protectedRoute/index";
-import { protectedRoutesConfig } from "./protectedRoute/data";
+import { protectedRoutesPrefix } from "./protectedRoute/data";
+import Battle from "@/features/battle";
 
 
  const router = createBrowserRouter([
@@ -24,25 +25,32 @@ import { protectedRoutesConfig } from "./protectedRoute/data";
 
     // Protected Routes
     {
-      path: protectedRoutesConfig.root,
+      path: protectedRoutesPrefix.root,
       element: (
         <ProtectedRoute />
       ),
       children: [
         {
-          path: APP_ROUTES.protected.connectBattle.nestedPath,
-          lazy: async() => {
-            const { ConnectToBattle } = await import("@/features/battle");  
-            return { Component: ConnectToBattle };
-          }
+          path: protectedRoutesPrefix.battle,
+          element: (<Battle />),
+          children: [
+            {
+              path: APP_ROUTES.protected.connectBattle.nestedPath,
+              lazy: async() => {
+                const { ConnectToBattle } = await import("@/features/battle/connectToBattle");  
+                return { Component: ConnectToBattle };
+              }
+            },
+            {
+              path: APP_ROUTES.protected.battle(":battleId/:roomId").nestedPath,
+              lazy: async() => {
+                const { BattleArena } = await import("@/features/battle/battleArena");  
+                return { Component: BattleArena };
+              }
+            }
+          ]
         },
-        {
-          path: APP_ROUTES.protected.battle(":battleId/:roomId").nestedPath,
-          lazy: async() => {
-            const { BattleArena } = await import("@/features/battle");  
-            return { Component: BattleArena };
-          }
-        }
+        
       ]
     },
  

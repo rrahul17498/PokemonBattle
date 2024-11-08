@@ -26,7 +26,7 @@ export const getAllBattles = async () => {
     return response.data;
 }
 
-export const getActiveBattle = async (userId: number) => {
+export const getActiveBattle = (userId: number) => async () => {
     const response = await apiClient.get(`/battles/active/${userId}`);
     return response.data;
 }

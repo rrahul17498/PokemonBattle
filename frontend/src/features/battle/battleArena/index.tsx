@@ -91,4 +91,4 @@ const BattleArena = () => {
   );
 };
 
-export default BattleArena;
+export { BattleArena };

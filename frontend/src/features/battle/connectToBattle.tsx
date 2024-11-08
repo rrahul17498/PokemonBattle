@@ -8,8 +8,8 @@ import Spinner from "@/components/base/spinner";
 
 const ConnectToBattle = () => {
 
-    const userSessionData = useUser();
-    const { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle } = useConnectBattle(userSessionData?.id as number);
+    const userData = useUser();
+    const { activeBattleQuery, createBattleMutation, connectBattleMutation, battlesQuery, deleteCreatedBattle } = useConnectBattle(userData?.id as number);
     
     const onCreateBattle = () => {
             createBattleMutation.mutate();
@@ -69,6 +69,6 @@ const ConnectToBattle = () => {
     );
   };
 
-export default ConnectToBattle;   
+export { ConnectToBattle };   
 
   

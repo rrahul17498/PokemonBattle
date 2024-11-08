@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 import { Battle, BattleEvents, ConnectBattle, ConnectBattleEvents, PokemonAction, PokemonActionResult, UserAction, UserActionResult } from "./models";
-import { useSocketIO } from "@/hooks/useSocketIO";
+import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import * as BattleAPIs from "./battleAPIs";
 
 

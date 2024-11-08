@@ -1,4 +1,15 @@
-import BattleArena from "./battleArena";
-import ConnectToBattle from "./connectToBattle";
+import { Outlet } from "react-router-dom";
+import { SocketProvider } from "./data/socketIO/provider";
 
-export { ConnectToBattle, BattleArena };
+
+
+const Battle = () => {
+
+    return (
+        <SocketProvider>
+            <Outlet />
+        </SocketProvider> 
+    )
+};
+
+export default Battle;
