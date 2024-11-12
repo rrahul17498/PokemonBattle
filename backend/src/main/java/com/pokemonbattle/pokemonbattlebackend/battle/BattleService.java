@@ -1,5 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
+import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleStateService;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceInUseException;
 import com.pokemonbattle.pokemonbattlebackend.exception.ResourceNotFoundException;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,6 +24,7 @@ public class BattleService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final BattleConnectionHandler battleSocketHandler;
+    private final BattleStateService battleStateService;
 
     Battle createBattle(CreateBattleDTO createBattleRequest){
         User firstPlayer = this.userService.getUser(createBattleRequest.getUserId());
@@ -60,17 +63,23 @@ public class BattleService {
         return savedBattle;
     }
 
-    BattleStateDTO getBattleById(Integer battleId){
+    BattleResourcesDTO loadBattleResourcesById(Integer battleId, String roomId){
        Battle existingBattle = this.battleRepository.findById(battleId)
                .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleId + " does not exist"));
 
+       if (!existingBattle.getRoomId().equals(roomId)) {
+           throw new ResourceNotFoundException("Battle cannot be found in room with id " + roomId);
+       }
+
        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(existingBattle.getFirstPlayerId());
        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(existingBattle.getSecondPlayerId());
+       BattleResourcesDTO battleResourcesDTO = BattleResourcesDTO.getFullResources(existingBattle, firstPlayerData, secondPlayerData);
 
-       return BattleStateDTO.getInProgressState(existingBattle, firstPlayerData, secondPlayerData);
+       this.battleStateService.createAndSaveBattleStateWithTTL(battleResourcesDTO);
+       return battleResourcesDTO;
     }
 
-    BattleStateDTO getActiveBattleByUserId(Long userId) {
+    BattleResourcesDTO getActiveBattleByUserId(Long userId) {
         List<String> activeStatuses = List.of(BattleStatus.CREATED.name(), BattleStatus.IN_PROGRESS.name());
 
         Optional<Battle> activeBattleResult = this.battleRepository.findActiveBattle(userId, activeStatuses);
@@ -81,14 +90,7 @@ public class BattleService {
 
         Battle activeBattle = activeBattleResult.get();
 
-        if (activeBattle.getStatus() == BattleStatus.CREATED) {
-            return BattleStateDTO.getCreatedState(activeBattle);
-        }
-
-        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(activeBattle.getFirstPlayerId());
-        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(activeBattle.getSecondPlayerId());
-
-        return BattleStateDTO.getInProgressState(activeBattle, firstPlayerData, secondPlayerData);
+        return BattleResourcesDTO.getMinimalResources(activeBattle);
     }
 
     void deleteBattle(Integer battleId) {
