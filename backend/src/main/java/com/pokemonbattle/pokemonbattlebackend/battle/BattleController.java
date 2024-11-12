@@ -27,13 +27,13 @@ public class BattleController {
         return this.battleService.connectToBattle(connectBattleRequest);
     }
 
-    @GetMapping("/{battleId}")
-    public BattleStateDTO getBattleById(@PathVariable Integer battleId) {
-        return this.battleService.getBattleById(battleId);
+    @GetMapping("/{battleId}/load/{roomId}")
+    public BattleResourcesDTO loadBattleResourcesById(@PathVariable Integer battleId, @PathVariable String roomId) {
+        return this.battleService.loadBattleResourcesById(battleId, roomId);
     }
 
     @GetMapping("/active/{userId}")
-    public BattleStateDTO getActiveBattleByUserId(@PathVariable Long userId) {
+    public BattleResourcesDTO getActiveBattleByUserId(@PathVariable Long userId) {
         return this.battleService.getActiveBattleByUserId(userId);
     }
 
