@@ -49,7 +49,7 @@ export enum ConnectBattleEvents {
     BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",
     BROADCAST_BATTLE_DELETED = "BROADCAST_BATTLE_DELETED",
     JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM",
-    INITIATE_BATTLE_LOAD = "INITIATE_BATTLE_LOAD",
+    INITIATE_BATTLE = "INITIATE_BATTLE",
     LOAD_BATTLE_RESOURCES = "LOAD_BATTLE_RESOURCES"
 }
 
@@ -57,7 +57,8 @@ export enum BattleEvents {
     USER_ACTION = "USER_ACTION",
     USER_ACTION_RESULT = "USER_ACTION_RESULT",
     POKEMON_ACTION = "POKEMON_ACTION",
-    POKEMON_ACTION_RESULT = "POKEMON_ACTION_RESULT"
+    POKEMON_ACTION_RESULT = "POKEMON_ACTION_RESULT",
+    BATTLE_STATE_UPDATE = "BATTLE_STATE_UPDATE"
 }
 
 export enum USER_ACTION_TYPES {
@@ -93,4 +94,25 @@ export type PokemonActionResult = {
     type: string,
     sourceId: number,
     payload: object | number | string,
+};
+
+export type BattleState = {
+    roomId: string;
+    battleId: number;
+    status: BattleStatus;
+    firstPlayerId: number;
+    firstPlayerPokemon1Id: number;
+    firstPlayerPokemon1Health: number;
+    firstPlayerPokemon2Id: number;
+    firstPlayerPokemon2Health: number;
+    firstPlayerPokemon3Id: number;
+    firstPlayerPokemon3Health: number;
+    secondPlayerId: number;
+    secondPlayerPokemon1Id: number;
+    secondPlayerPokemon1Health: number;
+    secondPlayerPokemon2Id: number;
+    secondPlayerPokemon2Health: number;
+    secondPlayerPokemon3Id: number;
+    secondPlayerPokemon3Health: number;
+    winner: number;
 };

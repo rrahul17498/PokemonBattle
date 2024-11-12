@@ -22,7 +22,7 @@ const BattleArena = () => {
 
 
     const playerData = useMemo<{ user: PlayerDataType, opponent: PlayerDataType } | null>(() => {
-        if(userData && battleService.battleState) {
+        if(userData && battleService.battleResources) {
             const {
                 first_player_id,
                 first_player_name,
@@ -30,9 +30,9 @@ const BattleArena = () => {
                 second_player_id,
                 second_player_name,
                 second_player_owned_pokemons,
-            } = battleService.battleState;
+            } = battleService.battleResources;
             
-            const isUserFirstPlayer = userData?.id == battleService.battleState?.first_player_id;
+            const isUserFirstPlayer = userData?.id == battleService.battleResources?.first_player_id;
             const formattedFirstPlayer = formatPlayerData(first_player_id, first_player_name, first_player_owned_pokemons);
             const formattedSecondPlayer = formatPlayerData(second_player_id, second_player_name, second_player_owned_pokemons);
     
@@ -42,7 +42,7 @@ const BattleArena = () => {
         }
 
         return null;
-    }, [battleService.battleState, userData]);
+    }, [battleService.battleResources, userData]);
 
     useEffect(() => {
       // const latestAction = battleService.pokemonActionResultsList[battleService.pokemonActionResultsList.length - 1];
