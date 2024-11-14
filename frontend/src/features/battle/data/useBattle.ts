@@ -7,7 +7,7 @@ import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import * as BattleAPIs from "./battleAPIs";
 
 
-type UseBattleReturn = {
+type UseBattleService = {
     battleState: BattleState | undefined,
     battleResources: Battle | undefined,
     sendUserActionEvent: (action: UserAction) => void,
@@ -16,11 +16,10 @@ type UseBattleReturn = {
     pokemonActionResultsList: PokemonActionResult[]
 };
 
-export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleReturn => {
+export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleService => {
 
-    const { socket, isConnected, joinedBattleRoom, setJoinedBattleRoom } = useSocketIO();
-    const [isEventsRegistered, setIsEventsRegistered] = useState(false);
-    const [isBattleResourceQueryEnabled, setIsBattleResourceQueryEnabled] = useState(Boolean(joinedBattleRoom));
+    const { socket, isConnected, battleRoom, setBattleRoom } = useSocketIO();
+    const [isBattleResourceQueryEnabled, setIsBattleResourceQueryEnabled] = useState(Boolean(battleRoom));
 
     const [userActionResultsList, setUserActionResultsList] = useState<UserActionResult[]>([]);
     const [pokemonActionResultsList, setPokemonActionResultsList] = useState<PokemonActionResult[]>([]);
@@ -34,41 +33,39 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     });
 
     useEffect(() => {
-        if (socket && isConnected && !isEventsRegistered) {
+        if (socket && isConnected) {
             socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
-                console.log("USER_ACTION_RESULT: ", action);
+                // console.log("USER_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
 
             socket.on(BattleEvents.POKEMON_ACTION_RESULT, (action: PokemonActionResult) => {
-                console.log("POKEMON_ACTION_RESULT: ", action);
+                // console.log("POKEMON_ACTION_RESULT: ", action);
                 setPokemonActionResultsList((prev) => ([...prev, action]));
             });
 
             socket.on(BattleEvents.BATTLE_STATE_UPDATE, (battleState: BattleState) => {
-                console.log("BATTLE_STATE_UPDATE: ", battleState);
+                // console.log("BATTLE_STATE_UPDATE: ", battleState);
                 setBattleState(battleState);
             });
 
-            return setIsEventsRegistered(true);
-        }
-
-        if (isEventsRegistered) {
             return () => {
                 socket.off(BattleEvents.USER_ACTION_RESULT);
                 socket.off(BattleEvents.POKEMON_ACTION_RESULT);
                 socket.off(BattleEvents.BATTLE_STATE_UPDATE);
             };
+            
         }
 
-    },[socket, isConnected, isEventsRegistered]);
+    },[socket, isConnected]);
+
 
     useEffect(() => {
-        if (socket && isEventsRegistered && !joinedBattleRoom) {
+        if (socket && !battleRoom) {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: roomId, battle_id: battleId, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
-                    setJoinedBattleRoom(result.room_id);
+                    setBattleRoom(result.room_id);
                     console.log("User joined battle room");
                     setIsBattleResourceQueryEnabled(true);
                     return toast.success("Connected", { position: "top-left" });
@@ -76,15 +73,15 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 return toast.error("Failed to join battle room");
             });
         }
-    }, [socket, isEventsRegistered, joinedBattleRoom, setJoinedBattleRoom, userId, battleId, roomId]);
+    }, [socket, battleRoom, setBattleRoom, userId, battleId, roomId]);
 
 
     const sendUserActionEvent = (action: UserAction) => {
-        socket.emit(BattleEvents.USER_ACTION, { ...action, roomId })
+        socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
     };
 
     const sendPokemonActionEvent = (action: UserAction) => {
-        socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId })
+        socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
     };
 
     return { battleResources, battleState, sendUserActionEvent, sendPokemonActionEvent, userActionResultsList, pokemonActionResultsList };

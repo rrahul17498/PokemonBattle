@@ -10,15 +10,15 @@ import { QUERY_KEYS } from "@/app/query/queryKeys";
 type SocketContext = {
     socket: typeof io | null,
     isConnected: boolean,
-    joinedBattleRoom: string | null,
-    setJoinedBattleRoom: Dispatch<SetStateAction<string | null>>
+    battleRoom: string | null,
+    setBattleRoom: Dispatch<SetStateAction<string | null>>
 };
 
 const defaultSocketIOData = {
     socket: null,
     isConnected: false,
-    joinedBattleRoom: null,
-    setJoinedBattleRoom: () => {},
+    battleRoom: null,
+    setBattleRoom: () => {},
 };
 
 export const SocketIOContext = createContext<SocketContext>(defaultSocketIOData);
@@ -32,7 +32,7 @@ export const SocketProvider = ({ children }: SocketProvider) => {
     const queryClient = useQueryClient();
     const [socket, setSocket] = useState<typeof io | null>(defaultSocketIOData.socket);
     const [isConnected, setIsConnected] = useState<boolean>(defaultSocketIOData.isConnected);
-    const [joinedBattleRoom, setJoinedBattleRoom] = useState<string | null>(defaultSocketIOData.joinedBattleRoom);
+    const [battleRoom, setBattleRoom] = useState<string | null>(defaultSocketIOData.battleRoom);
 
 
     useEffect(() => {
@@ -54,7 +54,7 @@ export const SocketProvider = ({ children }: SocketProvider) => {
             newSocket.on("disconnect", () => {
              console.log(`Socket disconnected`);
              setIsConnected(false);
-             setJoinedBattleRoom(null);
+             setBattleRoom(null);
              toast.error("Disconnected");
             });
 
@@ -65,7 +65,7 @@ export const SocketProvider = ({ children }: SocketProvider) => {
                 const joinRoomPayload: ConnectBattle = { user_id: userData.id, room_id: activeBattleData?.room_id, battle_id: activeBattleData?.battle_id, did_join_room: false };
                 newSocket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                     if (result.did_join_room) {  
-                        setJoinedBattleRoom(result.room_id);
+                        setBattleRoom(result.room_id);
                         console.log("User joined battle room");
                         return toast.success("Battle room ready");
                     }
@@ -85,9 +85,12 @@ export const SocketProvider = ({ children }: SocketProvider) => {
         }
      }, [queryClient, userData]);
 
+
+     console.table({ isConnected, battleRoom: battleRoom }, ["Socket Connection", "Status"]);
+
      
     return(
-        <SocketIOContext.Provider value={{ socket, isConnected, joinedBattleRoom, setJoinedBattleRoom }}>
+        <SocketIOContext.Provider value={{ socket, isConnected, battleRoom, setBattleRoom }}>
             {children}
         </SocketIOContext.Provider>
     );

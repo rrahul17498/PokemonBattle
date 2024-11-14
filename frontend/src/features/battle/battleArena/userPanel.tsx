@@ -25,7 +25,7 @@ export const UserPanel = (
          sendUserActionEvent,
          sendPokemonActionEvent,
          userActionResultsList,
-         pokemonActionResultsList
+         pokemonActionResultsList,
          }: UserAttackWindowLayoutProps
 ) => {
 
@@ -57,8 +57,7 @@ export const UserPanel = (
     useEffect(() => {
         // const latestAction = pokemonActionResultsList[pokemonActionResultsList.length - 1];
   
-        // if (latestAction && latestAction.sourceId == chosenPokemon?.id) {
-            
+        // if (latestAction && latestAction.sourceId == chosenPokemon?.id) {  
         // }
   
     }, [chosenPokemon, pokemonActionResultsList]);
