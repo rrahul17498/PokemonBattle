@@ -35,7 +35,6 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
 
     useEffect(() => {
         if (socket && isConnected && !isEventsRegistered) {
-            console.log("Registering Events...");
             socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
                 console.log("USER_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
@@ -58,13 +57,14 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             return () => {
                 socket.off(BattleEvents.USER_ACTION_RESULT);
                 socket.off(BattleEvents.POKEMON_ACTION_RESULT);
+                socket.off(BattleEvents.BATTLE_STATE_UPDATE);
             };
         }
 
     },[socket, isConnected, isEventsRegistered]);
 
     useEffect(() => {
-        if (isEventsRegistered && !joinedBattleRoom) {
+        if (socket && isEventsRegistered && !joinedBattleRoom) {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: roomId, battle_id: battleId, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                 if (result.did_join_room) {  
@@ -78,7 +78,6 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
         }
     }, [socket, isEventsRegistered, joinedBattleRoom, setJoinedBattleRoom, userId, battleId, roomId]);
 
-    useEffect(() => {}, []);
 
     const sendUserActionEvent = (action: UserAction) => {
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId })

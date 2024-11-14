@@ -40,7 +40,9 @@ const useConnectBattle = (userId: number) => {
         onSuccess: (data) => {
             const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: data.room_id, battle_id: data.battle_id, did_join_room: false };
             socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
-                if (result.did_join_room) {  
+                if (result.did_join_room) {
+                    setJoinedBattleRoom(result.room_id);  
+                    console.log("User joined battle room");
                     socket.emit(ConnectBattleEvents.INITIATE_BATTLE, result);
                 }
             });
@@ -109,7 +111,7 @@ const useConnectBattle = (userId: number) => {
                 if (result.did_join_room) {  
                     setJoinedBattleRoom(result.room_id);
                     console.log("User joined battle room");
-                    return toast.success("Battle session ready");
+                    return toast.success("Battle room ready");
                 }
                 return toast.error("Failed to join battle session");
             });

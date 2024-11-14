@@ -54,19 +54,20 @@ export const SocketProvider = ({ children }: SocketProvider) => {
             newSocket.on("disconnect", () => {
              console.log(`Socket disconnected`);
              setIsConnected(false);
-             toast.error("Disconnected from battle");
+             setJoinedBattleRoom(null);
+             toast.error("Disconnected");
             });
 
             newSocket.on("reconnect", () => {
                 console.log(`Socket re-connecting...`);
-                const activeBattleData = queryClient.getQueryData<Battle>([QUERY_KEYS.battleState]);
+                const activeBattleData = queryClient.getQueryData<Battle>([QUERY_KEYS.activeBattle]);
                 if (!activeBattleData) return toast.error("Failed to reconnect");
                 const joinRoomPayload: ConnectBattle = { user_id: userData.id, room_id: activeBattleData?.room_id, battle_id: activeBattleData?.battle_id, did_join_room: false };
-                socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
+                newSocket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
                     if (result.did_join_room) {  
                         setJoinedBattleRoom(result.room_id);
                         console.log("User joined battle room");
-                        return toast.success("Connected");
+                        return toast.success("Battle room ready");
                     }
                     return toast.error("Failed to join battle room");
                 });
@@ -82,7 +83,7 @@ export const SocketProvider = ({ children }: SocketProvider) => {
              setIsConnected(false);
             };
         }
-     }, [userData]);
+     }, [queryClient, userData]);
 
      
     return(
