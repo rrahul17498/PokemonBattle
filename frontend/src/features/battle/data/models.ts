@@ -101,19 +101,9 @@ export type BattleState = {
     battleId: number;
     status: BattleStatus;
     firstPlayerId: number;
-    firstPlayerPokemon1Id: number;
-    firstPlayerPokemon1Health: number;
-    firstPlayerPokemon2Id: number;
-    firstPlayerPokemon2Health: number;
-    firstPlayerPokemon3Id: number;
-    firstPlayerPokemon3Health: number;
+    firstPlayerPokemonsState: PokemonState[];
     secondPlayerId: number;
-    secondPlayerPokemon1Id: number;
-    secondPlayerPokemon1Health: number;
-    secondPlayerPokemon2Id: number;
-    secondPlayerPokemon2Health: number;
-    secondPlayerPokemon3Id: number;
-    secondPlayerPokemon3Health: number;
+    secondPlayerPokemonsState: PokemonState[];
     winner: number;
 };
 

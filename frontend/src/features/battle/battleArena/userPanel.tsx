@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PokeballIcon from '@/assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '@/assets/icons/pokeball_open_1.png';
 import { PokemonDataType } from "../../pokemon/data/models";
-import { BattleState, POKEMON_ACTION_TYPES, PokemonAction, PokemonActionResult, PokemonState, USER_ACTION_TYPES, UserAction, UserActionResult } from "../data/models";
+import { POKEMON_ACTION_TYPES, PokemonAction, PokemonActionResult, PokemonState, USER_ACTION_TYPES, UserAction, UserActionResult } from "../data/models";
 import Button from "@/components/base/button";
 import { isNull } from "lodash";
 

@@ -8,14 +8,15 @@ import { PlayerDataType } from "../data/models";
 import { UserPanel } from "./userPanel";
 import { useBattle } from "../data/useBattle";
 import { OpponentPanel } from "./opponentPanel";
-import { formatPlayerData, getPokemonsState } from "../data/utils";
+import { PokemonDataType } from "@/features/pokemon/data/models";
 
+const formatPlayerData = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerDataType => ({ userId, userName, ownedPokemons });
 
 const BattleArena = () => {
 
     const { battleId, roomId } = useParams();
     const userData = useUser();
-    const { battleResources, ...battleService } = useBattle(Number(battleId), roomId as string, userData?.id as number);
+    const { battleResources, battleState, ...battleService } = useBattle(Number(battleId), roomId as string, userData?.id as number);
 
     const [attackSrc, setAttackSrc] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -47,7 +48,10 @@ const BattleArena = () => {
         return null;
     }, [battleResources, userData]);
 
-    const pokemonsState = playerResourceData && battleService.battleState ? getPokemonsState(battleService.battleState, playerResourceData.isUserFirstPlayer) : null;
+  const pokemonsState = playerResourceData && battleState ? {
+     user: playerResourceData.isUserFirstPlayer ? battleState.firstPlayerPokemonsState : battleState.secondPlayerPokemonsState,
+     opponent: playerResourceData.isUserFirstPlayer ? battleState.secondPlayerPokemonsState : battleState.firstPlayerPokemonsState ,
+    } : { user: [], opponent: [] };
 
     useEffect(() => {
       // const latestAction = battleService.pokemonActionResultsList[battleService.pokemonActionResultsList.length - 1];
@@ -69,7 +73,7 @@ const BattleArena = () => {
         } 
     },[attackSrc]);
 
-  if (!playerResourceData || !pokemonsState) {
+  if (!playerResourceData || !battleState) {
     return <Spinner />
   } 
     
