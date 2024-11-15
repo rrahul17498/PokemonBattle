@@ -75,7 +75,7 @@ public class BattleService {
        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(existingBattle.getSecondPlayerId());
        BattleResourcesDTO battleResourcesDTO = BattleResourcesDTO.getFullResources(existingBattle, firstPlayerData, secondPlayerData);
 
-       this.battleStateService.createAndSaveBattleStateWithTTL(battleResourcesDTO);
+       this.battleStateService.createAndSaveBattleState(battleResourcesDTO);
        return battleResourcesDTO;
     }
 

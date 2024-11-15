@@ -3,7 +3,6 @@ package com.pokemonbattle.pokemonbattlebackend.user;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pokemonbattle.pokemonbattlebackend.auth.GuestRequestDTO;
-import com.pokemonbattle.pokemonbattlebackend.userOwnedPokemon.UserOwnedPokemon;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -71,9 +71,11 @@
 			<artifactId>netty-socketio</artifactId>
 			<version>${netty-socketio.version}</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.github.dengliming.redismodule/redisjson -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<groupId>io.github.dengliming.redismodule</groupId>
+			<artifactId>redisjson</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 	</dependencies>
 
