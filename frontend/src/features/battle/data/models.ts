@@ -116,3 +116,8 @@ export type BattleState = {
     secondPlayerPokemon3Health: number;
     winner: number;
 };
+
+export type PokemonState = {
+    id: number,
+    health: number
+}

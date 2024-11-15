@@ -45,7 +45,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             });
 
             socket.on(BattleEvents.BATTLE_STATE_UPDATE, (battleState: BattleState) => {
-                // console.log("BATTLE_STATE_UPDATE: ", battleState);
+                console.log("BATTLE_STATE_UPDATE: ", battleState);
                 setBattleState(battleState);
             });
 
