@@ -5,6 +5,7 @@ import { PokemonDataType } from "../../pokemon/data/models";
 import { PokemonActionResult, PokemonState, USER_ACTION_TYPES, UserActionResult } from "../data/models";
 import Button from "@/components/base/button";
 import { isNull } from "lodash";
+import PokemonHealthBar from "./pokemonHealthBar";
 
 interface UserAttackWindowLayoutProps {
     userId: number,
@@ -55,22 +56,11 @@ export const OpponentPanel = (
   
     }, [chosenPokemon, pokemonActionResultsList]);
 
-    const renderPokemonHealth = () => {
-        const pokemonState = pokemonsState.find(({ id }) => chosenPokemon?.id == id);
-        if (!pokemonState) {
-            return null;
-        }
-
-        const pokemonHealth = pokemonState.health * 100;
-        return <div className={`w-[${pokemonHealth}%] h-2.5 rounded-full ${pokemonHealth < 50 ? "bg-health-low" : "bg-health-high"}`}></div>;
-    };
 
     return (
         <section className="border-border border flex flex-col justify-end">
         {!isNull(chosenPokemon) ? <div className="mb-4">
-            <div className="w-2/3 bg-gray-200 rounded-full h-2.5 mx-auto mb-12 dark:bg-gray-700">
-                 {renderPokemonHealth()}
-            </div>
+            <PokemonHealthBar pokemonState={pokemonsState.find(({ id }) => chosenPokemon?.id == id)} /> 
             <div className="mb-6">
                  <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold"></h3>
             </div>

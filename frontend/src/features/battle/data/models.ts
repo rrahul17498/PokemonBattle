@@ -85,7 +85,8 @@ export type UserActionResult = {
 
 export type PokemonAction = {
     type: string,
-    sourceId: number,
+    playerId: number,
+    pokemonId: number,
     payload: object | number | string,
 };
 

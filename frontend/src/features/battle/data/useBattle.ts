@@ -40,7 +40,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             });
 
             socket.on(BattleEvents.POKEMON_ACTION_RESULT, (action: PokemonActionResult) => {
-                // console.log("POKEMON_ACTION_RESULT: ", action);
+                console.log("POKEMON_ACTION_RESULT: ", action);
                 setPokemonActionResultsList((prev) => ([...prev, action]));
             });
 
@@ -80,7 +80,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
     };
 
-    const sendPokemonActionEvent = (action: UserAction) => {
+    const sendPokemonActionEvent = (action: PokemonAction) => {
         socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
     };
 

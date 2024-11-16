@@ -96,7 +96,7 @@ const BattleArena = () => {
         <OpponentPanel
          {...playerResourceData?.opponent }
          { ...battleService }
-         pokemonsState={pokemonsState?.user}
+         pokemonsState={pokemonsState?.opponent}
           />
     </main>
   );
