@@ -1,4 +1,4 @@
-package com.pokemonbattle.pokemonbattlebackend;
+package com.pokemonbattle.pokemonbattlebackend.redis;
 
 import io.github.dengliming.redismodule.redisjson.client.RedisJSONClient;
 import org.redisson.config.Config;

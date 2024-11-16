@@ -3,11 +3,17 @@ package com.pokemonbattle.pokemonbattlebackend.battle.battleState;
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleResourcesDTO;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.Attack;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AttackState implements Serializable {
     List<AttackDTO> firstPlayerPokemonAttackList;
     List<AttackDTO> secondPlayerPokemonAttackList;

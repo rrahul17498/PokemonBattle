@@ -21,8 +21,6 @@ public class BattleConnectionHandler {
         this.server.addDisconnectListener(onUserSocketDisconnect());
         this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleRoomConnectionDTO.class,onJoinBattleRoom());
         this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE.name(), BattleRoomConnectionDTO.class, initiateBattle());
-        this.server.addEventListener(BattleActionEvents.USER_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserAction());
-        this.server.addEventListener(BattleActionEvents.POKEMON_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserPokemonAction());
     }
 
     public ConnectListener onUserSocketConnect() {

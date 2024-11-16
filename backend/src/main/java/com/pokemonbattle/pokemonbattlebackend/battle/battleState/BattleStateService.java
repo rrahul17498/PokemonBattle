@@ -23,12 +23,12 @@ public class BattleStateService {
         RedissonClient redisson = redisJSONClient.getRedisson();
 
         BattleState createdBattleState = new BattleState(battleResourcesDTO);
-        String battleStateKey = createdBattleState.getRoomId() + ":battle:state";
+        String battleStateKey = RedisBattleKeyUtil.getBattleStateKey(createdBattleState.getRoomId());
         redisJSON.set(battleStateKey, SetArgs.Builder.create(".", GsonUtils.toJson(createdBattleState)));
         redisson.getBucket(battleStateKey).expire(Duration.ofMinutes(30));
 
         AttackState attackState = new AttackState(battleResourcesDTO);
-        String attackStateKey = createdBattleState.getRoomId() + ":attack:state";
+        String attackStateKey = RedisBattleKeyUtil.getAttackStateKey(createdBattleState.getRoomId());
         redisJSON.set(attackStateKey, SetArgs.Builder.create(".", GsonUtils.toJson(attackState)));
         redisson.getBucket(attackStateKey).expire(Duration.ofMinutes(30));
 
