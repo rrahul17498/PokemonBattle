@@ -1,5 +1,5 @@
 
-# ---------frontend----------
+### Frontend ###
 .env
 # Logs
 logs
@@ -27,8 +27,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# ---------backend----------
 
+### Backend ###
+
+src/main/resources/application.properties
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
