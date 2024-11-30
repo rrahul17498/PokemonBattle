@@ -1,5 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.redis;
 
+import io.github.dengliming.redismodule.redisjson.RedisJSON;
 import io.github.dengliming.redismodule.redisjson.client.RedisJSONClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +12,10 @@ public class RedisConfig {
 
     @Value("${redis-json.host}")
     private String host;
-
     @Value("${redis-json.port}")
     private Integer port;
+    RedisJSONClient redisJSONClient;
+
 
     @Bean
     public RedisJSONClient redisJSONClient() {
