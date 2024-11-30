@@ -2,6 +2,7 @@ package com.pokemonbattle.pokemonbattlebackend.pokemon;
 
 import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.Attack;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.AttackRepository;
+import com.pokemonbattle.pokemonbattlebackend.pokemon.exceptions.PokemonNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,7 +29,7 @@ public class PokemonService {
            Optional<Pokemon> pokemon = this.pokemonRepository.findById(id);
 
            if (pokemon.isEmpty()) {
-               throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+               throw  new PokemonNotFoundException(id);
            }
            
 
@@ -55,7 +56,7 @@ public class PokemonService {
            Optional<Pokemon> existingPokemon = this.pokemonRepository.findById(id);
 
            if (existingPokemon.isEmpty()) {
-               throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+               throw  new PokemonNotFoundException(id);
            }
 
            Pokemon newPokemon = existingPokemon.get();
