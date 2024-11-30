@@ -1,4 +1,4 @@
-package com.pokemonbattle.pokemonbattlebackend.exception;
+package com.pokemonbattle.pokemonbattlebackend.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +24,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.CONFLICT.value(),
                 e.getMessage()
         ));
+    }
+
+    @ExceptionHandler(BattleException.class)
+    public void handleResourceInUseException(BattleException e) {
+//        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiErrorResponse(
+//                HttpStatus.CONFLICT.value(),
+//                e.getMessage()
+//        ));
     }
 }
