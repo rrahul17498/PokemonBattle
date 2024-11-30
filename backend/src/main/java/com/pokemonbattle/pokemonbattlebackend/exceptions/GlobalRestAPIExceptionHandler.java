@@ -6,31 +6,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalRestAPIExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> handleResourceNotFoundException (ResourceNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                e.getMessage()
-        ));
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleRuntimeException (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new GlobalRestAPIErrorResponse("An unexpected error occurred."));
     };
 
-    @ExceptionHandler(ResourceInUseException.class)
-    public ResponseEntity<ApiErrorResponse> handleResourceInUseException(ResourceInUseException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                e.getMessage()
-        ));
-    }
-
-    @ExceptionHandler(BattleException.class)
-    public void handleResourceInUseException(BattleException e) {
-//        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiErrorResponse(
-//                HttpStatus.CONFLICT.value(),
-//                e.getMessage()
-//        ));
-    }
 }

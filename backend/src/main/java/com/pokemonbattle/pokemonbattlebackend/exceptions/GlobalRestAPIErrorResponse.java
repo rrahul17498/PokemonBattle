@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class RestAPIErrorResponse {
-
-    private Integer status;
+public class GlobalRestAPIErrorResponse {
     private String message;
 }
