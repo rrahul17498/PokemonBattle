@@ -10,6 +10,7 @@ import org.redisson.Redisson;
 import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @Repository
 public class BattleStateRepository extends RedisStateRepository {
@@ -20,12 +21,12 @@ public class BattleStateRepository extends RedisStateRepository {
 
     public BattleState createAndSaveBattleState(BattleResourcesDTO battleResourcesDTO) {
         BattleState createdBattleState = new BattleState(battleResourcesDTO);
-        this.createJSONBucket(RedisBattleKeyUtil.getAttackStateKey(createdBattleState.getRoomId()), createdBattleState, Duration.ofMinutes(30));
+        this.createJSONBucket(RedisBattleKeyUtil.getBattleStateKey(createdBattleState.getRoomId()), createdBattleState, Duration.ofMinutes(30));
         return createdBattleState;
     }
 
-    public BattleState getBattleStateByRoom(String roomId) {
-        return this.getBucketData(RedisBattleKeyUtil.getBattleStateKey(roomId), BattleState.class);
+    public Optional<BattleState> getBattleStateByRoom(String roomId) {
+        return Optional.ofNullable(this.getBucketData(RedisBattleKeyUtil.getBattleStateKey(roomId), BattleState.class));
     }
 
     public void updateBattleStateForRoom(String roomId, BattleState battleState){
