@@ -3,12 +3,10 @@ package com.pokemonbattle.pokemonbattlebackend.battle.socketHandler;
 import lombok.Data;
 
 @Data
-public class PokemonActionDTO {
+public class UserActionDTO {
     String roomId;
     String type;
-    Long sourcePlayerId;
-    Long sourcePokemonId;
-    Long sourceAttackId;
-    Long targetPokemonId;
+    Long playerId;
+    Long pokemonId;
     Boolean success = false;
 }

@@ -1,6 +1,6 @@
 import Button from "@/components/base/button";
 import useConnectBattle from "./data/useConnectBattle";
-import { Battle } from "./data/models";
+import { BattleResource } from "./data/models";
 import useUser from "@/hooks/useUser";
 import Spinner from "@/components/base/spinner";
 
@@ -33,7 +33,7 @@ const ConnectToBattle = () => {
                      ? (
                         <div className="h-48"><Spinner message="Loading Battles..." /></div>
                      ) : (
-                        battlesQuery.data.map((battleData: Battle, i: number) => {
+                        battlesQuery.data.map((battleData: BattleResource, i: number) => {
                             const isBattleCreatedByUser = activeBattleQuery.data?.battle_id == battleData.battle_id;
                             
                             return (

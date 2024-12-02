@@ -2,7 +2,7 @@ import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Battle, ConnectBattle, ConnectBattleEvents } from "./models";
+import { BattleResource, ConnectBattle, ConnectBattleEvents } from "./models";
 import { useNavigate } from "react-router-dom";
 import APP_ROUTES from "@/app/routing/routes";
 import toast from "react-hot-toast";
@@ -18,7 +18,7 @@ const useConnectBattle = (userId: number) => {
         queryKey: [QUERY_KEYS.battles],
         queryFn: BattleAPIs.getAllBattles,
     });
-    const activeBattleQuery = useQuery<Battle>({
+    const activeBattleQuery = useQuery<BattleResource>({
         queryKey: [QUERY_KEYS.activeBattle],
         queryFn: BattleAPIs.getActiveBattle(userId),
         staleTime: Infinity,

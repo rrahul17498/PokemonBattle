@@ -1,4 +1,4 @@
-import { PokemonSchema } from "@/features/pokemon/data/models";
+import { PokemonDataType } from "@/features/pokemon/data/models";
 import { z } from "zod"
 
 
@@ -11,15 +11,20 @@ export type ConnectBattle = {
     did_join_room: boolean
 }
 
+
 // Player Data
 
-export const PlayerData = z.object({
-    userId: z.number(),
-    userName: z.string(),
-    ownedPokemons: z.array(PokemonSchema)
-});
+export type PlayerResourceDataType = {
+    userId: number,
+    userName: string,
+    ownedPokemons: PokemonDataType[]
+};
 
-export type PlayerDataType = z.infer<typeof PlayerData>;
+export type PlayerStateDataType = {
+    chosenPokemonId: number,
+    pokemonsState: PokemonStateType[]
+}
+
 
 // Battle
 export enum BattleStatus {
@@ -28,21 +33,19 @@ export enum BattleStatus {
     COMPLETED = "COMPLETED"
 }
 
-const Battle = z.object({
-    battle_id: z.number(),
-    room_id: z.string(),
-    status: z.nativeEnum(BattleStatus),
-    first_player_id: z.number(),
-    first_player_name: z.string(),
-    first_player_owned_pokemons: z.array(PokemonSchema),
-    second_player_id:  z.number(),
-    second_player_name: z.string(),
-    second_player_owned_pokemons: z.array(PokemonSchema),
-    winner: z.number(),
-});
 
-
-export type Battle = z.infer<typeof Battle>;
+export type BattleResource = {
+    battle_id: number,
+    room_id: string,
+    status: BattleStatus,
+    first_player_id: number,
+    first_player_name: string,
+    first_player_owned_pokemons: PokemonDataType[],
+    second_player_id:  number,
+    second_player_name: string,
+    second_player_owned_pokemons: PokemonDataType[],
+    winner: number,
+};
 
 export enum ConnectBattleEvents {
     BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
@@ -71,30 +74,41 @@ export enum POKEMON_ACTION_TYPES {
 }
 
 export type UserAction = {
+    roomId: string,
     type: string,
-    sourceId: number,
-    payload: object | number | string,
+    playerId: number,
+    pokemonId: number,
 };
+
+export type UserActionInput = Omit<UserAction, "roomId" | "completed">;
 
 export type UserActionResult = {
     roomId: string,
     type: string,
-    sourceId: number,
-    payload: object | number | string,
+    playerId: number,
+    pokemonId: number,
+    success: boolean
 };
 
 export type PokemonAction = {
+    roomId: string,
     type: string,
-    playerId: number,
-    pokemonId: number,
-    payload: object | number | string,
+    sourcePlayerId: number,
+    sourcePokemonId: number,
+    sourceAttackId: number,
+    targetPokemonId: number,
 };
+
+export type PokemonActionInput = Omit<PokemonAction, "roomId" | "completed">;
 
 export type PokemonActionResult = {
     roomId: string,
     type: string,
-    sourceId: number,
-    payload: object | number | string,
+    sourcePlayerId: number,
+    sourcePokemonId: number,
+    sourceAttackId: number,
+    targetPokemonId: number
+    success: boolean
 };
 
 export type BattleState = {
@@ -102,13 +116,15 @@ export type BattleState = {
     battleId: number;
     status: BattleStatus;
     firstPlayerId: number;
-    firstPlayerPokemonsState: PokemonState[];
+    firstPlayerChosenPokemonId: number,
+    firstPlayerPokemonsState: PokemonStateType[];
     secondPlayerId: number;
-    secondPlayerPokemonsState: PokemonState[];
+    secondPlayerChosenPokemonId: number,
+    secondPlayerPokemonsState: PokemonStateType[];
     winner: number;
 };
 
-export type PokemonState = {
+export type PokemonStateType = {
     id: number,
     health: number
 }

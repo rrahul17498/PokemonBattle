@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export enum PokemonType {
+export enum PokemonTypes {
     FIRE = "FIRE",
     WATER = "WATER",
     GRASS = "GRASS",
@@ -18,7 +18,7 @@ export const PokemonAttackSchema = z.object({
 export const PokemonSchema = z.object({
     id: z.number(),
     name: z.string(),
-    type: z.nativeEnum(PokemonType),
+    type: z.nativeEnum(PokemonTypes),
     image: z.string(),
     attacks: z.array(PokemonAttackSchema),
 });

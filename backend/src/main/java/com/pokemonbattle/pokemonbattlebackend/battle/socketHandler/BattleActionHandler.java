@@ -3,97 +3,110 @@ package com.pokemonbattle.pokemonbattlebackend.battle.socketHandler;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.pokemonbattle.pokemonbattlebackend.battle.battleState.*;
-import io.github.dengliming.redismodule.redisjson.RedisJSON;
-import io.github.dengliming.redismodule.redisjson.args.GetArgs;
-import io.github.dengliming.redismodule.redisjson.args.SetArgs;
-import io.github.dengliming.redismodule.redisjson.client.RedisJSONClient;
-import io.github.dengliming.redismodule.redisjson.utils.GsonUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Component
 public class BattleActionHandler {
 
     private final SocketIOServer server;
-    private final RedisJSON redisJSON;
+    private final BattleStateRepository battleStateRepository;
+    private final AttackStateRepository attackStateRepository;
 
-    public BattleActionHandler(SocketIOServer server, RedisJSONClient redisJSONClient) {
-        this.redisJSON = redisJSONClient.getRedisJSON();
+    public BattleActionHandler(SocketIOServer server, BattleStateRepository battleStateRepository, AttackStateRepository attackStateRepository) {
+        this.battleStateRepository =  battleStateRepository;
+        this.attackStateRepository = attackStateRepository;
         this.server = server;
-        this.server.addEventListener(BattleActionEvents.USER_ACTION.name(), BattleActionDTO.class, this.executeUserAction());
+        this.server.addEventListener(BattleActionEvents.USER_ACTION.name(), UserActionDTO.class, this.executeUserAction());
         this.server.addEventListener(BattleActionEvents.POKEMON_ACTION.name(), PokemonActionDTO.class, this.executePokemonAction());
     }
 
-    DataListener<BattleActionDTO> executeUserAction() {
+    public void sendBattleStateToPlayers(BattleState battleState){
+        this.server.getRoomOperations(battleState.getRoomId()).sendEvent(BattleActionEvents.BATTLE_STATE_UPDATE.name(), battleState);
+    }
+
+    void executeBattleStateUpdateForRoom(String roomId, BattleState battleState) {
+        this.battleStateRepository.updateBattleStateForRoom(roomId, battleState);
+        this.sendBattleStateToPlayers(battleState);
+    }
+
+    DataListener<UserActionDTO> executeUserAction() {
         return (client, userAction, ackRequest) -> {
-            this.server.getRoomOperations(userAction.roomId()).sendEvent(BattleActionEvents.USER_ACTION_RESULT.name(), userAction);
+            Optional<BattleState> existingBattleState = this.battleStateRepository.getBattleStateByRoom(userAction.getRoomId());
+
+            if (existingBattleState.isEmpty()) {
+                this.server.getRoomOperations(userAction.getRoomId()).sendEvent(BattleActionEvents.USER_ACTION_RESULT.name(), userAction);
+                return;
+            }
+
+            if (userAction.getType().equals(UserActionTypes.CHOOSE_POKEMON.name())) {
+                existingBattleState.get().updateActivePokemon(userAction.getPlayerId(), userAction.getPokemonId());
+            } else if (userAction.getType().equals(UserActionTypes.WITHDRAW_POKEMON.name())) {
+                existingBattleState.get().updateActivePokemon(userAction.getPlayerId(), null);
+            }
+
+            this.executeBattleStateUpdateForRoom(userAction.getRoomId(), existingBattleState.get());
+            userAction.setSuccess(true);
+            this.server.getRoomOperations(userAction.getRoomId()).sendEvent(BattleActionEvents.USER_ACTION_RESULT.name(), userAction);
         };
     }
 
     DataListener<PokemonActionDTO> executePokemonAction() {
         return (client, pokemonAction, ackRequest) -> {
-            this.server.getRoomOperations(pokemonAction.roomId()).sendEvent(BattleActionEvents.POKEMON_ACTION_RESULT.name(), pokemonAction);
-            String battleStateKey = RedisBattleKeyUtil.getBattleStateKey(pokemonAction.roomId());
-            BattleState battleState = redisJSON.get(battleStateKey, BattleState.class, new GetArgs().path("."));
+            Optional<BattleState> existingBattleState = this.battleStateRepository.getBattleStateByRoom(pokemonAction.getRoomId());
 
-            if (pokemonAction.type().equals(PokemonActionTypes.ATTACK.name())) {
-                  String attackStateKey = RedisBattleKeyUtil.getAttackStateKey(pokemonAction.roomId());
-                  AttackState attackState = redisJSON.get(attackStateKey,AttackState.class, new GetArgs());
+            if (existingBattleState.isEmpty()) {
+                this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.POKEMON_ACTION_RESULT.name(), pokemonAction);
+                return;
+            }
 
-                  if (Objects.equals(pokemonAction.playerId(), battleState.getFirstPlayerId())) {
+            if (pokemonAction.getType().equals(PokemonActionTypes.ATTACK.name())) {
+                  AttackState attackState = this.attackStateRepository.getAttackStateByRoom(RedisBattleKeyUtil.getAttackStateKey(pokemonAction.getRoomId()));
+
+                  if (Objects.equals(pokemonAction.getSourcePokemonId(), existingBattleState.get().getFirstPlayerId())) {
                       List<PokemonState> updatedSecondPlayerPokemonStateList = this.executePokemonAttack(
-                              battleState.getSecondPlayerPokemonsState(),
+                              existingBattleState.get().getSecondPlayerPokemonsState(),
                               attackState.getSecondPlayerPokemonAttackList(),
                               pokemonAction
                       );
 
-                    battleState.setSecondPlayerPokemonsState(updatedSecondPlayerPokemonStateList);
-                    redisJSON.set(battleStateKey, SetArgs.Builder.create(".", GsonUtils.toJson(battleState)));
-                    this.server.getRoomOperations(pokemonAction.roomId()).sendEvent(BattleActionEvents.BATTLE_STATE_UPDATE.name(), battleState);
-                    return;
+                    existingBattleState.get().setSecondPlayerPokemonsState(updatedSecondPlayerPokemonStateList);
+                  } else if (Objects.equals(pokemonAction.getSourcePokemonId(), existingBattleState.get().getSecondPlayerId())) {
+                      List<PokemonState> updatedFirstPlayerPokemonStateList = this.executePokemonAttack(
+                              existingBattleState.get().getFirstPlayerPokemonsState(),
+                              attackState.getFirstPlayerPokemonAttackList(),
+                              pokemonAction
+                      );
+
+
+                      existingBattleState.get().setFirstPlayerPokemonsState(updatedFirstPlayerPokemonStateList);
                   }
 
-                List<PokemonState> updatedFirstPlayerPokemonStateList = this.executePokemonAttack(
-                        battleState.getFirstPlayerPokemonsState(),
-                        attackState.getFirstPlayerPokemonAttackList(),
-                        pokemonAction
-                );
-
-                battleState.setFirstPlayerPokemonsState(updatedFirstPlayerPokemonStateList);
-                redisJSON.set(battleStateKey, SetArgs.Builder.create(".", GsonUtils.toJson(battleState)));
-                this.server.getRoomOperations(pokemonAction.roomId()).sendEvent(BattleActionEvents.BATTLE_STATE_UPDATE.name(), battleState);
+                this.executeBattleStateUpdateForRoom(pokemonAction.getRoomId(), existingBattleState.get());
+                this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.POKEMON_ACTION_RESULT.name(), pokemonAction);
             }
         };
 
     }
 
     List<PokemonState> executePokemonAttack(List<PokemonState> pokemonStateList, List<AttackDTO> attackDTOList, PokemonActionDTO pokemonActionDTO) {
-      PokemonState attackedPokemonState = pokemonStateList.stream().filter((item) -> item.getId().equals(pokemonActionDTO.pokemonId())).findAny().orElse(null);
-      AttackDTO attackDTO = attackDTOList.stream().filter((item) -> item.getId().equals(pokemonActionDTO.payload())).findAny().orElse(null);
+      AttackDTO attackDTO = attackDTOList.stream().filter((item) -> item.getId().equals(pokemonActionDTO.getSourceAttackId())).findAny().orElse(null);
 
-      if (attackedPokemonState == null || attackDTO == null) {
+      if (attackDTO == null) {
           return null;
       }
-
-      for (PokemonState pokemonState: pokemonStateList) {
-          if (pokemonState.getId().equals(attackDTO.getPokemonId())) {
-              // ATTACK HEALTH LOGIC TO BE UPDATED
-              Float updatedAttackedPokemonHealth = clampHealthValue(pokemonState.getHealth() - ((float) attackDTO.getPower()/100.0F));
-              pokemonState.setHealth(updatedAttackedPokemonHealth);
-              break;
+      pokemonStateList = pokemonStateList.stream().map((pokemonState) -> {
+          if (pokemonState.getId().equals(pokemonActionDTO.getTargetPokemonId()) && pokemonState.getHealth() > 0) {
+              pokemonState.receiveDamage(attackDTO);
           }
-      }
+          return pokemonState;
+      }).toList();
 
       return pokemonStateList;
     }
 
-    Float clampHealthValue(Float value) {
-        DecimalFormat decimalFormat =  new DecimalFormat("0.00");
-        return (Math.max(0.0F, Math.min(100.0F, value)));
-    }
 }

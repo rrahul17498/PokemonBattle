@@ -3,9 +3,8 @@ package com.pokemonbattle.pokemonbattlebackend.user;
 import com.pokemonbattle.pokemonbattlebackend.auth.GuestRequestDTO;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.PokemonRepository;
-import org.springframework.http.HttpStatus;
+import com.pokemonbattle.pokemonbattlebackend.user.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +32,7 @@ public class UserService {
         Optional<User> existingUser = this.userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException(userId);
         }
 
         return this.pokemonRepository.findAllById(existingUser.get().getOwnedPokemons());
@@ -43,7 +42,7 @@ public class UserService {
         Optional<User> existingUser = this.userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw  new UserNotFoundException(userId);
         }
 
         return existingUser.get();
@@ -53,7 +52,7 @@ public class UserService {
         Optional<User> existingUser = this.userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw  new UserNotFoundException(userId);
         }
 
         User user = existingUser.get();
@@ -65,29 +64,6 @@ public class UserService {
         );
     }
 
-    void createUser(User user) {
-        this.userRepository.save(user);
-    }
-
-
-    void updateUser(Long id, User user) {
-
-        Optional<User> existingUser = this.userRepository.findById(id);
-
-        if (existingUser.isEmpty()) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-
-        User newUser = existingUser.get();
-        newUser.setName(user.getName());
-        newUser.setPassword(user.getPassword());
-        newUser.setOwnedPokemons(user.getOwnedPokemons());
-        newUser.setRating(user.getRating());
-
-        System.out.println("User-details: " + user.getOwnedPokemons());
-
-        this.userRepository.save(newUser);
-    }
 
     public GuestUserDTO createGuestUser(GuestRequestDTO guestUserRequest) {
         User newUser = new User(guestUserRequest);
@@ -100,7 +76,7 @@ public class UserService {
         Optional<User> existingGuestUser = this.userRepository.findById(id);
 
         if (existingGuestUser.isEmpty()) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw  new UserNotFoundException(id);
         }
 
         return GuestUserDTO.fromUser(existingGuestUser.get());

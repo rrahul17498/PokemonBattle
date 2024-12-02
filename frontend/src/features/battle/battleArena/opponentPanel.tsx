@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import PokeballIcon from '@/assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '@/assets/icons/pokeball_open_1.png';
 import { PokemonDataType } from "../../pokemon/data/models";
-import { PokemonActionResult, PokemonState, USER_ACTION_TYPES, UserActionResult } from "../data/models";
+import { PokemonStateType } from "../data/models";
 import Button from "@/components/base/button";
 import { isNull } from "lodash";
 import PokemonHealthBar from "./pokemonHealthBar";
+import toast from "react-hot-toast";
 
 interface UserAttackWindowLayoutProps {
     userId: number,
     userName: string,
     ownedPokemons: PokemonDataType[],
-    userActionResultsList: UserActionResult[],
-    pokemonActionResultsList: PokemonActionResult[],
-    pokemonsState: PokemonState[]
+    chosenPokemonId: number,
+    pokemonsState: PokemonStateType[]
 }
 
 export const OpponentPanel = (
@@ -21,57 +21,52 @@ export const OpponentPanel = (
          userId: opponentId,
          userName: opponentName,
          ownedPokemons = [],
-         userActionResultsList,
-         pokemonActionResultsList,
+         chosenPokemonId,
          pokemonsState
          }: UserAttackWindowLayoutProps
 ) => {
 
-    const [chosenPokemon, setChosenPokemon] = useState<PokemonDataType | null>(null);
+    const [chosenPokemonResource, setChosenPokemonResource] = useState<PokemonDataType | null>(null);
+    const [chosenPokemonState, setChosenPokemonState] = useState<PokemonStateType | null>(null);
 
     useEffect(() => {
-        const latestAction = userActionResultsList[userActionResultsList.length - 1];
-
-        if (latestAction && latestAction.sourceId == opponentId) {
-
-
-            if (latestAction.type == USER_ACTION_TYPES.CHOOSE_POKEMON) {
-                const pokemonData = ownedPokemons.find((pokemon) => latestAction.payload == pokemon.id);
-                if (pokemonData) {
-                    setChosenPokemon(pokemonData);
-                } else {
-                    console.error("Invalid pokemon id recieved: ", latestAction.payload);
-                }
+        if (!chosenPokemonId) { 
+            return setChosenPokemonResource(null);
+        }
+        
+        const chosenPokemonData = ownedPokemons.find((pokemon) => pokemon.id == chosenPokemonId);
+            if (!chosenPokemonData) {
+                console.error("Invalid pokemon id recieved: ", chosenPokemonId);
+                toast.error("Invalid pokemon id"); 
+                return;
             }
+            return setChosenPokemonResource(chosenPokemonData);
+    }, [opponentId, ownedPokemons, chosenPokemonId]);
 
-            if (latestAction.type == USER_ACTION_TYPES.WITHDRAW_POKEMON) {
-                setChosenPokemon(null);
-            }
-           
+    useEffect(() => {
+        if (!chosenPokemonId) {
+            return;
         }
 
-    }, [opponentId, ownedPokemons, userActionResultsList]);
-
-    useEffect(() => {
-  
-    }, [chosenPokemon, pokemonActionResultsList]);
+        const chosenPokemonState = pokemonsState.find((pokemonState) => pokemonState.id == chosenPokemonId);
+        if (!chosenPokemonState) {
+            console.error("Invalid pokemon id recieved: ", chosenPokemonId);
+            toast.error("Invalid pokemon id"); 
+            return;
+        }
+        setChosenPokemonState(chosenPokemonState);
+    }, [chosenPokemonId, pokemonsState]);
 
 
     return (
         <section className="border-border border flex flex-col justify-end">
-        {!isNull(chosenPokemon) ? <div className="mb-4">
-            <PokemonHealthBar pokemonState={pokemonsState.find(({ id }) => chosenPokemon?.id == id)} /> 
-            <div className="mb-6">
-                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold"></h3>
-            </div>
-            <img className="max-w-60 mx-auto animate-pokemon-render" src={chosenPokemon?.image} />
-            <h3 className="mt-3 p-3 font-semibold text-2xl">{chosenPokemon?.name}</h3>
+        {!isNull(chosenPokemonResource) ? <div className="mb-4 mt-12">
+            <PokemonHealthBar className="mb-24" pokemonState={chosenPokemonState} /> 
+            <img className="max-w-60 mx-auto animate-pokemon-render" src={chosenPokemonResource?.image} />
+            <h3 className="mt-3 p-3 font-semibold text-2xl">{chosenPokemonResource?.name}</h3>
             <h4 className="px-3 text-lg font-medium mb-2">Moves</h4>
-            {/* <div className="min-h-20">
-
-            </div> */}
             <ul className="flex flex-wrap p-3">
-                {chosenPokemon?.attacks.map((attack, index) => (
+                {chosenPokemonResource?.attacks.map((attack, index) => (
                     <li key={`user_attack_${index}`} className="mx-2 my-1 list-none">
                         <Button
                          name={`user_trigger_attack_${index}`}
@@ -89,7 +84,7 @@ export const OpponentPanel = (
             <ul className="grid grid-cols-3 p-3">
                  {
                     ownedPokemons.map((pokemon: PokemonDataType, i) => {
-                        const isPokemonSelected = pokemon.id == chosenPokemon?.id;
+                        const isPokemonSelected = pokemon.id == chosenPokemonId;
                         return (
                         <li key={`user_pokemon_${i}`}>
                             <button name={`pokeball_${i}`} onClick={undefined} disabled={true}>

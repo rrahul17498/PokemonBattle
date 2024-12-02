@@ -4,7 +4,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
-import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -56,10 +55,6 @@ public class BattleConnectionHandler {
             log.info("Initiate battle[{}] in room[{}]", battleRoomConnectionDTO.battleId(), battleRoomConnectionDTO.roomId());
             this.server.getRoomOperations(battleRoomConnectionDTO.roomId()).sendEvent(BattleConnectionEvents.LOAD_BATTLE_RESOURCES.name(), battleRoomConnectionDTO);
         };
-    }
-
-    public void sendBattleStateToPlayers(BattleState battleState){
-        this.server.getRoomOperations(battleState.getRoomId()).sendEvent(BattleActionEvents.BATTLE_STATE_UPDATE.name(), battleState);
     }
 
     public void broadcastBattleCreation(Integer battleId) {
