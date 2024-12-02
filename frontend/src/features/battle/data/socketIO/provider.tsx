@@ -2,7 +2,7 @@ import useUser from "@/hooks/useUser";
 import { createContext, Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import io from "socket.io-client";
-import { ConnectBattleEvents, ConnectBattle, Battle } from "../models";
+import { ConnectBattleEvents, ConnectBattle, BattleResource } from "../models";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 
@@ -60,7 +60,7 @@ export const SocketProvider = ({ children }: SocketProvider) => {
 
             newSocket.on("reconnect", () => {
                 console.log(`Socket re-connecting...`);
-                const activeBattleData = queryClient.getQueryData<Battle>([QUERY_KEYS.activeBattle]);
+                const activeBattleData = queryClient.getQueryData<BattleResource>([QUERY_KEYS.activeBattle]);
                 if (!activeBattleData) return toast.error("Failed to reconnect");
                 const joinRoomPayload: ConnectBattle = { user_id: userData.id, room_id: activeBattleData?.room_id, battle_id: activeBattleData?.battle_id, did_join_room: false };
                 newSocket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {

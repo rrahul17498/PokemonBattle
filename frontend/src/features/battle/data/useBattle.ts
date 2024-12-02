@@ -2,21 +2,21 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { Battle, BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonAction, PokemonActionResult, UserAction, UserActionResult } from "./models";
+import { BattleResource, BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput } from "./models";
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import * as BattleAPIs from "./battleAPIs";
 
 
-type UseBattleService = {
+type UseBattleReturn = {
     battleState: BattleState | undefined,
-    battleResources: Battle | undefined,
-    sendUserActionEvent: (action: UserAction) => void,
-    sendPokemonActionEvent: (action: PokemonAction) => void,
+    battleResources: BattleResource | undefined,
+    sendUserActionEvent: (action: UserActionInput) => void,
+    sendPokemonActionEvent: (action: PokemonActionInput) => void,
     userActionResultsList: UserActionResult[],
     pokemonActionResultsList: PokemonActionResult[]
 };
 
-export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleService => {
+export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleReturn => {
 
     const { socket, isConnected, battleRoom, setBattleRoom } = useSocketIO();
     const [isBattleResourceQueryEnabled, setIsBattleResourceQueryEnabled] = useState(Boolean(battleRoom));
@@ -25,7 +25,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     const [pokemonActionResultsList, setPokemonActionResultsList] = useState<PokemonActionResult[]>([]);
     const [battleState, setBattleState] = useState<BattleState>();
 
-    const { data: battleResources } = useQuery<Battle>({
+    const { data: battleResources } = useQuery<BattleResource>({
         queryKey: [QUERY_KEYS.battleResources, battleId],
         queryFn: BattleAPIs.loadBattle(battleId, roomId),
         staleTime: Infinity,
@@ -35,7 +35,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     useEffect(() => {
         if (socket && isConnected) {
             socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
-                // console.log("USER_ACTION_RESULT: ", action);
+                console.log("USER_ACTION_RESULT: ", action);
                 setUserActionResultsList((prev) => ([...prev, action]));
             });
 
@@ -76,13 +76,14 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     }, [socket, battleRoom, setBattleRoom, userId, battleId, roomId]);
 
 
-    const sendUserActionEvent = (action: UserAction) => {
+    const sendUserActionEvent = (action: UserActionInput) => {
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
     };
 
-    const sendPokemonActionEvent = (action: PokemonAction) => {
+    const sendPokemonActionEvent = (action: PokemonActionInput) => {
         socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
     };
+    
 
     return { battleResources, battleState, sendUserActionEvent, sendPokemonActionEvent, userActionResultsList, pokemonActionResultsList };
 };
