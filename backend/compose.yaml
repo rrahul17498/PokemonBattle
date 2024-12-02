@@ -7,3 +7,8 @@ services:
       - 'POSTGRES_USER=rahul'
     ports:
       - '5432:5432'
+  redisjson:
+    image: "redislabs/rejson:latest"
+    container_name: redis-json
+    ports:
+      - "6379:6379"

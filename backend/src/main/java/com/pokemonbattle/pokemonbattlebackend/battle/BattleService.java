@@ -1,10 +1,13 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
+import com.pokemonbattle.pokemonbattlebackend.battle.battleState.AttackStateRepository;
+import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleState;
+import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleStateRepository;
+import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleInProgressException;
+import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleNotFoundException;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleActionHandler;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
-import com.pokemonbattle.pokemonbattlebackend.exception.ResourceInUseException;
-import com.pokemonbattle.pokemonbattlebackend.exception.ResourceNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.user.User;
-import com.pokemonbattle.pokemonbattlebackend.user.UserRepository;
 import com.pokemonbattle.pokemonbattlebackend.user.UserService;
 import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 import lombok.AllArgsConstructor;
@@ -19,9 +22,11 @@ import java.util.UUID;
 public class BattleService {
 
     private final BattleRepository battleRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
-    private final BattleConnectionHandler battleSocketHandler;
+    private final BattleConnectionHandler battleConnectionHandler;
+    private final BattleActionHandler battleActionHandler;
+    private final BattleStateRepository battleStateRepository;
+    private final AttackStateRepository attackStateRepository;
 
     Battle createBattle(CreateBattleDTO createBattleRequest){
         User firstPlayer = this.userService.getUser(createBattleRequest.getUserId());
@@ -34,18 +39,18 @@ public class BattleService {
 
         Battle createdBattle = this.battleRepository.save(newBattle);
 
-        this.battleSocketHandler.broadcastBattleCreation(createdBattle.getBattleId());
+        this.battleConnectionHandler.broadcastBattleCreation(createdBattle.getBattleId());
 
       return createdBattle;
     }
 
     Battle connectToBattle(ConnectBattleDTO battleConnect){
         Battle existingBattle = this.battleRepository.findById(battleConnect.getBattleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleConnect.getBattleId() + " does not exist")
+                .orElseThrow(() -> new BattleNotFoundException(BattleAccessFromTypes.BATTLE, battleConnect.getBattleId())
                 );
 
         if (existingBattle.getSecondPlayerId() != null) {
-            throw new ResourceInUseException("A battle with id " + battleConnect.getBattleId() + " in progress");
+            throw new BattleInProgressException(battleConnect.getBattleId());
         }
 
         User secondPlayer = this.userService.getUser(battleConnect.getUserId());
@@ -55,44 +60,48 @@ public class BattleService {
 
         Battle savedBattle = this.battleRepository.save(existingBattle);
 
-        this.battleSocketHandler.broadcastBattleConnection(savedBattle.getBattleId());
+        this.battleConnectionHandler.broadcastBattleConnection(savedBattle.getBattleId());
 
         return savedBattle;
     }
 
-    BattleStateDTO getBattleById(Integer battleId){
+    BattleResourcesDTO loadBattleResourcesById(Integer battleId, String roomId){
        Battle existingBattle = this.battleRepository.findById(battleId)
-               .orElseThrow(() -> new ResourceNotFoundException("Battle with id " + battleId + " does not exist"));
+               .orElseThrow(() -> new BattleNotFoundException(BattleAccessFromTypes.BATTLE, battleId));
+
+       if (!existingBattle.getRoomId().equals(roomId)) {
+           throw new BattleNotFoundException(BattleAccessFromTypes.ROOM, roomId);
+       }
 
        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(existingBattle.getFirstPlayerId());
        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(existingBattle.getSecondPlayerId());
+       BattleResourcesDTO battleResourcesDTO = BattleResourcesDTO.getFullResources(existingBattle, firstPlayerData, secondPlayerData);
 
-       return BattleStateDTO.getInProgressState(existingBattle, firstPlayerData, secondPlayerData);
+       this.attackStateRepository.createAndSaveAttackState(battleResourcesDTO);
+       BattleState createdBattleState = this.battleStateRepository.createAndSaveBattleState(battleResourcesDTO);
+
+       this.battleActionHandler.sendBattleStateToPlayers(createdBattleState);
+
+       return battleResourcesDTO;
     }
 
-    BattleStateDTO getActiveBattleByUserId(Long userId) {
+    BattleResourcesDTO getActiveBattleByUserId(Long userId) {
         List<String> activeStatuses = List.of(BattleStatus.CREATED.name(), BattleStatus.IN_PROGRESS.name());
 
         Optional<Battle> activeBattleResult = this.battleRepository.findActiveBattle(userId, activeStatuses);
 
         if (activeBattleResult.isEmpty()) {
-            throw new ResourceNotFoundException("No active battles found for user id " + userId);
+            throw new BattleNotFoundException(BattleAccessFromTypes.USER, userId);
         }
 
         Battle activeBattle = activeBattleResult.get();
 
-        if (activeBattle.getStatus() == BattleStatus.CREATED) {
-            return BattleStateDTO.getCreatedState(activeBattle);
-        }
-
-        UserWithPokemonsDTO firstPlayerData = this.userService.getUserWithPokemons(activeBattle.getFirstPlayerId());
-        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(activeBattle.getSecondPlayerId());
-
-        return BattleStateDTO.getInProgressState(activeBattle, firstPlayerData, secondPlayerData);
+        return BattleResourcesDTO.getMinimalResources(activeBattle);
     }
 
     void deleteBattle(Integer battleId) {
         this.battleRepository.deleteById(battleId);
+        this.battleConnectionHandler.broadcastBattleDeletion(battleId);
     }
 
 

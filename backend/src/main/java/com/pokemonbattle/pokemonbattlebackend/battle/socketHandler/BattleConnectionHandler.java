@@ -19,9 +19,7 @@ public class BattleConnectionHandler {
         this.server.addConnectListener(onUserSocketConnect());
         this.server.addDisconnectListener(onUserSocketDisconnect());
         this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleRoomConnectionDTO.class,onJoinBattleRoom());
-        this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE_LOAD.name(), BattleRoomConnectionDTO.class, initiateLoadBattleResources());
-        this.server.addEventListener(BattleActionEvents.USER_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserAction());
-        this.server.addEventListener(BattleActionEvents.POKEMON_ACTION.name(), BattleActionDTO.class, BattleActionHandler.executeUserPokemonAction());
+        this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE.name(), BattleRoomConnectionDTO.class, initiateBattle());
     }
 
     public ConnectListener onUserSocketConnect() {
@@ -52,7 +50,7 @@ public class BattleConnectionHandler {
         };
     }
 
-    public DataListener<BattleRoomConnectionDTO> initiateLoadBattleResources() {
+    public DataListener<BattleRoomConnectionDTO> initiateBattle() {
         return (client, battleRoomConnectionDTO, ackClient) -> {
             log.info("Initiate battle[{}] in room[{}]", battleRoomConnectionDTO.battleId(), battleRoomConnectionDTO.roomId());
             this.server.getRoomOperations(battleRoomConnectionDTO.roomId()).sendEvent(BattleConnectionEvents.LOAD_BATTLE_RESOURCES.name(), battleRoomConnectionDTO);
@@ -65,5 +63,9 @@ public class BattleConnectionHandler {
 
     public void broadcastBattleConnection(Integer battleId) {
         this.server.getBroadcastOperations().sendEvent(BattleConnectionEvents.BROADCAST_BATTLE_CONNECTED.name(), battleId);
+    }
+
+    public void broadcastBattleDeletion(Integer battleId) {
+        this.server.getBroadcastOperations().sendEvent(BattleConnectionEvents.BROADCAST_BATTLE_DELETED.name(), battleId);
     }
 }

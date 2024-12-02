@@ -6,7 +6,7 @@ import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
 
 import java.util.List;
 
-public record BattleStateDTO(
+public record BattleResourcesDTO(
         @JsonProperty("battle_id")
         Integer battleId,
 
@@ -35,8 +35,8 @@ public record BattleStateDTO(
 
         Long winner
 ) {
-        static BattleStateDTO getCreatedState(Battle battle) {
-                return new BattleStateDTO(
+        public static BattleResourcesDTO getMinimalResources(Battle battle) {
+                return new BattleResourcesDTO(
                         battle.getBattleId(),
                         battle.getRoomId(),
                         battle.getStatus(),
@@ -50,8 +50,8 @@ public record BattleStateDTO(
                 );
         }
 
-        static BattleStateDTO getInProgressState(Battle battle, UserWithPokemonsDTO firstPlayerData, UserWithPokemonsDTO secondPlayerData) {
-                return new BattleStateDTO(
+        public static BattleResourcesDTO getFullResources(Battle battle, UserWithPokemonsDTO firstPlayerData, UserWithPokemonsDTO secondPlayerData) {
+                return new BattleResourcesDTO(
                         battle.getBattleId(),
                         battle.getRoomId(),
                         battle.getStatus(),

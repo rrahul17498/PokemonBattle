@@ -36,7 +36,7 @@ export const deleteActiveBattle = async (battleId: number) => {
     return response.data;
 }
 
-export const getBattleState = (battleId: number) => async() => {
-    const response = await apiClient.get(`/battles/${battleId}`)
+export const loadBattle = (battleId: number, roomId: string) => async() => {
+    const response = await apiClient.get(`/battles/${battleId}/load/${roomId}`)
     return response.data;
 };

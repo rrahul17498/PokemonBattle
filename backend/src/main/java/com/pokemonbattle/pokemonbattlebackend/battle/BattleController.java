@@ -1,9 +1,13 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
 
+import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleInProgressException;
+import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
+import com.pokemonbattle.pokemonbattlebackend.exceptions.GlobalRestAPIErrorResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,13 +31,13 @@ public class BattleController {
         return this.battleService.connectToBattle(connectBattleRequest);
     }
 
-    @GetMapping("/{battleId}")
-    public BattleStateDTO getBattleById(@PathVariable Integer battleId) {
-        return this.battleService.getBattleById(battleId);
+    @GetMapping("/{battleId}/load/{roomId}")
+    public BattleResourcesDTO loadBattleResourcesById(@PathVariable Integer battleId, @PathVariable String roomId) {
+        return this.battleService.loadBattleResourcesById(battleId, roomId);
     }
 
     @GetMapping("/active/{userId}")
-    public BattleStateDTO getActiveBattleByUserId(@PathVariable Long userId) {
+    public BattleResourcesDTO getActiveBattleByUserId(@PathVariable Long userId) {
         return this.battleService.getActiveBattleByUserId(userId);
     }
 
@@ -48,4 +52,18 @@ public class BattleController {
     {
         return this.battleService.getCreatedBattles();
     }
+
+    @ExceptionHandler(BattleNotFoundException.class)
+    public ResponseEntity<GlobalRestAPIErrorResponse> handleBattleNotFoundException (Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GlobalRestAPIErrorResponse(
+                e.getMessage()
+        ));
+    };
+
+    @ExceptionHandler(BattleInProgressException.class)
+    public ResponseEntity<GlobalRestAPIErrorResponse> handleBattleInProgressException (Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new GlobalRestAPIErrorResponse(
+                e.getMessage()
+        ));
+    };
 }

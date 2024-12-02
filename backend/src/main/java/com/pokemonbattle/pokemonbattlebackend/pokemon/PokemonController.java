@@ -1,5 +1,8 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon;
+import com.pokemonbattle.pokemonbattlebackend.exceptions.GlobalRestAPIErrorResponse;
+import com.pokemonbattle.pokemonbattlebackend.pokemon.exceptions.PokemonNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -41,5 +44,13 @@ public class PokemonController {
     void deletePokemon(@PathVariable Long id) {
         this.pokemonService.deletePokemon(id);
     }
+
+
+    @ExceptionHandler(PokemonNotFoundException.class)
+    public ResponseEntity<GlobalRestAPIErrorResponse> handlePokemonNotFoundException (Exception e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GlobalRestAPIErrorResponse(
+                e.getMessage()
+        ));
+    };
 
 }

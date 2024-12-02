@@ -28,7 +28,7 @@ export const Pokemon = () => {
 
 
      const goToBattle = () => {
-        navigate(APP_ROUTES.protected.connectBattle.full);
+        navigate(APP_ROUTES.protected.connectBattle.fullPath);
      };
 
   return (
