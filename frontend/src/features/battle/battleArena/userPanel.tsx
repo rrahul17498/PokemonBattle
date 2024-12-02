@@ -2,21 +2,21 @@ import { useEffect, useState } from "react";
 import PokeballIcon from '@/assets/icons/pokeball_side_icon_1.png';
 import PokeballOpenIcon from '@/assets/icons/pokeball_open_1.png';
 import { PokemonDataType } from "../../pokemon/data/models";
-import { POKEMON_ACTION_TYPES, PokemonAction, PokemonActionResult, PokemonState, USER_ACTION_TYPES, UserAction, UserActionResult } from "../data/models";
+import { POKEMON_ACTION_TYPES, PokemonActionInput, PokemonStateType, USER_ACTION_TYPES, UserActionInput } from "../data/models";
 import Button from "@/components/base/button";
 import { isNull } from "lodash";
 import PokemonHealthBar from "./pokemonHealthBar";
+import toast from "react-hot-toast";
 
-interface UserAttackWindowLayoutProps {
+interface UserPanelProps {
     userId: number,
     userName: string,
     ownedPokemons: PokemonDataType[],
-    readOnly?: boolean,
-    sendUserActionEvent?: (action: UserAction) => void,
-    sendPokemonActionEvent?: (action: PokemonAction) => void,
-    userActionResultsList: UserActionResult[],
-    pokemonActionResultsList: PokemonActionResult[],
-    pokemonsState: PokemonState[]
+    chosenPokemonId: number,
+    pokemonsState: PokemonStateType[],
+    targetPokemonId: number,
+    sendUserActionEvent: (action: UserActionInput) => void,
+    sendPokemonActionEvent: (action: PokemonActionInput) => void,
 }
 
 export const UserPanel = (
@@ -24,97 +24,93 @@ export const UserPanel = (
          userId,
          userName,
          ownedPokemons = [],
+         chosenPokemonId,
+         pokemonsState,
+         targetPokemonId,
          sendUserActionEvent,
          sendPokemonActionEvent,
-         userActionResultsList,
-         pokemonActionResultsList,
-         pokemonsState
-         }: UserAttackWindowLayoutProps
+         }: UserPanelProps
 ) => {
 
-    const [chosenPokemon, setChosenPokemon] = useState<PokemonDataType | null>(null);
-    // const [pokemonWithHealth, se]
+    const [chosenPokemonResource, setChosenPokemonResource] = useState<PokemonDataType | null>(null);
+    const [chosenPokemonState, setChosenPokemonState] = useState<PokemonStateType | null>(null);
 
 
     useEffect(() => {
-        const latestAction = userActionResultsList[userActionResultsList.length - 1];
-
-        if (latestAction && latestAction.sourceId == userId) {
-
-            if (latestAction.type == USER_ACTION_TYPES.CHOOSE_POKEMON) {
-                const pokemonData = ownedPokemons.find((pokemon) => latestAction.payload == pokemon.id);
-                if (pokemonData) {
-                    setChosenPokemon(pokemonData);
-                } else {
-                    console.error("Invalid pokemon id recieved: ", latestAction.payload);
-                }
+        if (!chosenPokemonId) { 
+            return setChosenPokemonResource(null);
+        }
+        
+        const chosenPokemonData = ownedPokemons.find((pokemon) => pokemon.id == chosenPokemonId);
+            if (!chosenPokemonData) {
+                console.error("Invalid pokemon id recieved: ", chosenPokemonId);
+                toast.error("Invalid pokemon id"); 
+                return;
             }
+            return setChosenPokemonResource(chosenPokemonData);
+    }, [userId, ownedPokemons, chosenPokemonId]);
 
-            if (latestAction.type == USER_ACTION_TYPES.WITHDRAW_POKEMON) {
-                setChosenPokemon(null);
-            }
-           
+    useEffect(() => {
+        if (!chosenPokemonId) {
+            return;
         }
 
-    }, [userId, ownedPokemons,userActionResultsList]);
+        const chosenPokemonState = pokemonsState.find((pokemonState) => pokemonState.id == chosenPokemonId);
+        if (!chosenPokemonState) {
+            console.error("Invalid pokemon id recieved: ", chosenPokemonId);
+            toast.error("Invalid pokemon id"); 
+            return;
+        }
+        setChosenPokemonState(chosenPokemonState);
+    }, [chosenPokemonId, pokemonsState]);
 
-    useEffect(() => {
-        // const latestAction = pokemonActionResultsList[pokemonActionResultsList.length - 1];
-  
-        // if (latestAction && latestAction.sourceId == chosenPokemon?.id) {  
-        // }
-  
-    }, [chosenPokemon, pokemonActionResultsList]);
 
-    const onChoosePokemon = (pokemonId: number) => () => {
-        if(sendUserActionEvent) {
-            if(chosenPokemon) {
-                return sendUserActionEvent({ type: USER_ACTION_TYPES.WITHDRAW_POKEMON, payload: pokemonId, sourceId: userId });
+    const toggleChosenPokemon = (pokemonId: number) => () => {
+        if(chosenPokemonId) {
+                return sendUserActionEvent({ type: USER_ACTION_TYPES.WITHDRAW_POKEMON, pokemonId: pokemonId, playerId: userId });
             }
 
-            return sendUserActionEvent({ type: USER_ACTION_TYPES.CHOOSE_POKEMON, payload: pokemonId, sourceId: userId });
-        }   
+        return sendUserActionEvent({ type: USER_ACTION_TYPES.CHOOSE_POKEMON, pokemonId: pokemonId, playerId: userId }); 
     };
 
-    const onAttackTrigger = (pokemonId: number, attackId: number) => () => {
+    const onTriggerAttack = (pokemonId: number, attackId: number) => () => {
         if (sendPokemonActionEvent) {
-            return sendPokemonActionEvent({ type: POKEMON_ACTION_TYPES.ATTACK, payload: attackId, playerId: userId, pokemonId });
+            return sendPokemonActionEvent({ type: POKEMON_ACTION_TYPES.ATTACK, sourceAttackId: attackId, sourcePlayerId: userId, sourcePokemonId: pokemonId, targetPokemonId  });
         }
-    };
+    }
 
     return (
         <section className="border-border border flex flex-col justify-end">
-        {!isNull(chosenPokemon) ? <div className="mb-4">
-            <PokemonHealthBar pokemonState={pokemonsState.find(({ id }) => chosenPokemon?.id == id)} /> 
-            <div className="mb-6">
-                 <h3 className="text-center text-3xl text-pokemonHealth-low font-sans font-bold"></h3>
-            </div>
-            <img className="max-w-60 mx-auto animate-pokemon-render" src={chosenPokemon?.image} />
-            <h3 className="mt-3 p-3 font-semibold text-2xl">{chosenPokemon?.name}</h3>
+        {!isNull(chosenPokemonResource)
+        ? <div className="mb-4 mt-12">
+            <PokemonHealthBar className="mb-24" pokemonState={chosenPokemonState} /> 
+            <img className="max-w-60 mx-auto animate-pokemon-render" src={chosenPokemonResource?.image} />
+            <h3 className="mt-3 p-3 font-semibold text-2xl">{chosenPokemonResource?.name}</h3>
             <h4 className="px-3 text-lg font-medium mb-2">Moves</h4>
             <ul className="flex flex-wrap p-3 min-h-20">
-                {chosenPokemon?.attacks.map((attack, index) => (
+                {chosenPokemonResource.attacks.map((attack, index) => (
                     <li key={`user_attack_${index}`} className="mx-2 my-1 list-none">
                         <Button
-                         name={`user_trigger_attack_${index}`}
-                         variant="small"
-                         onClick={onAttackTrigger(chosenPokemon.id, attack.id)}
-                         >
+                        name={`user_trigger_attack_${index}`}
+                        variant="small"
+                         onClick={onTriggerAttack(chosenPokemonId, attack.id)}
+                        >
                             {attack.name}
                         </Button>
                     </li>
                 ))}
             </ul>
-        </div> : null}
+        </div>
+        : null}
         <div>
             <h3 className="text-xl font-medium p-3">{userName}</h3>
             <ul className="grid grid-cols-3 p-3">
                  {
                     ownedPokemons.map((pokemon: PokemonDataType, i) => {
-                        const isPokemonSelected = pokemon.id == chosenPokemon?.id;
+                        const isPokemonSelected = pokemon.id == chosenPokemonResource?.id;
                         return (
                         <li key={`user_pokemon_${i}`}>
-                            <button name={`pokeball_${i}`} onClick={onChoosePokemon(pokemon.id)}>
+                            <button name={`pokeball_${i}`} onClick={toggleChosenPokemon(pokemon.id)}>
                                 <img className="h-12 mx-auto" src={isPokemonSelected ? PokeballOpenIcon : PokeballIcon} />
                                 <h5 className="text-center w-20 mt-2 text-sm">{pokemon.name}</h5>
                             </button>
