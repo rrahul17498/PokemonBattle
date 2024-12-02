@@ -109,8 +109,4 @@ public class BattleActionHandler {
       return pokemonStateList;
     }
 
-    Integer clampHealthValue(Integer health) {
-        return (Math.max(0, Math.min(100, health)));
-    }
-
 }
