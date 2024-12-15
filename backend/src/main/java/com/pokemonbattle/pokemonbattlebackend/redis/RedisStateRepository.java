@@ -1,17 +1,14 @@
 package com.pokemonbattle.pokemonbattlebackend.redis;
 
-import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleState;
 import io.github.dengliming.redismodule.redisjson.RedisJSON;
 import io.github.dengliming.redismodule.redisjson.args.GetArgs;
 import io.github.dengliming.redismodule.redisjson.args.SetArgs;
 import io.github.dengliming.redismodule.redisjson.client.RedisJSONClient;
 import io.github.dengliming.redismodule.redisjson.utils.GsonUtils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.client.RedisException;
 import org.springframework.stereotype.Repository;
-
 import java.time.Duration;
 
 @Repository

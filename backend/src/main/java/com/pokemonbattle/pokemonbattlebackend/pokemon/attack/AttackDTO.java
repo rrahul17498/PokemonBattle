@@ -1,12 +1,5 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.battleState;
+package com.pokemonbattle.pokemonbattlebackend.pokemon.attack;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
-import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.Attack;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.util.ArrayList;
