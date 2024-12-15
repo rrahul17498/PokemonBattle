@@ -1,8 +1,8 @@
 package com.pokemonbattle.pokemonbattlebackend.battle;
 
-import com.pokemonbattle.pokemonbattlebackend.battle.battleState.AttackStateRepository;
-import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleState;
-import com.pokemonbattle.pokemonbattlebackend.battle.battleState.BattleStateRepository;
+import com.pokemonbattle.pokemonbattlebackend.battle.cache.AttackResourceRepository;
+import com.pokemonbattle.pokemonbattlebackend.battle.cache.BattleState;
+import com.pokemonbattle.pokemonbattlebackend.battle.cache.BattleStateRepository;
 import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleInProgressException;
 import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleActionHandler;
@@ -26,7 +26,7 @@ public class BattleService {
     private final BattleConnectionHandler battleConnectionHandler;
     private final BattleActionHandler battleActionHandler;
     private final BattleStateRepository battleStateRepository;
-    private final AttackStateRepository attackStateRepository;
+    private final AttackResourceRepository attackResourceRepository;
 
     Battle createBattle(CreateBattleDTO createBattleRequest){
         User firstPlayer = this.userService.getUser(createBattleRequest.getUserId());
@@ -77,10 +77,10 @@ public class BattleService {
        UserWithPokemonsDTO secondPlayerData = this.userService.getUserWithPokemons(existingBattle.getSecondPlayerId());
        BattleResourcesDTO battleResourcesDTO = BattleResourcesDTO.getFullResources(existingBattle, firstPlayerData, secondPlayerData);
 
-       this.attackStateRepository.createAndSaveAttackState(battleResourcesDTO);
-       BattleState createdBattleState = this.battleStateRepository.createAndSaveBattleState(battleResourcesDTO);
+       this.attackResourceRepository.save(battleResourcesDTO);
+       BattleState loadedBattleState = this.battleStateRepository.save(battleResourcesDTO);
 
-       this.battleActionHandler.sendBattleStateToPlayers(createdBattleState);
+       this.battleActionHandler.sendBattleStateToPlayers(loadedBattleState);
 
        return battleResourcesDTO;
     }

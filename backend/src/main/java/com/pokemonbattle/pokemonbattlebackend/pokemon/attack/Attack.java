@@ -39,4 +39,17 @@ public class Attack {
     @Column(name = "energy_consumed", nullable = false)
     private Integer energyConsumed;
 
+
+    @Override
+    public String toString() {
+        return "Attack{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", mediaSrc='" + mediaSrc + '\'' +
+                ", power=" + power +
+                ", accuracy=" + accuracy +
+                ", energyConsumed=" + energyConsumed +
+                '}';
+    }
+
 }
