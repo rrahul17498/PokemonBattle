@@ -9,6 +9,7 @@ public class PokemonActionDTO {
     Long sourcePlayerId;
     Long sourcePokemonId;
     Long sourceAttackId;
+    String sourceAttackName;
     Long targetPokemonId;
     Boolean success = false;
 }

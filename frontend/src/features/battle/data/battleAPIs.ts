@@ -1,4 +1,5 @@
 import apiClient from "@/app/api/apiClient";
+import { BattleResources } from "./models";
 
 interface CreateBattleRequest {
     user_id: number
@@ -36,7 +37,7 @@ export const deleteActiveBattle = async (battleId: number) => {
     return response.data;
 }
 
-export const loadBattle = (battleId: number, roomId: string) => async() => {
-    const response = await apiClient.get(`/battles/${battleId}/load/${roomId}`)
+export const getBattleResources = async(battleId: number, roomId: string): Promise<BattleResources> => {
+    const response = await apiClient.get(`/battles/${battleId}/load/${roomId}`);
     return response.data;
 };

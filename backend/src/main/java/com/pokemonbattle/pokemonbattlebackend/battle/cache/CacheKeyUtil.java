@@ -1,6 +1,6 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.battleState;
+package com.pokemonbattle.pokemonbattlebackend.battle.cache;
 
-public class RedisBattleKeyUtil {
+public class CacheKeyUtil {
     private static final String battleKeyPrefix = "battle";
     private static final String battleStateSuffix = "state";
     private static final String attackStateSuffix = "attack";

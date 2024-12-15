@@ -1,4 +1,4 @@
-import { PokemonDataType } from "@/features/pokemon/data/models";
+import { PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
 import { z } from "zod"
 
 
@@ -14,15 +14,30 @@ export type ConnectBattle = {
 
 // Player Data
 
-export type PlayerResourceDataType = {
+export type PlayerResourceData = {
     userId: number,
     userName: string,
     ownedPokemons: PokemonDataType[]
 };
 
-export type PlayerStateDataType = {
+export type FormattedBattleResources = {
+    battleId: number,
+    roomId: string,
+    user: PlayerResourceData,
+    opponent: PlayerResourceData,
+    isUserFirstPlayer: boolean,
+ }
+
+export type PlayerStateData = {
     chosenPokemonId: number,
     pokemonsState: PokemonStateType[]
+}
+
+export type FormattedBattleState = {
+    status: BattleStatus,
+    winner: number,
+    user: PlayerStateData,
+    opponent: PlayerStateData
 }
 
 
@@ -33,8 +48,7 @@ export enum BattleStatus {
     COMPLETED = "COMPLETED"
 }
 
-
-export type BattleResource = {
+export type BattleResources = {
     battle_id: number,
     room_id: string,
     status: BattleStatus,
@@ -46,6 +60,25 @@ export type BattleResource = {
     second_player_owned_pokemons: PokemonDataType[],
     winner: number,
 };
+
+export type BattleState = {
+    roomId: string;
+    battleId: number;
+    status: BattleStatus;
+    firstPlayerId: number;
+    firstPlayerChosenPokemonId: number,
+    firstPlayerPokemonsStates: PokemonStateType[];
+    secondPlayerId: number;
+    secondPlayerChosenPokemonId: number,
+    secondPlayerPokemonsStates: PokemonStateType[];
+    winner: number;
+};
+
+export type PokemonStateType = {
+    id: number,
+    health: number,
+    status: PokemonStatus
+}
 
 export enum ConnectBattleEvents {
     BROADCAST_BATTLE_CREATED = "BROADCAST_BATTLE_CREATED",
@@ -69,7 +102,7 @@ export enum USER_ACTION_TYPES {
     WITHDRAW_POKEMON = "WITHDRAW_POKEMON"
 }
 
-export enum POKEMON_ACTION_TYPES {
+export enum PokemonActionTypes {
     ATTACK = "ATTACK",
 }
 
@@ -96,6 +129,7 @@ export type PokemonAction = {
     sourcePlayerId: number,
     sourcePokemonId: number,
     sourceAttackId: number,
+    sourceAttackName: string,
     targetPokemonId: number,
 };
 
@@ -107,24 +141,27 @@ export type PokemonActionResult = {
     sourcePlayerId: number,
     sourcePokemonId: number,
     sourceAttackId: number,
+    sourceAttackName: string,
     targetPokemonId: number
     success: boolean
 };
 
-export type BattleState = {
-    roomId: string;
-    battleId: number;
-    status: BattleStatus;
-    firstPlayerId: number;
-    firstPlayerChosenPokemonId: number,
-    firstPlayerPokemonsState: PokemonStateType[];
-    secondPlayerId: number;
-    secondPlayerChosenPokemonId: number,
-    secondPlayerPokemonsState: PokemonStateType[];
-    winner: number;
-};
+export enum EventAnimationAlignment {
+    LEFT = "LEFT",
+    RIGHT = "RIGHT"
+}
 
-export type PokemonStateType = {
-    id: number,
-    health: number
+export type EventAnimation = {
+    eventType: BattleEvents,
+    actionType: PokemonActionTypes,
+    actionId: number,
+    alignment: EventAnimationAlignment,
+}
+
+
+// Feedback
+
+export enum FeedbackTypes {
+    GOOD = "GOOD",
+    BAD = "BAD"
 }
