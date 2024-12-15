@@ -1,8 +1,7 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.battleState;
+package com.pokemonbattle.pokemonbattlebackend.battle.gameManagement;
 
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleResourcesDTO;
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleStatus;
-import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.PokemonActionDTO;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,15 +30,15 @@ public class BattleState implements Serializable {
     private Long winner;
 
     public BattleState(BattleResourcesDTO battleResourcesDTO) {
-          this.roomId = battleResourcesDTO.roomId();
-          this.battleId = battleResourcesDTO.battleId();
-          this.status = battleResourcesDTO.status();
+        this.roomId = battleResourcesDTO.roomId();
+        this.battleId = battleResourcesDTO.battleId();
+        this.status = battleResourcesDTO.status();
 
-          this.firstPlayerId = battleResourcesDTO.firstPlayerId();
-          this.firstPlayerPokemonsState = new ArrayList<>();
-          for (Pokemon pokemon: battleResourcesDTO.firstPlayerOwnedPokemons()) {
+        this.firstPlayerId = battleResourcesDTO.firstPlayerId();
+        this.firstPlayerPokemonsState = new ArrayList<>();
+        for (Pokemon pokemon: battleResourcesDTO.firstPlayerOwnedPokemons()) {
               this.firstPlayerPokemonsState.add(new PokemonState(pokemon));
-          }
+        }
 
         this.secondPlayerId = battleResourcesDTO.secondPlayerId();
         this.secondPlayerPokemonsState = new ArrayList<>();
@@ -54,17 +53,5 @@ public class BattleState implements Serializable {
         } else if (Objects.equals(playerId, this.getSecondPlayerId())) {
             this.setSecondPlayerChosenPokemonId(pokemonId);
         }
-    }
-
-    public void updatePokemonStateForPlayer(Long playerId, List<PokemonState> pokemonStates) {
-        if (Objects.equals(playerId, this.getFirstPlayerId())) {
-            this.setSecondPlayerPokemonsState(pokemonStates);
-        } else if (Objects.equals(playerId, this.getSecondPlayerId())) {
-            this.setFirstPlayerPokemonsState(pokemonStates);
-        }
-    }
-
-    public void executePokemonAttack(AttackState attackState, PokemonActionDTO pokemonAction) {
-
     }
 }

@@ -25,3 +25,8 @@ export const PokemonSchema = z.object({
 
 
 export type PokemonDataType = z.infer<typeof PokemonSchema>;
+
+export enum PokemonStatus {
+    DEFEATED = "DEFEATED",
+    ACTIVE = "ACTIVE",
+}

@@ -1,4 +1,4 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.battleState;
+package com.pokemonbattle.pokemonbattlebackend.battle.gameManagement;
 
 public class RedisBattleKeyUtil {
     private static final String battleKeyPrefix = "battle";
