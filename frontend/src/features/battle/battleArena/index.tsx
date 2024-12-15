@@ -1,110 +1,56 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { isNull } from "lodash";
-import Video from "@/components/base/video";
+import toast from "react-hot-toast";
 import useUser from "@/hooks/useUser";
 import Spinner from "@/components/base/spinner";
-import { PlayerResourceDataType, PlayerStateDataType, PokemonStateType } from "../data/models";
+import { BattleStatus } from "../data/models";
 import { UserPanel } from "./userPanel";
 import { useBattle } from "../data/useBattle";
 import { OpponentPanel } from "./opponentPanel";
-import { PokemonDataType } from "@/features/pokemon/data/models";
+import BattleCompletedDialog from "./battleCompletedDialog";
+import renderPokemonActionText from "./pokemonActionText";
+import AttackAnimationPanel from "./attackAnimationPanel";
 
-const formatPlayerResourceData = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerResourceDataType => ({ userId, userName, ownedPokemons });
-
-const formatPlayerStateData = (chosenPokemonId: number, pokemonsState: PokemonStateType[]): PlayerStateDataType => ({ chosenPokemonId, pokemonsState });
 
 const BattleArena = () => {
 
-    const { battleId, roomId } = useParams();
-    const userData = useUser();
-    const { battleResources, battleState, sendUserActionEvent, sendPokemonActionEvent} = useBattle(Number(battleId), roomId as string, userData?.id as number);
+  const { battleId, roomId } = useParams();
+  const userData = useUser();
 
-    const [attackSrc, setAttackSrc] = useState<string | null>(null);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-
-    const playerResourceMaster = useMemo<{ user: PlayerResourceDataType, opponent: PlayerResourceDataType, isUserFirstPlayer: boolean } | null>(() => {
-
-        if (!userData || !battleResources) {
-            return null;
-        }
+  const { formattedBattleResources, formattedBattleState, sendUserActionEvent, sendPokemonActionEvent , pokemonActionResultsList } = useBattle(Number(battleId), roomId as string, userData.id);
 
 
-        const {
-            first_player_id,
-            first_player_name,
-            first_player_owned_pokemons,
-            second_player_id,
-            second_player_name,
-            second_player_owned_pokemons,
-        } = battleResources;
-        
-        const isUserFirstPlayer = userData?.id == first_player_id;
-        
-        const formattedFirstPlayerResource = formatPlayerResourceData(first_player_id, first_player_name, first_player_owned_pokemons);
-        const formattedSecondPlayerResource = formatPlayerResourceData(second_player_id, second_player_name, second_player_owned_pokemons);
+  useEffect(() => {
+    const latestPokemonAction = pokemonActionResultsList[pokemonActionResultsList.length - 1];
+    if (latestPokemonAction && formattedBattleResources) {
+      if (latestPokemonAction.sourcePlayerId == formattedBattleResources.user.userId) {
+        toast.custom(renderPokemonActionText("HIT"), { position: "top-right", duration: 2000 });
+      } else if (latestPokemonAction.sourcePlayerId == formattedBattleResources.opponent.userId) {
+        toast.custom(renderPokemonActionText("HIT"), { position: "top-left", duration: 2000 });
+      }
+    }
+ 
+    }, [formattedBattleResources, pokemonActionResultsList, userData]);
 
-        return {
-          isUserFirstPlayer,
-          user: isUserFirstPlayer ? formattedFirstPlayerResource : formattedSecondPlayerResource,
-          opponent: isUserFirstPlayer ? formattedSecondPlayerResource : formattedFirstPlayerResource
-        };
-        
-    }, [battleResources, userData]);
-
-    const getPlayerStateMaster = () => {
-        if (!playerResourceMaster || !battleState) {
-            return null
-        }
-
-        const formattedFirstPlayerState = formatPlayerStateData(battleState?.firstPlayerChosenPokemonId, battleState?.firstPlayerPokemonsState);
-        const formattedSecondPlayerState = formatPlayerStateData(battleState?.secondPlayerChosenPokemonId, battleState?.secondPlayerPokemonsState);
-        
-        return {
-          user: playerResourceMaster.isUserFirstPlayer ? formattedFirstPlayerState : formattedSecondPlayerState,
-          opponent: playerResourceMaster.isUserFirstPlayer ? formattedSecondPlayerState : formattedFirstPlayerState
-        };
-    };  
-
-    const playerStateMaster = getPlayerStateMaster();
-
-    const onAttackEnd = () => {
-        setAttackSrc(null);
-    };
-
-    useEffect(() => {
-        if (!isNull(attackSrc) && videoRef.current) {
-            videoRef.current.load();
-            videoRef.current.play();
-        } 
-    },[attackSrc]);
-
-  if (!playerResourceMaster || !battleState || !playerStateMaster) {
-    return <Spinner />
+  if (!formattedBattleResources || !formattedBattleState) {
+    return <Spinner />;
   } 
     
   return (
-    <main className="min-h-screen grid grid-cols-1-2-1">
+    <main className="min-h-screen grid grid-cols-1-2-1 relative">
         <UserPanel
-          { ...playerResourceMaster.user }
-          { ...playerStateMaster.user }
-          targetPokemonId={playerStateMaster.opponent.chosenPokemonId}
+          { ...formattedBattleResources.user }
+          { ...formattedBattleState.user }
+          targetPokemonId={formattedBattleState.opponent.chosenPokemonId}
           sendUserActionEvent={sendUserActionEvent}
           sendPokemonActionEvent={sendPokemonActionEvent}
            />
-        <section className="border-border border-x flex justify-around p-6 rounded bg-black">
-             <Video
-                ref={videoRef}
-                src={!isNull(attackSrc) ? attackSrc : ""}
-                autoPlay={false}
-                hide={false}
-                onEnded={onAttackEnd}
-                />
-        </section>
+        <AttackAnimationPanel />
         <OpponentPanel
-         {...playerResourceMaster.opponent }
-         { ...playerStateMaster.opponent }
+         {...formattedBattleResources.opponent }
+         { ...formattedBattleState.opponent }
           />
+        {formattedBattleState.status == BattleStatus.COMPLETED &&  <BattleCompletedDialog isUserWinner={formattedBattleState.winner == userData.id} />}
     </main>
   );
 };
