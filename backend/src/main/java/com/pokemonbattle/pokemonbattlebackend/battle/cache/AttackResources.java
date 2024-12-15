@@ -1,4 +1,4 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.gameManagement;
+package com.pokemonbattle.pokemonbattlebackend.battle.cache;
 
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleResourcesDTO;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;

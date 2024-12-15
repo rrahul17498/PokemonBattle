@@ -1,4 +1,4 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.gameManagement;
+package com.pokemonbattle.pokemonbattlebackend.battle.cache;
 
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleResourcesDTO;
 import com.pokemonbattle.pokemonbattlebackend.redis.RedisStateRepository;
@@ -16,22 +16,22 @@ public class BattleStateRepository extends RedisStateRepository {
     }
 
     public BattleState save(BattleResourcesDTO battleResourcesDTO) {
-        Optional<BattleState> existingBattleState = this.getBattleStateByRoom(battleResourcesDTO.roomId());
+        Optional<BattleState> existingBattleState = this.findByRoom(battleResourcesDTO.roomId());
 
         if (existingBattleState.isPresent()) {
             return existingBattleState.get();
         }
 
         BattleState createdBattleState = new BattleState(battleResourcesDTO);
-        this.createJSONBucket(RedisBattleKeyUtil.getBattleStateKey(createdBattleState.getRoomId()), createdBattleState, Duration.ofMinutes(30));
+        this.createJSONBucket(CacheKeyUtil.getBattleStateKey(createdBattleState.getRoomId()), createdBattleState, Duration.ofMinutes(30));
         return createdBattleState;
     }
 
-    public Optional<BattleState> getBattleStateByRoom(String roomId) {
-        return Optional.ofNullable(this.getBucketData(RedisBattleKeyUtil.getBattleStateKey(roomId), BattleState.class));
+    public Optional<BattleState> findByRoom(String roomId) {
+        return Optional.ofNullable(this.getBucketData(CacheKeyUtil.getBattleStateKey(roomId), BattleState.class));
     }
 
-    public void updateBattleStateForRoom(String roomId, BattleState battleState){
-        this.updateBucketData(RedisBattleKeyUtil.getBattleStateKey(roomId), battleState);
+    public void update(String roomId, BattleState battleState){
+        this.updateBucketData(CacheKeyUtil.getBattleStateKey(roomId), battleState);
     }
 }

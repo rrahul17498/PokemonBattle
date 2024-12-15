@@ -1,14 +1,17 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.gameManagement;
+package com.pokemonbattle.pokemonbattlebackend.battle.cache;
 
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.PokemonStatus;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.AttackDTO;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Data;
 
 @Data
 public class PokemonState {
      Long id;
      Integer health;
+     @Enumerated(EnumType.STRING)
      PokemonStatus status;
 
     public PokemonState(Pokemon pokemon) {

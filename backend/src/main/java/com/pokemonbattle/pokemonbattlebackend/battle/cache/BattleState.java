@@ -1,4 +1,4 @@
-package com.pokemonbattle.pokemonbattlebackend.battle.gameManagement;
+package com.pokemonbattle.pokemonbattlebackend.battle.cache;
 
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleResourcesDTO;
 import com.pokemonbattle.pokemonbattlebackend.battle.BattleStatus;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -23,10 +21,10 @@ public class BattleState implements Serializable {
     private BattleStatus status;
     private Long firstPlayerId;
     private Long firstPlayerChosenPokemonId = null;
-    private List<PokemonState> firstPlayerPokemonsState;
+    private Map<Long, PokemonState> firstPlayerPokemonsStates;
     private Long secondPlayerId;
     private Long secondPlayerChosenPokemonId = null;
-    private List<PokemonState> secondPlayerPokemonsState;
+    private Map<Long, PokemonState> secondPlayerPokemonsStates;
     private Long winner;
 
     public BattleState(BattleResourcesDTO battleResourcesDTO) {
@@ -35,15 +33,15 @@ public class BattleState implements Serializable {
         this.status = battleResourcesDTO.status();
 
         this.firstPlayerId = battleResourcesDTO.firstPlayerId();
-        this.firstPlayerPokemonsState = new ArrayList<>();
+        this.firstPlayerPokemonsStates = new HashMap<>();
         for (Pokemon pokemon: battleResourcesDTO.firstPlayerOwnedPokemons()) {
-              this.firstPlayerPokemonsState.add(new PokemonState(pokemon));
+              this.firstPlayerPokemonsStates.put(pokemon.getId(), new PokemonState(pokemon));
         }
 
         this.secondPlayerId = battleResourcesDTO.secondPlayerId();
-        this.secondPlayerPokemonsState = new ArrayList<>();
+        this.secondPlayerPokemonsStates = new HashMap<>();
         for (Pokemon pokemon: battleResourcesDTO.firstPlayerOwnedPokemons()) {
-            this.secondPlayerPokemonsState.add(new PokemonState(pokemon));
+            this.secondPlayerPokemonsStates.put(pokemon.getId(), new PokemonState(pokemon));
         }
     }
 
