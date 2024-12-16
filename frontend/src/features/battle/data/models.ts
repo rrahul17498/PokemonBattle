@@ -1,4 +1,4 @@
-import { PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
+import { PokemonAttackDataType, PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
 import { z } from "zod"
 
 
@@ -17,7 +17,8 @@ export type ConnectBattle = {
 export type PlayerResourceData = {
     userId: number,
     userName: string,
-    ownedPokemons: PokemonDataType[]
+    ownedPokemons: PokemonDataType[],
+    attackList: PokemonAttackDataType[]
 };
 
 export type FormattedBattleResources = {
@@ -156,6 +157,7 @@ export type EventAnimation = {
     actionType: PokemonActionTypes,
     actionId: number,
     alignment: EventAnimationAlignment,
+    mediaSrc: string | null
 }
 
 

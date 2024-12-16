@@ -9,11 +9,13 @@ export enum PokemonTypes {
 export const PokemonAttackSchema = z.object({
     id: z.number(),
     name: z.string(),
-    mediaSrc: z.string(),
+    media_src: z.string(),
     power: z.number(),
     accuracy: z.number(),
     energy_consumed: z.number(),
 });
+
+export type PokemonAttackDataType = z.infer<typeof PokemonAttackSchema>;
 
 export const PokemonSchema = z.object({
     id: z.number(),

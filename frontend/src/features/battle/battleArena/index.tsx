@@ -17,7 +17,7 @@ const BattleArena = () => {
   const { battleId, roomId } = useParams();
   const userData = useUser();
 
-  const { formattedBattleResources, formattedBattleState, sendUserActionEvent, sendPokemonActionEvent , pokemonActionResultsList } = useBattle(Number(battleId), roomId as string, userData.id);
+  const { formattedBattleResources, formattedBattleState, pokemonActionResultsList, eventAnimationsList, sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, } = useBattle(Number(battleId), roomId as string, userData.id);
 
 
   useEffect(() => {
@@ -45,7 +45,11 @@ const BattleArena = () => {
           sendUserActionEvent={sendUserActionEvent}
           sendPokemonActionEvent={sendPokemonActionEvent}
            />
-        <AttackAnimationPanel />
+        <AttackAnimationPanel
+          eventAnimationsList={eventAnimationsList}
+          formattedBattleResources={formattedBattleResources}
+          updateEventAnimationsList={updateEventAnimationsList}
+         />
         <OpponentPanel
          {...formattedBattleResources.opponent }
          { ...formattedBattleState.opponent }

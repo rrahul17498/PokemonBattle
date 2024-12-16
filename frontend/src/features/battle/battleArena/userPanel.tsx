@@ -124,7 +124,7 @@ export const UserPanel = (
                                 <img className={cn("h-12 mx-auto", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED })} src={isPokemonSelected ? PokeballOpenIcon : PokeballIcon} />
                                 <h5 className="text-center w-20 mt-2 text-sm">{pokemon.name}</h5>
                             </button>
-                    </li>
+                        </li>
                     )})
                 }
             </ul>
