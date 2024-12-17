@@ -22,7 +22,7 @@ public class BattleStateRepository extends RedisStateRepository {
             return existingBattleState.get();
         }
 
-        BattleState createdBattleState = new BattleState(battleResourcesDTO);
+        BattleState createdBattleState = BattleState.create(battleResourcesDTO);
         this.createJSONBucket(CacheKeyUtil.getBattleStateKey(createdBattleState.getRoomId()), createdBattleState, Duration.ofMinutes(30));
         return createdBattleState;
     }

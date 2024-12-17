@@ -3,6 +3,7 @@ import useConnectBattle from "./data/useConnectBattle";
 import { BattleResources } from "./data/models";
 import useUser from "@/hooks/useUser";
 import Spinner from "@/components/base/spinner";
+import { ButtonVariantType } from "@/components/base/button/types";
 
 
 
@@ -45,7 +46,7 @@ const ConnectToBattle = () => {
                                      : <Button
                                         onClick={onJoinBattleClick(battleData.battle_id)}
                                         name="join_battle"
-                                        variant="small"
+                                        variant={ButtonVariantType.SMALL}
                                         disabled={isBattleCreatedByUser}
                                         >Join</Button>}
                                 </div>      

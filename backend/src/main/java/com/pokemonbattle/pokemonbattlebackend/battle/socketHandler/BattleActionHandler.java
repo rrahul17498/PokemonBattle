@@ -4,6 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.pokemonbattle.pokemonbattlebackend.battle.cache.*;
 import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.AttackStateNotFound;
+import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleStateNotFoundForRoom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -53,13 +54,15 @@ public class BattleActionHandler {
             log.info("pokemon action: {}", pokemonAction);
             this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.POKEMON_ACTION.name(), pokemonAction);
 
-            Optional<BattleState> existingBattleState = this.battleStateRepository.findByRoom(pokemonAction.getRoomId());
-            if (existingBattleState.isEmpty()) {
+            Optional<BattleState> existingBattleStateOptional = this.battleStateRepository.findByRoom(pokemonAction.getRoomId());
+            if (existingBattleStateOptional.isEmpty()) {
                 this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.POKEMON_ACTION_RESULT.name(), pokemonAction);
-                return;
+                throw new BattleStateNotFoundForRoom(pokemonAction.getRoomId());
             }
 
-            if (pokemonAction.getType().equals(PokemonActionTypes.ATTACK.name())) {
+            BattleState existingBattleState = existingBattleStateOptional.get();
+
+            if (pokemonAction.getType().equals(PokemonActionTypes.ATTACK.name()) && existingBattleState.getFirstPlayerChosenPokemonId() != null && existingBattleState.getSecondPlayerChosenPokemonId() !=null) {
                   Optional<AttackResources> attackState = this.attackResourceRepository.findByRoom(pokemonAction.getRoomId());
                   if (attackState.isEmpty()) {
                       this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.USER_ACTION_RESULT.name(), pokemonAction);
@@ -67,27 +70,35 @@ public class BattleActionHandler {
                   }
 
 
-                  if (Objects.equals(pokemonAction.getSourcePlayerId(), existingBattleState.get().getFirstPlayerId())) {
-                      Map<Long, PokemonState> updatedSecondPlayerPokemonStateList = BattleActionUtils.executeAttackAndUpdateOpponentPokemonsState(
-                              existingBattleState.get().getSecondPlayerPokemonsStates(),
-                              existingBattleState.get().getFirstPlayerPokemonsStates(),
+                  if (Objects.equals(pokemonAction.getSourcePlayerId(), existingBattleState.getFirstPlayerId()) && existingBattleState.getCurrentTurn().equals(existingBattleState.getFirstPlayerId())) {
+
+                      AttackResultDTO attackResultDTO = BattleActionUtils.executeAttackAndUpdateOpponentPokemonsState(
+                              existingBattleState.getSecondPlayerPokemonsStates(),
                               attackState.get().getFirstPlayerPokemonAttackResources(),
-                              pokemonAction,
-                              existingBattleState.get()
+                              pokemonAction
                       );
-                      existingBattleState.get().setSecondPlayerPokemonsStates(updatedSecondPlayerPokemonStateList);
-                  } else if (Objects.equals(pokemonAction.getSourcePlayerId(), existingBattleState.get().getSecondPlayerId())) {
-                      Map<Long, PokemonState> updatedFirstPlayerPokemonStateList = BattleActionUtils.executeAttackAndUpdateOpponentPokemonsState(
-                              existingBattleState.get().getFirstPlayerPokemonsStates(),
-                              existingBattleState.get().getSecondPlayerPokemonsStates(),
+                      existingBattleState.setSecondPlayerPokemonsStates(attackResultDTO.getUpdatedOpponentPokemonStateList());
+                      existingBattleState.setCurrentTurn(existingBattleState.getSecondPlayerId());
+
+                      if (attackResultDTO.getBattleWinner() != null) {
+                          existingBattleState.markBattleAsCompleted(attackResultDTO.getBattleWinner());
+                      }
+                  } else if (Objects.equals(pokemonAction.getSourcePlayerId(), existingBattleState.getSecondPlayerId()) && existingBattleState.getCurrentTurn().equals(existingBattleState.getSecondPlayerId())) {
+
+                      AttackResultDTO attackResultDTO = BattleActionUtils.executeAttackAndUpdateOpponentPokemonsState(
+                              existingBattleStateOptional.get().getFirstPlayerPokemonsStates(),
                               attackState.get().getSecondPlayerPokemonAttackResources(),
-                              pokemonAction,
-                              existingBattleState.get()
+                              pokemonAction
                       );
-                      existingBattleState.get().setFirstPlayerPokemonsStates(updatedFirstPlayerPokemonStateList);
+                      existingBattleState.setFirstPlayerPokemonsStates(attackResultDTO.getUpdatedOpponentPokemonStateList());
+                      existingBattleState.setCurrentTurn(existingBattleState.getFirstPlayerId());
+
+                      if (attackResultDTO.getBattleWinner() != null) {
+                          existingBattleState.markBattleAsCompleted(attackResultDTO.getBattleWinner());
+                      }
                   }
 
-                this.executeBattleStateUpdateForRoom(pokemonAction.getRoomId(), existingBattleState.get());
+                this.executeBattleStateUpdateForRoom(pokemonAction.getRoomId(), existingBattleState);
                 pokemonAction.setSuccess(true);
                 log.info("pokemon action successful: {}", pokemonAction);
                 this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.POKEMON_ACTION_RESULT.name(), pokemonAction);
