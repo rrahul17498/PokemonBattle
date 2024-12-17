@@ -16,7 +16,7 @@ import java.util.Optional;
 public class BattleActionUtils {
 
 
-    static Map<Long, PokemonState>  executeAttackAndUpdateOpponentPokemonsState(Map<Long, PokemonState> opponentPokemonStates, Map<Long, PokemonState> sourceUserPokemonStates, List<AttackDTO> sourceUserPokemonsAttackList, PokemonActionDTO pokemonActionDTO, BattleState battleState) {
+    static AttackResultDTO  executeAttackAndUpdateOpponentPokemonsState(Map<Long, PokemonState> opponentPokemonStates, List<AttackDTO> sourceUserPokemonsAttackList, PokemonActionDTO pokemonActionDTO) {
         Optional<AttackDTO> sourcePokemonAttackDTOOptional = sourceUserPokemonsAttackList.stream().filter((item) -> item.getId().equals(pokemonActionDTO.getSourceAttackId())).findAny();
         if (sourcePokemonAttackDTOOptional.isEmpty()) {
             throw new AttackNotFoundInAttackResources((pokemonActionDTO.getSourceAttackId()));
@@ -28,6 +28,8 @@ public class BattleActionUtils {
         PokemonState targetPokemonState = opponentPokemonStates.get(pokemonActionDTO.getTargetPokemonId());
         if (targetPokemonState == null || targetPokemonState.getStatus() != PokemonStatus.ACTIVE) { throw new ActivePokemonNotFoundException((pokemonActionDTO.getTargetPokemonId())); }
 
+        AttackResultDTO attackResultDTO = new AttackResultDTO();
+
         if (targetPokemonState.getHealth() > 0) {
             targetPokemonState.receiveDamage(sourcePokemonAttackDTOOptional.get());
         }
@@ -37,11 +39,12 @@ public class BattleActionUtils {
             long noOfActivePokemonsOfOpponent = opponentPokemonStates.values().stream().filter(pokemonState -> pokemonState.getStatus() == PokemonStatus.ACTIVE).count();
 
             if (noOfActivePokemonsOfOpponent == 0) {
-                BattleActionUtils.markBattleAsCompleted(pokemonActionDTO.sourcePlayerId, battleState);
+                attackResultDTO.setBattleWinner(pokemonActionDTO.getSourcePlayerId());
             }
         }
 
-        return opponentPokemonStates;
+        attackResultDTO.setUpdatedOpponentPokemonStateList(opponentPokemonStates);
+        return attackResultDTO;
     }
 
     static void markBattleAsCompleted(Long winner, BattleState battleState) {

@@ -14,11 +14,12 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BattleState implements Serializable {
+public class BattleState {
     @Id
     private String roomId;
     private Integer battleId;
     private BattleStatus status;
+    private Long currentTurn;
     private Long firstPlayerId;
     private Long firstPlayerChosenPokemonId = null;
     private Map<Long, PokemonState> firstPlayerPokemonsStates;
@@ -52,4 +53,17 @@ public class BattleState implements Serializable {
             this.setSecondPlayerChosenPokemonId(pokemonId);
         }
     }
+
+    public void markBattleAsCompleted(Long winner) {
+        this.setWinner(winner);
+        this.setStatus(BattleStatus.COMPLETED);
+    }
+
+    public static BattleState create(BattleResourcesDTO battleResourcesDTO) {
+        BattleState createdBattleState = new BattleState(battleResourcesDTO);
+        createdBattleState.setCurrentTurn(createdBattleState.getFirstPlayerId());
+
+        return createdBattleState;
+    }
+
 }
