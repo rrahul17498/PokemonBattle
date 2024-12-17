@@ -8,7 +8,8 @@ import { isNull } from "lodash";
 import PokemonHealthBar from "./pokemonHealthBar";
 import toast from "react-hot-toast";
 import { cn } from "@/utils/cn";
-import renderPokemonActionText from "./pokemonActionText";
+import renderActionText from "./actionText";
+import { ButtonVariantType } from "@/components/base/button/types";
 
 interface UserPanelProps {
     userId: number,
@@ -17,6 +18,7 @@ interface UserPanelProps {
     chosenPokemonId: number,
     pokemonsState: PokemonStateType[],
     targetPokemonId: number,
+    isCurrentTurn: boolean,
     sendUserActionEvent: (action: UserActionInput) => void,
     sendPokemonActionEvent: (action: PokemonActionInput) => void,
 }
@@ -29,14 +31,17 @@ export const UserPanel = (
          chosenPokemonId,
          pokemonsState,
          targetPokemonId,
+         isCurrentTurn,
          sendUserActionEvent,
          sendPokemonActionEvent,
          }: UserPanelProps
 ) => {
 
     const [chosenPokemonResource, setChosenPokemonResource] = useState<PokemonDataType | null>(null);
-    const [chosenPokemonState, setChosenPokemonState] = useState<PokemonStateType | null>(null);
-    const [isActionInProgress, setIsActionInProgress] = useState<boolean>(false);
+    const [allowPokemonSwitch, setAllowPokemonSwitch] = useState<boolean>(true);
+
+
+    const chosenPokemonState = pokemonsState[chosenPokemonId] || null;
 
 
     useEffect(() => {
@@ -45,45 +50,41 @@ export const UserPanel = (
         }
         
         const chosenPokemonData = ownedPokemons.find((pokemon) => pokemon.id == chosenPokemonId);
-            if (!chosenPokemonData) {
-                console.error("Invalid pokemon id recieved: ", chosenPokemonId);
-                toast.error("Invalid pokemon id"); 
-                return;
-            }
-            return setChosenPokemonResource(chosenPokemonData);
-    }, [userId, ownedPokemons, chosenPokemonId]);
-
-    useEffect(() => {
-        if (!chosenPokemonId || !pokemonsState) {
-            return;
-        }
-
-        const userChosenPokemonState = pokemonsState[chosenPokemonId];
-        if (!userChosenPokemonState) {
+        if (!chosenPokemonData) {
             console.error("Invalid pokemon id recieved: ", chosenPokemonId);
             toast.error("Invalid pokemon id"); 
             return;
         }
-        setChosenPokemonState(userChosenPokemonState);
-        setIsActionInProgress(false);
-    }, [chosenPokemonId, pokemonsState]);
+        return setChosenPokemonResource(chosenPokemonData);
+    }, [userId, ownedPokemons, chosenPokemonId]);
+
+    useEffect(() => {
+        if (isCurrentTurn) {
+            setAllowPokemonSwitch(true);
+        }
+    }, [isCurrentTurn]);
 
 
     const toggleChosenPokemon = (pokemonId: number) => () => {
-        if(chosenPokemonId) {
-                return sendUserActionEvent({ type: USER_ACTION_TYPES.WITHDRAW_POKEMON, pokemonId: pokemonId, playerId: userId });
-            }
+        if (!allowPokemonSwitch) {
+            return toast.custom(renderActionText("Wait for your turn"), { position: "top-left", duration: 2000 });
+        }
 
+        if(chosenPokemonId) {
+            return sendUserActionEvent({ type: USER_ACTION_TYPES.WITHDRAW_POKEMON, pokemonId: pokemonId, playerId: userId });
+        }
         return sendUserActionEvent({ type: USER_ACTION_TYPES.CHOOSE_POKEMON, pokemonId: pokemonId, playerId: userId }); 
     };
 
+
     const onTriggerAttack = (pokemonId: number, attackId: number, attackName: string) => () => {
-        if (sendPokemonActionEvent) {
-            setIsActionInProgress(true);
-            sendPokemonActionEvent({ type: PokemonActionTypes.ATTACK, sourceAttackId: attackId, sourceAttackName: attackName, sourcePlayerId: userId, sourcePokemonId: pokemonId, targetPokemonId  });
-            return toast.custom(renderPokemonActionText(attackName), { position: "top-left", duration: 2000 });
-            
+        if (!isCurrentTurn) {
+            return toast.custom(renderActionText("Wait for your turn"), { position: "top-left", duration: 2000 });
         }
+
+        setAllowPokemonSwitch(false);
+        sendPokemonActionEvent({ type: PokemonActionTypes.ATTACK, sourceAttackId: attackId, sourceAttackName: attackName, sourcePlayerId: userId, sourcePokemonId: pokemonId, targetPokemonId  });
+        return toast.custom(renderActionText(attackName), { position: "top-left", duration: 2000 });
     }
 
 
@@ -102,8 +103,9 @@ export const UserPanel = (
                     <li key={`user_attack_${index}`} className="mx-2 my-1 list-none">
                         <Button
                         name={`user_trigger_attack_${index}`}
-                        variant="small"
-                        onClick={!isActionInProgress ? onTriggerAttack(chosenPokemonId, attack.id, attack.name) : undefined}
+                        variant={ButtonVariantType.SMALL}
+                        onClick={onTriggerAttack(chosenPokemonId, attack.id, attack.name)}
+                        disabled={!isCurrentTurn}
                         >
                             {attack.name}
                         </Button>
@@ -120,11 +122,11 @@ export const UserPanel = (
                         const isPokemonSelected = pokemon.id == chosenPokemonResource?.id;
                         return (
                         <li key={`user_pokemon_${i}`}>
-                            <button name={`pokeball_${i}`} onClick={toggleChosenPokemon(pokemon.id)}>
-                                <img className={cn("h-12 mx-auto", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED })} src={isPokemonSelected ? PokeballOpenIcon : PokeballIcon} />
-                                <h5 className="text-center w-20 mt-2 text-sm">{pokemon.name}</h5>
-                            </button>
-                    </li>
+                            <Button variant={ButtonVariantType.CONTAINER} name={`pokeball_${i}`} onClick={toggleChosenPokemon(pokemon.id)}>
+                                <img className={cn("h-12 mx-auto", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED, "opacity-50 cursor-not-allowed": !allowPokemonSwitch })} src={isPokemonSelected ? PokeballOpenIcon : PokeballIcon} />
+                                <h5 className="text-center mt-2 text-sm">{pokemon.name}</h5>
+                            </Button>
+                        </li>
                     )})
                 }
             </ul>

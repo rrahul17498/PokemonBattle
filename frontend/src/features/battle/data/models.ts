@@ -1,4 +1,4 @@
-import { PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
+import { PokemonAttackDataType, PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
 import { z } from "zod"
 
 
@@ -17,7 +17,8 @@ export type ConnectBattle = {
 export type PlayerResourceData = {
     userId: number,
     userName: string,
-    ownedPokemons: PokemonDataType[]
+    ownedPokemons: PokemonDataType[],
+    attackList: PokemonAttackDataType[]
 };
 
 export type FormattedBattleResources = {
@@ -29,6 +30,8 @@ export type FormattedBattleResources = {
  }
 
 export type PlayerStateData = {
+    id: number,
+    isCurrentTurn: boolean,
     chosenPokemonId: number,
     pokemonsState: PokemonStateType[]
 }
@@ -36,6 +39,7 @@ export type PlayerStateData = {
 export type FormattedBattleState = {
     status: BattleStatus,
     winner: number,
+    currentTurn: number;
     user: PlayerStateData,
     opponent: PlayerStateData
 }
@@ -65,6 +69,7 @@ export type BattleState = {
     roomId: string;
     battleId: number;
     status: BattleStatus;
+    currentTurn: number,
     firstPlayerId: number;
     firstPlayerChosenPokemonId: number,
     firstPlayerPokemonsStates: PokemonStateType[];
@@ -156,6 +161,7 @@ export type EventAnimation = {
     actionType: PokemonActionTypes,
     actionId: number,
     alignment: EventAnimationAlignment,
+    mediaSrc: string | null
 }
 
 

@@ -8,6 +8,7 @@ import { isNull } from "lodash";
 import PokemonHealthBar from "./pokemonHealthBar";
 import toast from "react-hot-toast";
 import { cn } from "@/utils/cn";
+import { ButtonVariantType } from "@/components/base/button/types";
 
 interface UserAttackWindowLayoutProps {
     userId: number,
@@ -74,7 +75,7 @@ export const OpponentPanel = (
                             <Button
                             name={`user_trigger_attack_${index}`}
                             className="cursor-not-allowed bg-primary-light"
-                            variant="small"
+                            variant={ButtonVariantType.SMALL}
                             onClick={undefined}
                             >{attack.name}</Button>
                         </li>
@@ -89,10 +90,10 @@ export const OpponentPanel = (
                         const isPokemonSelected = pokemon.id == chosenPokemonId;
                         return (
                         <li key={`user_pokemon_${i}`}>
-                            <button name={`pokeball_${i}`} className="cursor-not-allowed" disabled={true}>
+                            <Button name={`pokeball_${i}`} variant={ButtonVariantType.CONTAINER} disabled={true}>
                                 <img className={cn("h-12 mx-auto", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED })} src={isPokemonSelected ? PokeballOpenIcon : PokeballIcon} />
-                                <h5 className="text-center w-20 mt-2 text-sm">{pokemon.name}</h5>
-                            </button>
+                                <h5 className="text-center mt-2 text-sm">{pokemon.name}</h5>
+                            </Button>
                         </li>
                     )})
                 }
