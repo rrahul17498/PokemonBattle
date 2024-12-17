@@ -36,14 +36,12 @@ export const formatBattleResources = (battleResources: BattleResources, userId: 
 
 
 
-export const createPlayerStateObj = (chosenPokemonId: number, pokemonsState: PokemonStateType[]): PlayerStateData => ({ chosenPokemonId, pokemonsState });
+export const createPlayerStateObj = (userId: number, currentTurn: number, chosenPokemonId: number, pokemonsState: PokemonStateType[]): PlayerStateData => ({ id: userId, isCurrentTurn: currentTurn == userId, chosenPokemonId, pokemonsState});
 
 export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: boolean) => {
 
-
-
-  const formattedFirstPlayerState = createPlayerStateObj(battleState?.firstPlayerChosenPokemonId, battleState?.firstPlayerPokemonsStates);
-  const formattedSecondPlayerState = createPlayerStateObj(battleState?.secondPlayerChosenPokemonId, battleState?.secondPlayerPokemonsStates);
+  const formattedFirstPlayerState = createPlayerStateObj(battleState.firstPlayerId, battleState.currentTurn, battleState?.firstPlayerChosenPokemonId, battleState?.firstPlayerPokemonsStates);
+  const formattedSecondPlayerState = createPlayerStateObj(battleState.secondPlayerId, battleState.currentTurn, battleState?.secondPlayerChosenPokemonId, battleState?.secondPlayerPokemonsStates);
   
   return {
     status: battleState.status,

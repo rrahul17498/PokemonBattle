@@ -3,6 +3,7 @@ import Button from "@/components/base/button";
 import START_OFF_POKEMONS from "@/features/pokemon/startoffPokemons.json";
 import { OnBoardInfoType } from "./data/models";
 import { PokemonDataType, PokemonSchema } from "@/features/pokemon/data/models"
+import { ButtonVariantType } from "@/components/base/button/types";
 
 
 
@@ -34,7 +35,7 @@ export const ChooseStartOffPokemon = ({ onBoardInfo, updateOnBoardInfo }: Choose
                     return (
                       <Button
                         key={`choose_pokemon_${i}`}
-                        variant="container"
+                        variant={ButtonVariantType.CONTAINER}
                         name={`choose_pokemon_${i}`}
                         className="hover:scale-110 transform transition-transform duration-200"
                         onClick={onChoosePokemon(validatedPokemonData)}

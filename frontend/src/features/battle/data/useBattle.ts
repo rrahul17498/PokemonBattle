@@ -6,7 +6,7 @@ import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonA
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import * as BattleAPIs from "./battleAPIs";
 import { formatBattleResources, formatBattleState, getAttackMediaSrc } from "./battleUtils";
-import renderPokemonActionText from "../battleArena/pokemonActionText";
+import renderActionText from "../battleArena/actionText";
 
 
 type UseBattle = {
@@ -85,7 +85,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 socket.on(BattleEvents.POKEMON_ACTION, (action: PokemonAction) => {
                     console.log("POKEMON_ACTION: ", action);
                     if (action.sourcePlayerId != userId) {
-                        toast.custom(renderPokemonActionText(action.sourceAttackName), { position: "top-right", duration: 2000 });
+                        toast.custom(renderActionText(action.sourceAttackName), { position: "top-right", duration: 2000 });
                     }
                 });
 

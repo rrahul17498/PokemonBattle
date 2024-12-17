@@ -1,24 +1,17 @@
 import { forwardRef } from "react";
 import { cn } from "@/utils/cn";
-
-enum VariantType {
-    DEFAULT = "default",
-    SMALL = "small",
-    DISABLED = "disabled",
-    CONTAINER = "container",
-};
+import { ButtonVariantType } from "./types";
 
 
-const getVariantStyles = (className: string, variant: VariantType) => {
-    const baseStyles = "text-base shadow-md flex justify-center items-center px-4 py-2 mx-auto cursor-pointer rounded-lg";
+const getVariantStyles = (className: string, variant: ButtonVariantType, disabled: boolean) => {
+    const baseStyles = "text-base shadow-md flex justify-center items-center mx-auto cursor-pointer rounded-lg";
     const variantStyles = {
-            [VariantType.DEFAULT]: "bg-primary text-primary-foreground",
-            [VariantType.SMALL]: "bg-primary text-primary-foreground py-1 px-2",
-            [VariantType.DISABLED]: "bg-primary-light text-disabled-foreground cursor-not-allowed",
-            [VariantType.CONTAINER]: "shadow-none overflow-hidden",       
+            [ButtonVariantType.DEFAULT]: { base: "px-4 py-2", active: "bg-primary text-primary-foreground", inactive: "bg-primary-light text-disabled-foreground cursor-not-allowed" },
+            [ButtonVariantType.SMALL]: { base: "py-1 px-2", active: "bg-primary text-primary-foreground py-1 px-2", inactive: "bg-primary-light text-disabled-foreground cursor-not-allowed" },
+            [ButtonVariantType.CONTAINER]: { base: "block p-0 w-fit shadow-none overflow-hidden bg-none", active: "opacity-100", inactive: "opacity-50 cursor-not-allowed" },       
     };
 
-    return cn(baseStyles, variantStyles[variant], className);
+    return cn(baseStyles, variantStyles[variant].base, (disabled ? variantStyles[variant].inactive : variantStyles[variant].active), className);
     
     };
 
@@ -26,14 +19,14 @@ type Props =  {
    type?: "button" | "submit",
    name: string,
    className?: string,
-   variant?: string,
+   variant?: ButtonVariantType,
    onClick?: () => void,
    children: React.ReactNode | string,
    disabled?: boolean,
 }
 
 const Button = forwardRef<HTMLButtonElement, Props>((
-    { type = "button", name, variant = VariantType.DEFAULT, className = "", disabled, onClick, children }, ref
+    { type = "button", name, variant = ButtonVariantType.DEFAULT, className = "", disabled = false, onClick, children }, ref
 ) => {
 
     return (
@@ -42,7 +35,7 @@ const Button = forwardRef<HTMLButtonElement, Props>((
           type={type} 
           name={name}
           onClick={onClick}
-          className={getVariantStyles(className, disabled ? VariantType.DISABLED : variant as VariantType)}
+          className={getVariantStyles(className, variant, disabled)}
         >
             {children}
         </button>

@@ -30,6 +30,8 @@ export type FormattedBattleResources = {
  }
 
 export type PlayerStateData = {
+    id: number,
+    isCurrentTurn: boolean,
     chosenPokemonId: number,
     pokemonsState: PokemonStateType[]
 }
@@ -37,6 +39,7 @@ export type PlayerStateData = {
 export type FormattedBattleState = {
     status: BattleStatus,
     winner: number,
+    currentTurn: number;
     user: PlayerStateData,
     opponent: PlayerStateData
 }
@@ -66,6 +69,7 @@ export type BattleState = {
     roomId: string;
     battleId: number;
     status: BattleStatus;
+    currentTurn: number,
     firstPlayerId: number;
     firstPlayerChosenPokemonId: number,
     firstPlayerPokemonsStates: PokemonStateType[];
