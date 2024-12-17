@@ -8,7 +8,7 @@ import { UserPanel } from "./userPanel";
 import { useBattle } from "../data/useBattle";
 import { OpponentPanel } from "./opponentPanel";
 import BattleCompletedDialog from "./battleCompletedDialog";
-import renderPokemonActionText from "./pokemonActionText";
+import renderActionText from "./actionText";
 import AttackAnimationPanel from "./attackAnimationPanel";
 
 
@@ -24,9 +24,9 @@ const BattleArena = () => {
     const latestPokemonAction = pokemonActionResultsList[pokemonActionResultsList.length - 1];
     if (latestPokemonAction && formattedBattleResources) {
       if (latestPokemonAction.sourcePlayerId == formattedBattleResources.user.userId) {
-        toast.custom(renderPokemonActionText("HIT"), { position: "top-right", duration: 2000 });
+        toast.custom(renderActionText("HIT"), { position: "top-right", duration: 2000 });
       } else if (latestPokemonAction.sourcePlayerId == formattedBattleResources.opponent.userId) {
-        toast.custom(renderPokemonActionText("HIT"), { position: "top-left", duration: 2000 });
+        toast.custom(renderActionText("HIT"), { position: "top-left", duration: 2000 });
       }
     }
  
