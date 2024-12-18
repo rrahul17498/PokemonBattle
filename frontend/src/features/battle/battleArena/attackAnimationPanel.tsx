@@ -1,23 +1,25 @@
 import Video from "@/components/base/video";
 import { useState, useRef, useEffect } from "react";
-import { AttackAnimation, EventAnimation, FormattedBattleResources, PokemonActionTypes } from "../data/models";
+import { EventAnimation, FormattedBattleResources, PokemonActionTypes } from "../data/models";
 
 interface AttackAnimationPanelProps {
   eventAnimationsList: EventAnimation[],
   formattedBattleResources: FormattedBattleResources,
-  updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void
+  updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void,
+  displayPokemonResultAndUpdateBattleState: () => void
 }
 
-const AttackAnimationPanel = ({ formattedBattleResources, eventAnimationsList, updateEventAnimationsList }: AttackAnimationPanelProps) => {
+const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState }: AttackAnimationPanelProps) => {
 
-    const [currentAttackAnimation, setCurrentAttackAnimation] = useState<AttackAnimation | null>(null);
+    const [currentAttackAnimation, setCurrentAttackAnimation] = useState<EventAnimation & { isLast: boolean } | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
       if (!currentAttackAnimation && eventAnimationsList.length > 0) {
+           console.log("currAnimationUpdate");
           const [upcomingEventAnimation, ...remainingEventAnimation] = eventAnimationsList;
           if (upcomingEventAnimation.actionType === PokemonActionTypes.ATTACK) {
-            setCurrentAttackAnimation(upcomingEventAnimation);
+            setCurrentAttackAnimation({ ...upcomingEventAnimation, isLast: !remainingEventAnimation.length });
             updateEventAnimationsList(remainingEventAnimation);
           }
       } 
@@ -33,14 +35,21 @@ const AttackAnimationPanel = ({ formattedBattleResources, eventAnimationsList, u
 
 
     const onCurrentAttackAnimationEnd = () => {
+      console.log("onCurrentAttackAnimationEnd");
+        if (currentAttackAnimation?.isLast) {
+            displayPokemonResultAndUpdateBattleState();
+        }
+
         setCurrentAttackAnimation(null);
-      };
+    };
+
+    console.log("currentAttackAnimation: ", currentAttackAnimation);
 
     return (
         <section className="border-border border-x flex justify-around p-6 rounded bg-black">
              <Video
                 ref={videoRef}
-                src={currentAttackAnimation ? currentAttackAnimation.mediaSrc : ""}
+                src={currentAttackAnimation?.mediaSrc || ""}
                 autoPlay={false}
                 hide={false}
                 onEnded={onCurrentAttackAnimationEnd}

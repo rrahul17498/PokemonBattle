@@ -1,5 +1,4 @@
 import { PokemonAttackDataType, PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
-import { z } from "zod"
 
 
 // Connect Battle
@@ -39,10 +38,9 @@ export type PlayerStateData = {
 export type FormattedBattleState = {
     status: BattleStatus,
     winner: number,
-    currentTurn: number;
     user: PlayerStateData,
     opponent: PlayerStateData
-}
+};
 
 
 // Battle
@@ -161,7 +159,7 @@ export type EventAnimation = {
     actionType: PokemonActionTypes,
     actionId: number,
     alignment: EventAnimationAlignment,
-    mediaSrc: string | null
+    mediaSrc: string | null,
 }
 
 
