@@ -1,5 +1,5 @@
 import { PokemonAttackDataType, PokemonDataType } from "@/features/pokemon/data/models";
-import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources } from "./models";
+import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState } from "./models";
 
 
 export const createPlayerResourceObj = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerResourceData => {
@@ -38,7 +38,7 @@ export const formatBattleResources = (battleResources: BattleResources, userId: 
 
 export const createPlayerStateObj = (userId: number, currentTurn: number, chosenPokemonId: number, pokemonsState: PokemonStateType[]): PlayerStateData => ({ id: userId, isCurrentTurn: currentTurn == userId, chosenPokemonId, pokemonsState});
 
-export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: boolean) => {
+export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: boolean): FormattedBattleState => {
 
   const formattedFirstPlayerState = createPlayerStateObj(battleState.firstPlayerId, battleState.currentTurn, battleState?.firstPlayerChosenPokemonId, battleState?.firstPlayerPokemonsStates);
   const formattedSecondPlayerState = createPlayerStateObj(battleState.secondPlayerId, battleState.currentTurn, battleState?.secondPlayerChosenPokemonId, battleState?.secondPlayerPokemonsStates);

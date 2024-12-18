@@ -90,7 +90,7 @@ export const OpponentPanel = (
                         const isPokemonSelected = pokemon.id == chosenPokemonId;
                         return (
                         <li key={`user_pokemon_${i}`}>
-                            <Button name={`pokeball_${i}`} variant={ButtonVariantType.CONTAINER} disabled={true}>
+                            <Button name={`pokeball_${i}`} variant={ButtonVariantType.CONTAINER} className="opacity-100" disabled={true}>
                                 <img className={cn("h-12 mx-auto", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED })} src={isPokemonSelected ? PokeballOpenIcon : PokeballIcon} />
                                 <h5 className="text-center mt-2 text-sm">{pokemon.name}</h5>
                             </Button>
