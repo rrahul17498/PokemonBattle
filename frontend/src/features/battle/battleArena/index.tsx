@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import toast from "react-hot-toast";
 import useUser from "@/hooks/useUser";
 import Spinner from "@/components/base/spinner";
 import { BattleStatus } from "../data/models";
@@ -8,7 +6,6 @@ import { UserPanel } from "./userPanel";
 import { useBattle } from "../data/useBattle";
 import { OpponentPanel } from "./opponentPanel";
 import BattleCompletedDialog from "./battleCompletedDialog";
-import renderActionText from "./actionText";
 import AttackAnimationPanel from "./attackAnimationPanel";
 
 
@@ -17,22 +14,16 @@ const BattleArena = () => {
   const { battleId, roomId } = useParams();
   const userData = useUser();
 
-  const { formattedBattleResources, formattedBattleState, pokemonActionResultsList, eventAnimationsList, sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, } = useBattle(Number(battleId), roomId as string, userData.id);
+  const {
+    isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList,
+    sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState
+  } = useBattle(Number(battleId), roomId as string, userData.id);
 
+  const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered; 
 
-  useEffect(() => {
-    const latestPokemonAction = pokemonActionResultsList[pokemonActionResultsList.length - 1];
-    if (latestPokemonAction && formattedBattleResources) {
-      if (latestPokemonAction.sourcePlayerId == formattedBattleResources.user.userId) {
-        toast.custom(renderActionText("HIT"), { position: "top-right", duration: 2000 });
-      } else if (latestPokemonAction.sourcePlayerId == formattedBattleResources.opponent.userId) {
-        toast.custom(renderActionText("HIT"), { position: "top-left", duration: 2000 });
-      }
-    }
- 
-    }, [formattedBattleResources, pokemonActionResultsList, userData]);
+  console.log("isBattleReady: ", isBattleReady);
 
-  if (!formattedBattleResources || !formattedBattleState) {
+  if (!isBattleReady) {
     return <Spinner />;
   } 
     
@@ -49,6 +40,7 @@ const BattleArena = () => {
           eventAnimationsList={eventAnimationsList}
           formattedBattleResources={formattedBattleResources}
           updateEventAnimationsList={updateEventAnimationsList}
+          displayPokemonResultAndUpdateBattleState={displayPokemonResultAndUpdateBattleState}
          />
         <OpponentPanel
          {...formattedBattleResources.opponent }

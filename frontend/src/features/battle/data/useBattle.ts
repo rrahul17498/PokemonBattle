@@ -2,33 +2,30 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput, EventAnimation, PokemonActionTypes, EventAnimationAlignment, PlayerResourceData, FormattedBattleResources, FormattedBattleState, PokemonAction } from "./models";
+import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput, EventAnimation, FormattedBattleResources, FormattedBattleState, PokemonAction } from "./models";
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
 import * as BattleAPIs from "./battleAPIs";
-import { formatBattleResources, formatBattleState, getAttackMediaSrc } from "./battleUtils";
+import { formatBattleResources } from "./battleUtils";
 import renderActionText from "../battleArena/actionText";
+import useBattleAction from "./useBattleAction";
 
 
-type UseBattle = {
-    formattedBattleResources: FormattedBattleResources | null | undefined,
+type UseBattleReturn = {
+    isBattleEventsRegistered: boolean,
+    formattedBattleResources: FormattedBattleResources | undefined,
     formattedBattleState: FormattedBattleState | null,
-    userActionResultsList: UserActionResult[],
-    pokemonActionResultsList: PokemonActionResult[],
     eventAnimationsList: EventAnimation[],
     sendUserActionEvent: (action: UserActionInput) => void,
     sendPokemonActionEvent: (action: PokemonActionInput) => void,
     updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void,
+    displayPokemonResultAndUpdateBattleState: () => void
 };
 
-export const useBattle = (battleId: number, roomId: string, userId: number): UseBattle => {
+export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleReturn => {
 
     const { socket, isConnected, battleRoom, setBattleRoom } = useSocketIO();
-    
     const [isBattleResourceQueryEnabled, setIsBattleResourceQueryEnabled] = useState(Boolean(battleRoom));
-    const [userActionResultsList, setUserActionResultsList] = useState<UserActionResult[]>([]);
-    const [pokemonActionResultsList, setPokemonActionResultsList] = useState<PokemonActionResult[]>([]);
-    const [battleState, setBattleState] = useState<BattleState | null>(null);
-    const [eventAnimationsList, setEventAnimationsList] = useState<EventAnimation[]>([]);
+    const [isBattleEventsRegistered, setIsBattleEventsRegistered] = useState(false);
 
     const { data: formattedBattleResources } = useQuery<FormattedBattleResources>({
         queryKey: [QUERY_KEYS.playerResourcesForBattle, battleId],
@@ -40,31 +37,31 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
         enabled: isBattleResourceQueryEnabled
     });
 
-    const formattedBattleState = battleState && formattedBattleResources ? formatBattleState(battleState, formattedBattleResources.isUserFirstPlayer) : null;
+    const {
+        formattedBattleState, eventAnimationsList,
+        loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
+        displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
+     } = useBattleAction(formattedBattleResources);
+
+    
+    
+
 
     useEffect(() => {
         if (socket && isConnected && formattedBattleResources) {
-            socket.on(BattleEvents.POKEMON_ACTION_RESULT, (action: PokemonActionResult) => {
-                console.log("POKEMON_ACTION_RESULT: ", action);
-                
-                setEventAnimationsList((prev) => ([...prev, 
-                    {
-                        eventType: BattleEvents.POKEMON_ACTION_RESULT,
-                        actionType: PokemonActionTypes.ATTACK,
-                        actionId: action.sourceAttackId,
-                        alignment: EventAnimationAlignment.LEFT,
-                        mediaSrc: getAttackMediaSrc(action.sourceAttackId, action.sourcePlayerId, formattedBattleResources)
-                    }
-                ]));
-                setPokemonActionResultsList((prev) => ([...prev, action]));
+            socket.on(BattleEvents.POKEMON_ACTION_RESULT, (actionResult: PokemonActionResult) => {
+                console.log("POKEMON_ACTION_RESULT: ", actionResult);
+                loadPokemonActionResultAnimation(actionResult);
             });
+
+            setIsBattleEventsRegistered(true);
 
             return () => {
                 socket.off(BattleEvents.POKEMON_ACTION_RESULT);
             };
         }
 
-    },[socket, isConnected, formattedBattleResources]);
+    },[socket, isConnected, formattedBattleResources, loadPokemonActionResultAnimation]);
 
 
     useEffect(() => {
@@ -73,29 +70,27 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             if (battleRoom) {
                 socket.on(BattleEvents.BATTLE_STATE_UPDATE, (battleState: BattleState) => {
                     console.log("BATTLE_STATE_UPDATE: ", battleState);
-                    setBattleState(battleState);
+                    saveBattleStateToBeUpdated(battleState);
                 });
-                socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
+                socket.on(BattleEvents.USER_ACTION, (action: UserActionResult) => {
                     console.log("USER_ACTION: ", action);
                 });
                 socket.on(BattleEvents.USER_ACTION_RESULT, (action: UserActionResult) => {
                     console.log("USER_ACTION_RESULT: ", action);
-                    setUserActionResultsList((prev) => ([...prev, action]));
                 });
                 socket.on(BattleEvents.POKEMON_ACTION, (action: PokemonAction) => {
                     console.log("POKEMON_ACTION: ", action);
-                    if (action.sourcePlayerId != userId) {
-                        toast.custom(renderActionText(action.sourceAttackName), { position: "top-right", duration: 2000 });
-                    }
+                    updatePokemonActionInProgress(true);
+                    toast.custom(renderActionText(action.sourceAttackName), { position: action.sourcePlayerId === userId ? "top-left" : "top-right", duration: 2000 });
                 });
 
                 setIsBattleResourceQueryEnabled(true);
     
                 return () => {
+                    socket.off(BattleEvents.BATTLE_STATE_UPDATE);
                     socket.off(BattleEvents.USER_ACTION);
                     socket.off(BattleEvents.USER_ACTION_RESULT);
-                    socket.off(BattleEvents.POKEMON_ACTION_RESULT);
-                    socket.off(BattleEvents.BATTLE_STATE_UPDATE);
+                    socket.off(BattleEvents.POKEMON_ACTION);
                 };
             }
 
@@ -109,12 +104,8 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 return toast.error("Failed to join battle room");
             });
         }
-    }, [socket, isConnected, battleRoom, setBattleRoom, userId, battleId, roomId]);
+    }, [socket, isConnected, battleRoom, userId, battleId, roomId, setBattleRoom, saveBattleStateToBeUpdated, updatePokemonActionInProgress]);
 
-
-    const updateEventAnimationsList = (updatedEventAnimationList: EventAnimation[]) => {
-        setEventAnimationsList(updatedEventAnimationList);
-    };
 
     const sendUserActionEvent = (action: UserActionInput) => {
         socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
@@ -125,5 +116,8 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     };
     
 
-    return { formattedBattleResources, formattedBattleState, userActionResultsList, pokemonActionResultsList, eventAnimationsList, sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList };
+    return {
+        isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList,
+        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState
+    };
 };

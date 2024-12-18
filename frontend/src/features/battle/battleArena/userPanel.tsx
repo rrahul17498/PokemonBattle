@@ -84,7 +84,6 @@ export const UserPanel = (
 
         setAllowPokemonSwitch(false);
         sendPokemonActionEvent({ type: PokemonActionTypes.ATTACK, sourceAttackId: attackId, sourceAttackName: attackName, sourcePlayerId: userId, sourcePokemonId: pokemonId, targetPokemonId  });
-        return toast.custom(renderActionText(attackName), { position: "top-left", duration: 2000 });
     }
 
 
