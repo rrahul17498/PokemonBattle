@@ -34,4 +34,8 @@ public class AttackResourceRepository extends RedisStateRepository {
     public void update(String roomId, AttackResources attackResources){
         this.updateBucketData(CacheKeyUtil.getBattleStateKey(roomId), attackResources);
     }
+
+    public void delete(String roomId) {
+        this.deleteBucketData(CacheKeyUtil.getAttackStateKey(roomId));
+    }
 }
