@@ -16,7 +16,6 @@ const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, 
 
     useEffect(() => {
       if (!currentAttackAnimation && eventAnimationsList.length > 0) {
-           console.log("currAnimationUpdate");
           const [upcomingEventAnimation, ...remainingEventAnimation] = eventAnimationsList;
           if (upcomingEventAnimation.actionType === PokemonActionTypes.ATTACK) {
             setCurrentAttackAnimation({ ...upcomingEventAnimation, isLast: !remainingEventAnimation.length });
@@ -35,15 +34,12 @@ const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, 
 
 
     const onCurrentAttackAnimationEnd = () => {
-      console.log("onCurrentAttackAnimationEnd");
         if (currentAttackAnimation?.isLast) {
             displayPokemonResultAndUpdateBattleState();
         }
 
         setCurrentAttackAnimation(null);
     };
-
-    console.log("currentAttackAnimation: ", currentAttackAnimation);
 
     return (
         <section className="border-border border-x flex justify-around p-6 rounded bg-black">

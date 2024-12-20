@@ -16,10 +16,6 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
 
     const formattedBattleState = battleState && formattedBattleResources ? formatBattleState(battleState, formattedBattleResources.isUserFirstPlayer) : null;
 
-    console.log("battleState: ", battleState);
-    console.log("battleStateToBeUpdated: ", battleStateToBeUpdated);
-    console.log("eventAnimationsList: ", eventAnimationsList);
-
     const updatePokemonActionInProgress = (actionInProgress: boolean) => {
         setPokemonActionInProgress(actionInProgress);
     };
@@ -35,7 +31,6 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     const saveBattleStateToBeUpdated = (battleState: BattleState) => {
         setBattleStateToBeUpdated(battleState);
     };
-
 
     const savePokemonActionResultToBeDisplayed = (pokemonActionResult: PokemonActionResult) => {
         setPokemonActionResultsToBeDisplayed((prev) => [...prev, pokemonActionResult]);
