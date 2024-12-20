@@ -34,7 +34,8 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             return formatBattleResources(battleResourcesData, userId);
         },
         staleTime: Infinity,
-        enabled: isBattleResourceQueryEnabled
+        enabled: isBattleResourceQueryEnabled,
+        refetchOnMount: "always"
     });
 
     const {
