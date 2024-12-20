@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { FeedbackTypes } from "../data/models";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/app/query/queryKeys";
+import { useSocketIO } from "../data/socketIO/useSocketIO";
 
 interface BattleCompletedDialogProps {
     isUserWinner: boolean
@@ -18,15 +21,20 @@ const feedbackTextAreaPlaceHolder = {
 const BattleCompletedDialog = ({ isUserWinner }: BattleCompletedDialogProps) => {
 
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const { exitBattleRoom } = useSocketIO();
     const [selectedFeedbackType, setSelectedFeedbackType] = useState<FeedbackTypes | null>(null);
 
 
     const onGoToAnotherBattle = () => {
+        exitBattleRoom();
+        queryClient.setQueryData([QUERY_KEYS.activeBattle], null);
+        queryClient.setQueryData([QUERY_KEYS.playerResourcesForBattle], null);
+        // To check
+        // queryClient.removeQueries({ queryKey: [QUERY_KEYS.activeBattle, QUERY_KEYS.playerResourcesForBattle] });
+        const activeBattle = queryClient.getQueryData([QUERY_KEYS.activeBattle]);
+        console.log("removeQueryTest: ", activeBattle);
         navigate(APP_ROUTES.protected.connectBattle.fullPath, { replace: true });
-    };
-
-    const onExitBrowserWindow = () => {
-        window.close();
     };
 
     const onSelectFeedbackEmoji = (feedbackType: FeedbackTypes) => () => {
@@ -52,7 +60,6 @@ const BattleCompletedDialog = ({ isUserWinner }: BattleCompletedDialogProps) => 
                 ></textarea>
             <div className="flex justify-around mt-4">
                 <Button name={"go_to_battle"} onClick={onGoToAnotherBattle}>Go for another Battle</Button>
-                <Button name={"go_to_battle"} onClick={onExitBrowserWindow}>Exit game</Button>
             </div>
         </dialog>
     );
