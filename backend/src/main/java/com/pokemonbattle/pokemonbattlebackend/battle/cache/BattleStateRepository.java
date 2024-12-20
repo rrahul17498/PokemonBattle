@@ -34,4 +34,8 @@ public class BattleStateRepository extends RedisStateRepository {
     public void update(String roomId, BattleState battleState){
         this.updateBucketData(CacheKeyUtil.getBattleStateKey(roomId), battleState);
     }
+
+    public void delete(String roomId) {
+        this.deleteBucketData(CacheKeyUtil.getBattleStateKey(roomId));
+    }
 }

@@ -21,8 +21,6 @@ const BattleArena = () => {
 
   const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered; 
 
-  console.log("isBattleReady: ", isBattleReady);
-
   if (!isBattleReady) {
     return <Spinner />;
   } 

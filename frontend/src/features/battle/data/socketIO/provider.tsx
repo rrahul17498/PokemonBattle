@@ -2,7 +2,7 @@ import useUser from "@/hooks/useUser";
 import { createContext, Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import io from "socket.io-client";
-import { ConnectBattleEvents, ConnectBattle, BattleResources } from "../models";
+import { ConnectBattleEvents, ConnectBattle, BattleResources, DisconnectBattle } from "../models";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 
@@ -11,7 +11,8 @@ type SocketContext = {
     socket: typeof io | null,
     isConnected: boolean,
     battleRoom: string | null,
-    setBattleRoom: Dispatch<SetStateAction<string | null>>
+    setBattleRoom: Dispatch<SetStateAction<string | null>>,
+    exitBattleRoom: () => void
 };
 
 const defaultSocketIOData = {
@@ -19,6 +20,7 @@ const defaultSocketIOData = {
     isConnected: false,
     battleRoom: null,
     setBattleRoom: () => {},
+    exitBattleRoom: () => {}
 };
 
 export const SocketIOContext = createContext<SocketContext>(defaultSocketIOData);
@@ -49,6 +51,7 @@ export const SocketProvider = ({ children }: SocketProvider) => {
             newSocket.on("connect", () => {
              console.log(`Socket connection successful`);
              setIsConnected(true);
+             toast.success("Connected");
             });
      
             newSocket.on("disconnect", () => {
@@ -67,13 +70,13 @@ export const SocketProvider = ({ children }: SocketProvider) => {
                     if (result.did_join_room) {  
                         setBattleRoom(result.room_id);
                         console.log("User joined battle room");
-                        return toast.success("Battle room ready");
+                        return toast.success("Battle room ready 1");
                     }
                     return toast.error("Failed to join battle room");
                 });
                 setIsConnected(true);
                 console.log(`Socket re-connect successful`);
-               });
+            });
      
             setSocket(newSocket);
      
@@ -85,12 +88,23 @@ export const SocketProvider = ({ children }: SocketProvider) => {
         }
      }, [queryClient, userData]);
 
+     const exitBattleRoom = () => {
+        const exitRoomPayload = { user_id: userData.id, room_id: battleRoom, did_exit_room: false };
+        socket.emit(ConnectBattleEvents.EXIT_BATTLE_ROOM, exitRoomPayload,(result: DisconnectBattle) => {
+            if (result.did_exit_room) {  
+                setBattleRoom(null);
+                return console.log("User exited from battle room");
+            }
+            return toast.error("Failed to exit battle room");
+        });
+     };
+
 
      console.table({ isConnected, battleRoom: battleRoom }, ["Socket Connection", "Status"]);
 
      
     return(
-        <SocketIOContext.Provider value={{ socket, isConnected, battleRoom, setBattleRoom }}>
+        <SocketIOContext.Provider value={{ socket, isConnected, battleRoom, setBattleRoom, exitBattleRoom }}>
             {children}
         </SocketIOContext.Provider>
     );

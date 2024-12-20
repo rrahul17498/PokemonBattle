@@ -28,7 +28,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     const [isBattleEventsRegistered, setIsBattleEventsRegistered] = useState(false);
 
     const { data: formattedBattleResources } = useQuery<FormattedBattleResources>({
-        queryKey: [QUERY_KEYS.playerResourcesForBattle, battleId],
+        queryKey: [QUERY_KEYS.playerResourcesForBattle],
         queryFn: async() => {
             const battleResourcesData  = await BattleAPIs.getBattleResources(battleId, roomId);
             return formatBattleResources(battleResourcesData, userId);

@@ -10,6 +10,12 @@ export type ConnectBattle = {
     did_join_room: boolean
 }
 
+export type DisconnectBattle = {
+    user_id: number,
+    room_id: string,
+    did_exit_room: boolean
+}
+
 
 // Player Data
 
@@ -88,6 +94,7 @@ export enum ConnectBattleEvents {
     BROADCAST_BATTLE_CONNECTED = "BROADCAST_BATTLE_CONNECTED",
     BROADCAST_BATTLE_DELETED = "BROADCAST_BATTLE_DELETED",
     JOIN_BATTLE_ROOM = "JOIN_BATTLE_ROOM",
+    EXIT_BATTLE_ROOM = "EXIT_BATTLE_ROOM",
     INITIATE_BATTLE = "INITIATE_BATTLE",
     LOAD_BATTLE_RESOURCES = "LOAD_BATTLE_RESOURCES"
 }

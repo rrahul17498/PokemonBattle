@@ -18,8 +18,9 @@ public class BattleConnectionHandler {
         this.server = server;
         this.server.addConnectListener(onUserSocketConnect());
         this.server.addDisconnectListener(onUserSocketDisconnect());
-        this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleRoomConnectionDTO.class,onJoinBattleRoom());
+        this.server.addEventListener(BattleConnectionEvents.JOIN_BATTLE_ROOM.name(), BattleRoomConnectionDTO.class, onJoinBattleRoom());
         this.server.addEventListener(BattleConnectionEvents.INITIATE_BATTLE.name(), BattleRoomConnectionDTO.class, initiateBattle());
+        this.server.addEventListener(BattleConnectionEvents.EXIT_BATTLE_ROOM.name(), BattleRoomDisconnectDTO.class, onExitBattleRoom());
     }
 
     public ConnectListener onUserSocketConnect() {
@@ -47,6 +48,14 @@ public class BattleConnectionHandler {
                 ackClient.sendAckData(BattleRoomConnectionDTO.createAcknowledgement(battleRoomConnectionDTO, false));
                 log.info("Room[{}] is full", battleRoomConnectionDTO.roomId());
             }
+        };
+    }
+
+    public DataListener<BattleRoomDisconnectDTO> onExitBattleRoom() {
+        return (client, battleRoomDisconnectDTO, ackclient) -> {
+            client.leaveRoom(battleRoomDisconnectDTO.roomId());
+            ackclient.sendAckData(BattleRoomDisconnectDTO.createAcknowledgement(battleRoomDisconnectDTO, true));
+            log.info("User[{}] exited from room[{}]", battleRoomDisconnectDTO.userId(), battleRoomDisconnectDTO.roomId());
         };
     }
 

@@ -49,4 +49,12 @@ public class RedisStateRepository {
             log.error("Failed to update JSON bucket for key: {}", bucketKey);
         }
     }
+
+    protected void deleteBucketData(String bucketKey) {
+        try {
+           this.redisJSON.del(bucketKey, ".");
+        } catch(RedisException e) {
+            log.error("Failed to delete JSON bucket for key: {}", bucketKey);
+        }
+    }
 }

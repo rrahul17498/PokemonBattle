@@ -1,5 +1,6 @@
 import apiClient from "@/app/api/apiClient";
 import { BattleResources } from "./models";
+import { isAxiosError } from "axios";
 
 interface CreateBattleRequest {
     user_id: number
@@ -28,8 +29,15 @@ export const getAllBattles = async () => {
 }
 
 export const getActiveBattle = (userId: number) => async () => {
-    const response = await apiClient.get(`/battles/active/${userId}`);
-    return response.data;
+    try {
+        const response = await apiClient.get(`/battles/active/${userId}`);
+        return response.data;
+    } catch(error) {
+        if(isAxiosError(error) && error.response?.status == 404) {
+            return null;
+        }
+        throw error;
+    }
 }
 
 export const deleteActiveBattle = async (battleId: number) => {
