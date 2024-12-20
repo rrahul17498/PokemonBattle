@@ -15,8 +15,8 @@ const BattleArena = () => {
   const userData = useUser();
 
   const {
-    isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList,
-    sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState
+    isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress,
+    sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
   } = useBattle(Number(battleId), roomId as string, userData.id);
 
   const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered; 
@@ -31,6 +31,8 @@ const BattleArena = () => {
           { ...formattedBattleResources.user }
           { ...formattedBattleState.user }
           targetPokemonId={formattedBattleState.opponent.chosenPokemonId}
+          pokemonActionInProgress={pokemonActionInProgress}
+          updatePokemonActionInProgress={updatePokemonActionInProgress}
           sendUserActionEvent={sendUserActionEvent}
           sendPokemonActionEvent={sendPokemonActionEvent}
            />

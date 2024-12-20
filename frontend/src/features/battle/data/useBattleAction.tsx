@@ -16,8 +16,8 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
 
     const formattedBattleState = battleState && formattedBattleResources ? formatBattleState(battleState, formattedBattleResources.isUserFirstPlayer) : null;
 
-    const updatePokemonActionInProgress = (actionInProgress: boolean) => {
-        setPokemonActionInProgress(actionInProgress);
+    const updatePokemonActionInProgress = (isActionInProgress: boolean) => {
+        setPokemonActionInProgress(isActionInProgress);
     };
 
     const addEventAnimation = (eventAnimationObj: EventAnimation) => {
@@ -63,9 +63,7 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
                     setPokemonActionResultsToBeDisplayed([]);
             }
 
-            setBattleState(battleStateToBeUpdated);
-            setBattleStateToBeUpdated(null);
-            setPokemonActionInProgress(false);
+            updatePokemonActionInProgress(false);
         }     
     };
 
@@ -79,9 +77,9 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
 
 
     return {
-        formattedBattleState, eventAnimationsList,
+        formattedBattleState, eventAnimationsList, pokemonActionInProgress,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
-        savePokemonActionResultToBeUpdated: savePokemonActionResultToBeDisplayed, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress 
+        displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress 
      }
 };
 

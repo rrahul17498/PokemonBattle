@@ -19,8 +19,10 @@ interface UserPanelProps {
     pokemonsState: PokemonStateType[],
     targetPokemonId: number,
     isCurrentTurn: boolean,
+    pokemonActionInProgress: boolean,
     sendUserActionEvent: (action: UserActionInput) => void,
     sendPokemonActionEvent: (action: PokemonActionInput) => void,
+    updatePokemonActionInProgress: (isActionInProgress: boolean) => void
 }
 
 export const UserPanel = (
@@ -32,8 +34,10 @@ export const UserPanel = (
          pokemonsState,
          targetPokemonId,
          isCurrentTurn,
+         pokemonActionInProgress,
          sendUserActionEvent,
          sendPokemonActionEvent,
+         updatePokemonActionInProgress
          }: UserPanelProps
 ) => {
 
@@ -78,10 +82,10 @@ export const UserPanel = (
 
 
     const onTriggerAttack = (pokemonId: number, attackId: number, attackName: string) => () => {
-        if (!isCurrentTurn) {
+        if (!isCurrentTurn || pokemonActionInProgress) {
             return toast.custom(renderActionText("Wait for your turn"), { position: "top-left", duration: 2000 });
         }
-
+        updatePokemonActionInProgress(true);
         setAllowPokemonSwitch(false);
         sendPokemonActionEvent({ type: PokemonActionTypes.ATTACK, sourceAttackId: attackId, sourceAttackName: attackName, sourcePlayerId: userId, sourcePokemonId: pokemonId, targetPokemonId  });
     }
