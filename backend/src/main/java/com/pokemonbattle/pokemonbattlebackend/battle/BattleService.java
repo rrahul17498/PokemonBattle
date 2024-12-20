@@ -7,6 +7,7 @@ import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleInProgress
 import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleActionHandler;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
+import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleStateHandler;
 import com.pokemonbattle.pokemonbattlebackend.user.User;
 import com.pokemonbattle.pokemonbattlebackend.user.UserService;
 import com.pokemonbattle.pokemonbattlebackend.user.UserWithPokemonsDTO;
@@ -24,7 +25,7 @@ public class BattleService {
     private final BattleRepository battleRepository;
     private final UserService userService;
     private final BattleConnectionHandler battleConnectionHandler;
-    private final BattleActionHandler battleActionHandler;
+    private final BattleStateHandler battleStateHandler;
     private final BattleStateRepository battleStateRepository;
     private final AttackResourceRepository attackResourceRepository;
 
@@ -41,7 +42,7 @@ public class BattleService {
 
         this.battleConnectionHandler.broadcastBattleCreation(createdBattle.getBattleId());
 
-      return createdBattle;
+        return createdBattle;
     }
 
     Battle connectToBattle(ConnectBattleDTO battleConnect){
@@ -61,7 +62,6 @@ public class BattleService {
         Battle savedBattle = this.battleRepository.save(existingBattle);
 
         this.battleConnectionHandler.broadcastBattleConnection(savedBattle.getBattleId());
-
         return savedBattle;
     }
 
@@ -80,7 +80,7 @@ public class BattleService {
        this.attackResourceRepository.save(battleResourcesDTO);
        BattleState loadedBattleState = this.battleStateRepository.save(battleResourcesDTO);
 
-       this.battleActionHandler.sendBattleStateToPlayers(loadedBattleState);
+       this.battleStateHandler.sendBattleStateToPlayers(loadedBattleState);
 
        return battleResourcesDTO;
     }
@@ -107,6 +107,13 @@ public class BattleService {
 
     List<BattlesToConnectDTO> getCreatedBattles() {
         return this.battleRepository.findByStatus(BattleStatus.CREATED);
+    }
+
+    public void markBattleAsCompleted(Integer battleId, Long winner){
+        Battle battle = this.battleRepository.findById(battleId).orElseThrow(() -> new BattleNotFoundException(BattleAccessFromTypes.BATTLE, battleId));
+        battle.setWinner(winner);
+        battle.setStatus(BattleStatus.COMPLETED);
+        this.battleRepository.save(battle);
     }
 
 }

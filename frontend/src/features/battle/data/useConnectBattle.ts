@@ -1,11 +1,12 @@
+import { isAxiosError } from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { BattleResources, ConnectBattle, ConnectBattleEvents } from "./models";
-import { useNavigate } from "react-router-dom";
 import APP_ROUTES from "@/app/routing/routes";
-import toast from "react-hot-toast";
 import * as BattleAPIs from "./battleAPIs";
 
 const useConnectBattle = (userId: number) => {
@@ -22,7 +23,14 @@ const useConnectBattle = (userId: number) => {
         queryKey: [QUERY_KEYS.activeBattle],
         queryFn: BattleAPIs.getActiveBattle(userId),
         staleTime: Infinity,
-        retry: false
+        gcTime: Infinity,
+        refetchOnMount: "always",
+        retry: (failureCount, error) => {
+            if (isAxiosError(error) && error.response?.status == 404) {
+                return false;
+            }
+            return failureCount < 3;
+        },
     });
 
     const createBattleMutation = useMutation({
