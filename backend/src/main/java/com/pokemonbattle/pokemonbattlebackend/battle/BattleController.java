@@ -4,7 +4,7 @@ package com.pokemonbattle.pokemonbattlebackend.battle;
 import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleInProgressException;
 import com.pokemonbattle.pokemonbattlebackend.battle.exceptions.BattleNotFoundException;
 import com.pokemonbattle.pokemonbattlebackend.battle.socketHandler.BattleConnectionHandler;
-import com.pokemonbattle.pokemonbattlebackend.exceptions.GlobalRestAPIErrorResponse;
+import com.pokemonbattle.pokemonbattlebackend.restApi.GlobalRestAPIErrorResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
