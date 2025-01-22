@@ -1,5 +1,5 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon;
-import com.pokemonbattle.pokemonbattlebackend.exceptions.GlobalRestAPIErrorResponse;
+import com.pokemonbattle.pokemonbattlebackend.restApi.GlobalRestAPIErrorResponse;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.exceptions.PokemonNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

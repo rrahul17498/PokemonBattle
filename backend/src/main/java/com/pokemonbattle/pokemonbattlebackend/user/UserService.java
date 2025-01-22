@@ -82,4 +82,12 @@ public class UserService {
         return GuestUserDTO.fromUser(existingGuestUser.get());
     }
 
+    void deleteGuestUser(Long id) {
+        Optional<User> userResult = this.userRepository.findById(id);
+        if (userResult.isEmpty()) {
+            throw new UserNotFoundException(id);
+        }
+        this.userRepository.delete(userResult.get());
+    }
+
 }

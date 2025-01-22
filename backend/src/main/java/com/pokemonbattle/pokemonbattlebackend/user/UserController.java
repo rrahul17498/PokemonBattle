@@ -1,5 +1,5 @@
 package com.pokemonbattle.pokemonbattlebackend.user;
-import com.pokemonbattle.pokemonbattlebackend.exceptions.GlobalRestAPIErrorResponse;
+import com.pokemonbattle.pokemonbattlebackend.restApi.GlobalRestAPIErrorResponse;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import com.pokemonbattle.pokemonbattlebackend.user.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +30,11 @@ public class UserController {
     @GetMapping("/guest/{id}")
     GuestUserDTO getGuestUser(@PathVariable Long id) {
         return this.userService.getGuestUser(id);
+    }
+
+    @DeleteMapping("/guest/{id}")
+    void deleteGuestUser(@PathVariable Long id) {
+        this.userService.deleteGuestUser(id);
     }
 
     @ExceptionHandler(UserNotFoundException.class)

@@ -1,8 +1,7 @@
-package com.pokemonbattle.pokemonbattlebackend.exceptions;
+package com.pokemonbattle.pokemonbattlebackend.restApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
