@@ -15,7 +15,7 @@ function App() {
       {import.meta.env.DEV && <ReactQueryDevtools />}
       <ThemeProvider theme={theme}>
          <RouterProvider router={router}/>
-         <Toaster />
+         <Toaster reverseOrder={true} />
       </ThemeProvider>
     </QueryClientProvider>
   );
