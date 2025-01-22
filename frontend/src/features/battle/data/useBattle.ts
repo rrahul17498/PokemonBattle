@@ -15,10 +15,12 @@ type UseBattleReturn = {
     formattedBattleResources: FormattedBattleResources | undefined,
     formattedBattleState: FormattedBattleState | null,
     eventAnimationsList: EventAnimation[],
+    pokemonActionInProgress: boolean,
     sendUserActionEvent: (action: UserActionInput) => void,
     sendPokemonActionEvent: (action: PokemonActionInput) => void,
     updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void,
-    displayPokemonResultAndUpdateBattleState: () => void
+    displayPokemonResultAndUpdateBattleState: () => void,
+    updatePokemonActionInProgress: (isActionInProgress: boolean) => void
 };
 
 export const useBattle = (battleId: number, roomId: string, userId: number): UseBattleReturn => {
@@ -34,11 +36,12 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
             return formatBattleResources(battleResourcesData, userId);
         },
         staleTime: Infinity,
-        enabled: isBattleResourceQueryEnabled
+        enabled: isBattleResourceQueryEnabled,
+        refetchOnMount: "always"
     });
 
     const {
-        formattedBattleState, eventAnimationsList,
+        formattedBattleState, eventAnimationsList, pokemonActionInProgress,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
         displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
      } = useBattleAction(formattedBattleResources);
@@ -80,7 +83,6 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 });
                 socket.on(BattleEvents.POKEMON_ACTION, (action: PokemonAction) => {
                     console.log("POKEMON_ACTION: ", action);
-                    updatePokemonActionInProgress(true);
                     toast.custom(renderActionText(action.sourceAttackName), { position: action.sourcePlayerId === userId ? "top-left" : "top-right", duration: 2000 });
                 });
 
@@ -104,7 +106,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
                 return toast.error("Failed to join battle room");
             });
         }
-    }, [socket, isConnected, battleRoom, userId, battleId, roomId, setBattleRoom, saveBattleStateToBeUpdated, updatePokemonActionInProgress]);
+    }, [socket, isConnected, battleRoom, userId, battleId, roomId, setBattleRoom, saveBattleStateToBeUpdated]);
 
 
     const sendUserActionEvent = (action: UserActionInput) => {
@@ -117,7 +119,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     
 
     return {
-        isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList,
-        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState
+        isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress,
+        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
     };
 };

@@ -93,6 +93,7 @@ const useConnectBattle = (userId: number) => {
             });
 
             socket.on(ConnectBattleEvents.LOAD_BATTLE_RESOURCES, (data: { room_id: string, battle_id: number }) => {
+                console.log("LOAD_BATTLE_RESOURCES: ", data.battle_id);
                 const routingSubString = `${data.battle_id}/${data.room_id}`;
                 navigate(APP_ROUTES.protected.battle(routingSubString).fullPath);
             });
