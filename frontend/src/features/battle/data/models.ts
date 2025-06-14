@@ -156,6 +156,11 @@ export type PokemonActionResult = {
     success: boolean
 };
 
+
+export type EventAnimationId = number;
+export type EventAnimationUrl = string;
+export type EventAnimationBlobUrl = string;
+
 export enum EventAnimationAlignment {
     LEFT = "LEFT",
     RIGHT = "RIGHT"
@@ -164,10 +169,17 @@ export enum EventAnimationAlignment {
 export type EventAnimation = {
     eventType: BattleEvents,
     actionType: PokemonActionTypes,
-    actionId: number,
+    actionId: EventAnimationId,
     alignment: EventAnimationAlignment,
     mediaSrc: string | null,
 }
+
+export type PreloadedAnimationInfo = Map<EventAnimationId, EventAnimationBlobUrl>;
+
+export type AttackAnimation = {
+    id: EventAnimationId,
+    mediaSrc: EventAnimationUrl
+};
 
 
 // Feedback

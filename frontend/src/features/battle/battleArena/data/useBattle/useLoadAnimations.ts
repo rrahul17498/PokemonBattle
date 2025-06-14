@@ -1,30 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
+import { EventAnimationBlobUrl, EventAnimationId, PreloadedAnimationInfo } from "@/features/battle/data/models";
+
 
 type UseLoadAnimationsReturn = {
     isAnimationsLoaded: boolean,
     loadingProgress: number,
-    loadedAnimationBlobUrls: Map<AnimationUrl, BlobUrl>,
+    loadedAnimationBlobUrls: PreloadedAnimationInfo,
     loadError: string | null,
     startLoading: () => void
 };
-
-type AnimationUrl = string;
-type BlobUrl = string;
 
 type AnimationToLoadInfo = {
     id: number,
     mediaSrc: string,
 }
 
-type LoadedAnimationInfo = {
-    id: number,
-    blobUrl: BlobUrl
-}
-
 export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo[]): UseLoadAnimationsReturn => {
     const [isAnimationsLoaded, setIsAnimationsLoaded] = useState(false);
     const [loadingProgress, setLoadingProgress] = useState(0);
-    const [loadedAnimationBlobUrls, setLoadedAnimationBlobUrls] = useState<Map<AnimationUrl, BlobUrl>>(new Map());
+    const [loadedAnimationBlobUrls, setLoadedAnimationBlobUrls] = useState<PreloadedAnimationInfo>(new Map());
     const [loadError, setLoadError] = useState<string | null>(null);
 
     const startLoading = useCallback(async () => {
@@ -52,7 +46,7 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo[]
                     const blob = await response.blob();
                     const blobUrl = URL.createObjectURL(blob);
 
-                    return new Promise<LoadedAnimationInfo>((resolve, reject) => {
+                    return new Promise<{ id: EventAnimationId, blobUrl: EventAnimationBlobUrl }>((resolve, reject) => {
                             const video = document.createElement("video");
                             video.preload = "auto";
                             video.muted = true;

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
-import { formatBattleState, getAttackMediaSrc } from "../../../data/battleUtils";
+import { AttackAnimation, BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
+import { formatBattleState, getAttackAnimationsList, getPreloadedAttackBlobUrl } from "../../../data/battleUtils";
 import toast from "react-hot-toast";
 import renderActionText from "../../actionText";
+import { useLoadAnimations } from "./useLoadAnimations";
 
 
 
@@ -13,6 +14,9 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     const [eventAnimationsList, setEventAnimationsList] = useState<EventAnimation[]>([]);
     const [pokemonActionInProgress, setPokemonActionInProgress] = useState(false);
     const [pokemonActionResultsToBeDisplayed, setPokemonActionResultsToBeDisplayed] = useState<PokemonActionResult[]>([]);
+    const [attackAnimationsList, setAttackAnimationsList] = useState<AttackAnimation[]>([]);
+
+    const { isAnimationsLoaded, loadedAnimationBlobUrls } = useLoadAnimations(attackAnimationsList);
 
     const formattedBattleState = battleState && formattedBattleResources ? formatBattleState(battleState, formattedBattleResources.isUserFirstPlayer) : null;
 
@@ -43,7 +47,7 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
                 actionType: PokemonActionTypes.ATTACK,
                 actionId: actionResult.sourceAttackId,
                 alignment: EventAnimationAlignment.LEFT,
-                mediaSrc: getAttackMediaSrc(actionResult.sourceAttackId, actionResult.sourcePlayerId, formattedBattleResources)
+                mediaSrc: getPreloadedAttackBlobUrl(actionResult.sourceAttackId, loadedAnimationBlobUrls)
             });
             savePokemonActionResultToBeDisplayed(actionResult);
         }
@@ -68,6 +72,13 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     };
 
     useEffect(() => {
+        if (formattedBattleResources) {
+            const formattedattackAnimationList = getAttackAnimationsList(formattedBattleResources);
+            setAttackAnimationsList(formattedattackAnimationList);
+        }
+    }, [formattedBattleResources, setAttackAnimationsList]);
+
+    useEffect(() => {
         if (!pokemonActionInProgress && battleStateToBeUpdated) {
             setBattleState(battleStateToBeUpdated);
             setBattleStateToBeUpdated(null);
@@ -77,7 +88,7 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
 
 
     return {
-        formattedBattleState, eventAnimationsList, pokemonActionInProgress,
+        formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
         displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress 
      }
