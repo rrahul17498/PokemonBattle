@@ -22,7 +22,7 @@ const BattleArena = () => {
   const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered && isAnimationsLoaded; 
 
   if (!isBattleReady) {
-    return <Spinner />;
+    return <Spinner message="Loading Battle Resources..." />;
   } 
     
   return (

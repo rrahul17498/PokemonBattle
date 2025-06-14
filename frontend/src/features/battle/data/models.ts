@@ -176,10 +176,7 @@ export type EventAnimation = {
 
 export type PreloadedAnimationInfo = Map<EventAnimationId, EventAnimationBlobUrl>;
 
-export type AttackAnimation = {
-    id: EventAnimationId,
-    mediaSrc: EventAnimationUrl
-};
+export type AttackAnimations = Map<EventAnimationId, EventAnimationUrl>;
 
 
 // Feedback

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { EventAnimationBlobUrl, EventAnimationId, PreloadedAnimationInfo } from "@/features/battle/data/models";
+import { EventAnimationBlobUrl, EventAnimationId, EventAnimationUrl, PreloadedAnimationInfo } from "@/features/battle/data/models";
 
 
 type UseLoadAnimationsReturn = {
@@ -10,12 +10,9 @@ type UseLoadAnimationsReturn = {
     startLoading: () => void
 };
 
-type AnimationToLoadInfo = {
-    id: number,
-    mediaSrc: string,
-}
+type AnimationToLoadInfo = Map<EventAnimationId, EventAnimationUrl>;
 
-export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo[]): UseLoadAnimationsReturn => {
+export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo): UseLoadAnimationsReturn => {
     const [isAnimationsLoaded, setIsAnimationsLoaded] = useState(false);
     const [loadingProgress, setLoadingProgress] = useState(0);
     const [loadedAnimationBlobUrls, setLoadedAnimationBlobUrls] = useState<PreloadedAnimationInfo>(new Map());
@@ -24,18 +21,18 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo[]
     const startLoading = useCallback(async () => {
         setLoadError(null);
 
-        if (attackAnimationInfoList.length === 0) {
+        if (attackAnimationInfoList.size === 0) {
             console.error("No animation urls found");
             return;
         }
 
-        console.log(`Loading ${attackAnimationInfoList.length} animations...`);
+        console.log(`Loading ${attackAnimationInfoList.size} animations...`);
 
         try {
-            const totalAnimations = attackAnimationInfoList.length;
+            const totalAnimations = attackAnimationInfoList.size;
             let loadedAnimationsCount = 0;
 
-            const loadAnimationsPromises = attackAnimationInfoList.map(async ({id: attackId, mediaSrc: animationUrl }) => {
+            const loadAnimationsPromises = attackAnimationInfoList.entries().map(async ([attackId, animationUrl ]) => {
 
                 try {
                     const response = await fetch(animationUrl);
@@ -115,7 +112,7 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo[]
     }, [attackAnimationInfoList]);
 
     useEffect(() => {
-        if (attackAnimationInfoList.length > 0) {
+        if (attackAnimationInfoList.size > 0) {
             console.log("START_LOADING");
             startLoading();
         }

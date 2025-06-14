@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AttackAnimation, BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
+import { AttackAnimations, BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
 import { formatBattleState, getAttackAnimationsList, getPreloadedAttackBlobUrl } from "../../../data/battleUtils";
 import toast from "react-hot-toast";
 import renderActionText from "../../actionText";
@@ -14,7 +14,7 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     const [eventAnimationsList, setEventAnimationsList] = useState<EventAnimation[]>([]);
     const [pokemonActionInProgress, setPokemonActionInProgress] = useState(false);
     const [pokemonActionResultsToBeDisplayed, setPokemonActionResultsToBeDisplayed] = useState<PokemonActionResult[]>([]);
-    const [attackAnimationsList, setAttackAnimationsList] = useState<AttackAnimation[]>([]);
+    const [attackAnimationsList, setAttackAnimationsList] = useState<AttackAnimations>(new Map());
 
     const { isAnimationsLoaded, loadedAnimationBlobUrls } = useLoadAnimations(attackAnimationsList);
 

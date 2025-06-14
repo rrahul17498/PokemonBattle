@@ -54,7 +54,7 @@ export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: b
 
 export const getAttackAnimationsList = (formattedBattleResources: FormattedBattleResources) => {
     const combinedAttackList = [...formattedBattleResources.user.attackList, ...formattedBattleResources.opponent.attackList];
-    return combinedAttackList.map(({ id, media_src: mediaSrc }) => ({ id, mediaSrc }));
+    return new Map(combinedAttackList.map(({ id, media_src: mediaSrc }) => ([ id, mediaSrc ])));
 };
 
 export const getPreloadedAttackBlobUrl = (attackId: number, preloadedAnimationInfo: PreloadedAnimationInfo) => {
