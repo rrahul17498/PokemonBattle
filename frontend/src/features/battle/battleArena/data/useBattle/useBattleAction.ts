@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "./models";
-import { formatBattleState, getAttackMediaSrc } from "./battleUtils";
+import { BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
+import { formatBattleState, getAttackMediaSrc } from "../../../data/battleUtils";
 import toast from "react-hot-toast";
-import renderActionText from "../battleArena/actionText";
+import renderActionText from "../../actionText";
 
 
 

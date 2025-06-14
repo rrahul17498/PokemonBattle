@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput, EventAnimation, FormattedBattleResources, FormattedBattleState, PokemonAction } from "./models";
+import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput, EventAnimation, FormattedBattleResources, FormattedBattleState, PokemonAction } from "../../../data/models";
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
-import * as BattleAPIs from "./battleAPIs";
-import { formatBattleResources } from "./battleUtils";
-import renderActionText from "../battleArena/actionText";
+import * as BattleAPIs from "../../../data/battleAPIs";
+import { formatBattleResources } from "../../../data/battleUtils";
+import renderActionText from "../../actionText";
 import useBattleAction from "./useBattleAction";
 
 
