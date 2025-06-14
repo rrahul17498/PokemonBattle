@@ -1,0 +1,141 @@
+import { useCallback, useEffect, useState } from "react";
+
+type UseLoadAnimationsReturn = {
+    isAnimationsLoaded: boolean,
+    loadingProgress: number,
+    loadedAnimationBlobUrls: Map<AnimationUrl, BlobUrl>,
+    loadError: string | null,
+    startLoading: () => void
+};
+
+type AnimationUrl = string;
+type BlobUrl = string;
+
+type AnimationToLoadInfo = {
+    id: number,
+    mediaSrc: string,
+}
+
+type LoadedAnimationInfo = {
+    id: number,
+    blobUrl: BlobUrl
+}
+
+export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo[]): UseLoadAnimationsReturn => {
+    const [isAnimationsLoaded, setIsAnimationsLoaded] = useState(false);
+    const [loadingProgress, setLoadingProgress] = useState(0);
+    const [loadedAnimationBlobUrls, setLoadedAnimationBlobUrls] = useState<Map<AnimationUrl, BlobUrl>>(new Map());
+    const [loadError, setLoadError] = useState<string | null>(null);
+
+    const startLoading = useCallback(async () => {
+        setLoadError(null);
+
+        if (attackAnimationInfoList.length === 0) {
+            console.error("No animation urls found");
+            return;
+        }
+
+        console.log(`Loading ${attackAnimationInfoList.length} animations...`);
+
+        try {
+            const totalAnimations = attackAnimationInfoList.length;
+            let loadedAnimationsCount = 0;
+
+            const loadAnimationsPromises = attackAnimationInfoList.map(async ({id: attackId, mediaSrc: animationUrl }) => {
+
+                try {
+                    const response = await fetch(animationUrl);
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch ${animationUrl}`);
+                    }
+
+                    const blob = await response.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+
+                    return new Promise<LoadedAnimationInfo>((resolve, reject) => {
+                            const video = document.createElement("video");
+                            video.preload = "auto";
+                            video.muted = true;
+                            video.playsInline = false;
+                            
+                            const videoEventsCleanUp = () => {
+                                video.removeEventListener("canplaythrough", onCanPlay);
+                                video.removeEventListener("error", onError);
+                            };
+
+                            const onCanPlay = () => {
+                                videoEventsCleanUp();
+                                
+                                loadedAnimationsCount += 1;
+                                setLoadingProgress((loadedAnimationsCount / totalAnimations) * 100);
+                                console.log(`Animation loaded: ${animationUrl}`);
+                                resolve({ id: attackId, blobUrl });
+                            }
+
+                            const onError = (e) => {
+                                videoEventsCleanUp();
+                                URL.revokeObjectURL(blobUrl);
+                                reject(new Error(`Failed to load animation: ${animationUrl}`))
+                            }
+
+                            video.addEventListener("canplaythrough", onCanPlay);
+                            video.addEventListener("error", onError);
+                            video.src = blobUrl;
+                        
+                    });
+
+                } catch(e) {
+                    console.error(`Failed to fetch animation: ${animationUrl}`);
+                    throw new Error(`Failed to fetch ${animationUrl}`);
+                }    
+
+                
+
+            });
+
+            const loadAnimationsResults = await Promise.all(loadAnimationsPromises);
+
+           
+                
+            const animationUrlBlobUrlMap = new Map();
+            loadAnimationsResults.forEach((loadAnimationsResult) => {
+                if(!loadAnimationsResult) {
+                    return;
+                }
+                animationUrlBlobUrlMap.set(loadAnimationsResult.id, loadAnimationsResult.blobUrl);
+            });
+
+            setLoadedAnimationBlobUrls(animationUrlBlobUrlMap);
+            setIsAnimationsLoaded(true);
+
+        } catch(error) {
+            if(error instanceof Error) {
+                setLoadError(error.message);
+            } else {
+                setLoadError("Unknown error");
+            }
+        }
+
+
+
+    }, [attackAnimationInfoList]);
+
+    useEffect(() => {
+        if (attackAnimationInfoList.length > 0) {
+            console.log("START_LOADING");
+            startLoading();
+        }
+    }, [attackAnimationInfoList, startLoading]);
+
+
+    useEffect(() => {
+        return () => {
+            loadedAnimationBlobUrls.forEach((blobUrl) => {
+                URL.revokeObjectURL(blobUrl);
+              });
+        }
+    }, [loadedAnimationBlobUrls]);
+
+
+    return { isAnimationsLoaded, loadingProgress, loadedAnimationBlobUrls, loadError, startLoading };
+};
