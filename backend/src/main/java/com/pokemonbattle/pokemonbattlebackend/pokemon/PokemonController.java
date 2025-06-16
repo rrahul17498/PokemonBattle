@@ -1,8 +1,7 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon;
-import com.pokemonbattle.pokemonbattlebackend.restApi.GlobalRestAPIErrorResponse;
-import com.pokemonbattle.pokemonbattlebackend.pokemon.exceptions.PokemonNotFoundException;
+import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.AttackService;
+import com.pokemonbattle.pokemonbattlebackend.pokemon.attack.AttackWithMediaDTO;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -12,9 +11,11 @@ import java.util.List;
 public class PokemonController {
 
     private final PokemonService pokemonService;
+    private final AttackService attackService;
 
-    public PokemonController(PokemonService pokemonService) {
+    public PokemonController(PokemonService pokemonService, AttackService attackService) {
        this.pokemonService = pokemonService;
+       this.attackService = attackService;
     }
 
     @GetMapping("")
@@ -45,12 +46,16 @@ public class PokemonController {
         this.pokemonService.deletePokemon(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{pokemonId}/attack/create")
+    void createAttacks(@PathVariable Long pokemonId, @RequestBody AttackWithMediaDTO attackWithMediaDTO) {
+        this.attackService.createAttack(pokemonId, attackWithMediaDTO);
+    }
 
-    @ExceptionHandler(PokemonNotFoundException.class)
-    public ResponseEntity<GlobalRestAPIErrorResponse> handlePokemonNotFoundException (Exception e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GlobalRestAPIErrorResponse(
-                e.getMessage()
-        ));
-    };
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{pokemonId}/attack/{id}")
+    void deleteAttack(@PathVariable Long id) {
+        this.attackService.deleteAttack(id);
+    }
 
 }
