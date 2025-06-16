@@ -3,7 +3,7 @@ import useUser from "@/hooks/useUser";
 import Spinner from "@/components/base/spinner";
 import { BattleStatus } from "../data/models";
 import { UserPanel } from "./userPanel";
-import { useBattle } from "../data/useBattle";
+import { useBattle } from "./data/useBattle";
 import { OpponentPanel } from "./opponentPanel";
 import BattleCompletedDialog from "./battleCompletedDialog";
 import AttackAnimationPanel from "./attackAnimationPanel";
@@ -15,14 +15,14 @@ const BattleArena = () => {
   const userData = useUser();
 
   const {
-    isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress,
+    isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
     sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
   } = useBattle(Number(battleId), roomId as string, userData.id);
 
-  const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered; 
+  const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered && isAnimationsLoaded; 
 
   if (!isBattleReady) {
-    return <Spinner />;
+    return <Spinner message="Loading Battle Resources..." />;
   } 
     
   return (

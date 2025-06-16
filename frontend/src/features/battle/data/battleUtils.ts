@@ -1,5 +1,5 @@
 import { PokemonAttackDataType, PokemonDataType } from "@/features/pokemon/data/models";
-import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState } from "./models";
+import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState, PreloadedAnimationInfo } from "./models";
 
 
 export const createPlayerResourceObj = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerResourceData => {
@@ -49,11 +49,14 @@ export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: b
     user: isUserFirstPlayer ? formattedFirstPlayerState : formattedSecondPlayerState,
     opponent: isUserFirstPlayer ? formattedSecondPlayerState : formattedFirstPlayerState
   };
-}; 
+};
 
 
-export const getAttackMediaSrc = (attackId: number, sourcePlayerId: number, formattedBattleResources: FormattedBattleResources) => {
-  const attackList = sourcePlayerId == formattedBattleResources.user.userId ? formattedBattleResources.user.attackList : formattedBattleResources.opponent.attackList;
-  const attackObj = attackList.find((attack) => attack.id === attackId);
-  return attackObj ? attackObj.media_src : null;
+export const getAttackAnimationsList = (formattedBattleResources: FormattedBattleResources) => {
+    const combinedAttackList = [...formattedBattleResources.user.attackList, ...formattedBattleResources.opponent.attackList];
+    return new Map(combinedAttackList.map(({ id, media_src: mediaSrc }) => ([ id, mediaSrc ])));
+};
+
+export const getPreloadedAttackBlobUrl = (attackId: number, preloadedAnimationInfo: PreloadedAnimationInfo) => {
+  return preloadedAnimationInfo.get(attackId) || "";
 }
