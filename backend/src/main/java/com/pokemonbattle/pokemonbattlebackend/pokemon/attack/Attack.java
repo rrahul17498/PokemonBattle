@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +40,11 @@ public class Attack {
     @JsonProperty("energy_consumed")
     @Column(name = "energy_consumed", nullable = false)
     private Integer energyConsumed;
+
+    @Enumerated(EnumType.STRING)
+    @JsonProperty("attack_alignment")
+    @Column(name = "attack_alignment", nullable = false)
+    private AttackAlignment attackAlignment;
 
 
     @Override

@@ -1,5 +1,6 @@
 package com.pokemonbattle.pokemonbattlebackend.pokemon.attack;
 
+import com.pokemonbattle.pokemonbattlebackend.pokemon.Pokemon;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class AttackDTO {
     private Integer power;
     private Integer accuracy;
     private Integer energyConsumed;
+    private AttackAlignment attackAlignment;
 
     public AttackDTO(Long pokemonId, Attack attack) {
         this.id = attack.getId();
@@ -21,6 +23,7 @@ public class AttackDTO {
         this.power = attack.getPower();
         this.accuracy = attack.getAccuracy();
         this.energyConsumed = attack.getEnergyConsumed();
+        this.attackAlignment = attack.getAttackAlignment();
     }
 
     public static List<AttackDTO> from(Long pokemonId, List<Attack> attacks) {

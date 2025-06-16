@@ -14,18 +14,16 @@ import java.util.Optional;
 public class PokemonService {
 
        private final PokemonRepository pokemonRepository;
-    private final AttackRepository attackRepository;
 
-       public PokemonService(PokemonRepository pokemonRepository, AttackRepository attackRepository) {
+       public PokemonService(PokemonRepository pokemonRepository) {
            this.pokemonRepository = pokemonRepository;
-           this.attackRepository = attackRepository;
        }
 
        List<Pokemon> getAllPokemons() {
            return this.pokemonRepository.findAll();
        }
 
-       Pokemon getPokemonById(Long id) {
+       public Pokemon getPokemonById(Long id) {
            Optional<Pokemon> pokemon = this.pokemonRepository.findById(id);
 
            if (pokemon.isEmpty()) {
