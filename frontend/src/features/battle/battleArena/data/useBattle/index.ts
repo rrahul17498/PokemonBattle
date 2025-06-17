@@ -111,11 +111,15 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
 
 
     const sendUserActionEvent = (action: UserActionInput) => {
-        socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
+        if(socket) {
+            socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
+        }
     };
 
     const sendPokemonActionEvent = (action: PokemonActionInput) => {
-        socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
+        if(socket) {
+            socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
+        }
     };
     
 
