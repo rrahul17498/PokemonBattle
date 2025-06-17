@@ -95,7 +95,7 @@ export const UserPanel = (
         <section className="border-border border flex flex-col justify-end">
         {!isNull(chosenPokemonResource)
         ? <div className="">
-            <img className={cn("max-w-60 mx-auto animate-pokemon-render", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED})} src={chosenPokemonResource?.image} />
+            <img className={cn("max-w-60 mx-auto scale-x-[-1] animate-pokemon-render", { "grayscale": chosenPokemonState?.status == PokemonStatus.DEFEATED})} src={chosenPokemonResource?.image} />
             <h3 className="mt-3 px-3 font-semibold text-2xl">{chosenPokemonResource?.name}</h3>
             <div className="pl-3 pr-6 py-4">
                 <PokemonHealthBar className="" pokemonState={chosenPokemonState} />
