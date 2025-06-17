@@ -1,5 +1,5 @@
 import { PokemonAttackDataType, PokemonDataType } from "@/features/pokemon/data/models";
-import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState, LoadedAnimationBlobUrls, EventAnimationPreloadedBlobUrlAndAlignment } from "./models";
+import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState } from "./models";
 import { AnimationAlignment } from "@/types/animation";
 
 
