@@ -1,5 +1,6 @@
 import { PokemonAttackDataType, PokemonDataType } from "@/features/pokemon/data/models";
 import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState } from "./models";
+import { AnimationAlignment } from "@/types/animation";
 
 
 export const createPlayerResourceObj = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerResourceData => {
@@ -49,11 +50,18 @@ export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: b
     user: isUserFirstPlayer ? formattedFirstPlayerState : formattedSecondPlayerState,
     opponent: isUserFirstPlayer ? formattedSecondPlayerState : formattedFirstPlayerState
   };
-}; 
+};
 
 
-export const getAttackMediaSrc = (attackId: number, sourcePlayerId: number, formattedBattleResources: FormattedBattleResources) => {
-  const attackList = sourcePlayerId == formattedBattleResources.user.userId ? formattedBattleResources.user.attackList : formattedBattleResources.opponent.attackList;
-  const attackObj = attackList.find((attack) => attack.id === attackId);
-  return attackObj ? attackObj.media_src : null;
+export const getAttackAnimationsList = (formattedBattleResources: FormattedBattleResources) => {
+    const combinedAttackList = [...formattedBattleResources.user.attackList, ...formattedBattleResources.opponent.attackList];
+    return new Map(combinedAttackList.map(({ id, media_src: mediaSrc, attack_alignment: alignment }) => ([ id, { mediaSrc, alignment } ])));
+};
+
+export const getAttackExecAlignment = (sourcePlayerId: number, userId: number): AnimationAlignment => {
+    if (sourcePlayerId === userId) {
+      return AnimationAlignment.RIGHT
+    }
+
+    return AnimationAlignment.LEFT;
 }

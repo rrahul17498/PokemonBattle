@@ -41,7 +41,7 @@ public class BattleState {
 
         this.secondPlayerId = battleResourcesDTO.secondPlayerId();
         this.secondPlayerPokemonsStates = new HashMap<>();
-        for (Pokemon pokemon: battleResourcesDTO.firstPlayerOwnedPokemons()) {
+        for (Pokemon pokemon: battleResourcesDTO.secondPlayerOwnedPokemons()) {
             this.secondPlayerPokemonsStates.put(pokemon.getId(), new PokemonState(pokemon));
         }
     }

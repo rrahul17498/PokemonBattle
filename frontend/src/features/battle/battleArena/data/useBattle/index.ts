@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput, EventAnimation, FormattedBattleResources, FormattedBattleState, PokemonAction } from "./models";
+import { BattleEvents, BattleState, ConnectBattle, ConnectBattleEvents, PokemonActionResult, UserActionResult, UserActionInput, PokemonActionInput, EventAnimation, FormattedBattleResources, FormattedBattleState, PokemonAction } from "../../../data/models";
 import { useSocketIO } from "@/features/battle/data/socketIO/useSocketIO";
-import * as BattleAPIs from "./battleAPIs";
-import { formatBattleResources } from "./battleUtils";
-import renderActionText from "../battleArena/actionText";
+import * as BattleAPIs from "../../../data/battleAPIs";
+import { formatBattleResources } from "../../../data/battleUtils";
+import renderActionText from "../../actionText";
 import useBattleAction from "./useBattleAction";
 
 
@@ -16,10 +16,11 @@ type UseBattleReturn = {
     formattedBattleState: FormattedBattleState | null,
     eventAnimationsList: EventAnimation[],
     pokemonActionInProgress: boolean,
+    isAnimationsLoaded: boolean, 
     sendUserActionEvent: (action: UserActionInput) => void,
     sendPokemonActionEvent: (action: PokemonActionInput) => void,
     updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void,
-    displayPokemonResultAndUpdateBattleState: () => void,
+    displayPokemonActionResults: () => void,
     updatePokemonActionInProgress: (isActionInProgress: boolean) => void
 };
 
@@ -41,9 +42,9 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     });
 
     const {
-        formattedBattleState, eventAnimationsList, pokemonActionInProgress,
+        formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
-        displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
+        displayPokemonActionResults, updatePokemonActionInProgress
      } = useBattleAction(formattedBattleResources);
 
     
@@ -110,16 +111,20 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
 
 
     const sendUserActionEvent = (action: UserActionInput) => {
-        socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
+        if(socket) {
+            socket.emit(BattleEvents.USER_ACTION, { ...action, roomId });
+        }
     };
 
     const sendPokemonActionEvent = (action: PokemonActionInput) => {
-        socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
+        if(socket) {
+            socket.emit(BattleEvents.POKEMON_ACTION, { ...action, roomId });
+        }
     };
     
 
     return {
-        isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress,
-        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
+        isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
+        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonActionResults, updatePokemonActionInProgress
     };
 };

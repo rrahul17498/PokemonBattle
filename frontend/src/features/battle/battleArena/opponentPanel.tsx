@@ -37,12 +37,12 @@ export const OpponentPanel = (
         }
         
         const chosenPokemonData = ownedPokemons.find((pokemon) => pokemon.id == chosenPokemonId);
-            if (!chosenPokemonData) {
-                console.error("Invalid pokemon id recieved: ", chosenPokemonId);
-                toast.error("Invalid pokemon id"); 
-                return;
-            }
-            return setChosenPokemonResource(chosenPokemonData);
+        if (!chosenPokemonData) {
+            console.error("Invalid pokemon id recieved: ", chosenPokemonId);
+            toast.error("Invalid pokemon id"); 
+            return;
+        }
+        return setChosenPokemonResource(chosenPokemonData);
     }, [opponentId, ownedPokemons, chosenPokemonId]);
 
     useEffect(() => {

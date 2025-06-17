@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { BattleEvents, BattleState, EventAnimation, EventAnimationAlignment, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "./models";
-import { formatBattleState, getAttackMediaSrc } from "./battleUtils";
 import toast from "react-hot-toast";
-import renderActionText from "../battleArena/actionText";
+import { AttackAnimationsInfoMap, BattleEvents, BattleState, EventAnimation, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
+import { formatBattleState, getAttackAnimationsList, getAttackExecAlignment } from "../../../data/battleUtils";
+import renderActionText from "../../actionText";
+import { useLoadAnimations } from "./useLoadAnimations";
 
 
 
@@ -13,6 +14,10 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     const [eventAnimationsList, setEventAnimationsList] = useState<EventAnimation[]>([]);
     const [pokemonActionInProgress, setPokemonActionInProgress] = useState(false);
     const [pokemonActionResultsToBeDisplayed, setPokemonActionResultsToBeDisplayed] = useState<PokemonActionResult[]>([]);
+    const [attackAnimationsInfoMap, setAttackAnimationsInfoMap] = useState<AttackAnimationsInfoMap>(new Map());
+
+    // Preloaded attack animations
+    const { isAnimationsLoaded, loadedAnimationBlobUrlsWithAlignment } = useLoadAnimations(attackAnimationsInfoMap);
 
     const formattedBattleState = battleState && formattedBattleResources ? formatBattleState(battleState, formattedBattleResources.isUserFirstPlayer) : null;
 
@@ -38,18 +43,25 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
 
     const loadPokemonActionResultAnimation = (actionResult: PokemonActionResult) => {
         if (formattedBattleResources) {
+            const preloadedAttackInfo = loadedAnimationBlobUrlsWithAlignment.get(actionResult.sourceAttackId);
+            if (!preloadedAttackInfo) {
+                console.error("Preloaded attack animation does not exist");
+                return;
+            }
+
+            const execAlignment = getAttackExecAlignment(actionResult.sourcePlayerId, formattedBattleResources.user.userId);
             addEventAnimation({
                 eventType: BattleEvents.POKEMON_ACTION_RESULT,
                 actionType: PokemonActionTypes.ATTACK,
                 actionId: actionResult.sourceAttackId,
-                alignment: EventAnimationAlignment.LEFT,
-                mediaSrc: getAttackMediaSrc(actionResult.sourceAttackId, actionResult.sourcePlayerId, formattedBattleResources)
+                invertAnimation: execAlignment != preloadedAttackInfo.alignment,
+                mediaSrc: preloadedAttackInfo.blobUrl
             });
             savePokemonActionResultToBeDisplayed(actionResult);
         }
     };
 
-    const displayPokemonResultAndUpdateBattleState = () => {
+    const displayPokemonActionResults = () => {
         if (!eventAnimationsList.length) {
             if (pokemonActionResultsToBeDisplayed.length > 0) {
                     pokemonActionResultsToBeDisplayed.forEach((actionResult) => {
@@ -68,6 +80,13 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     };
 
     useEffect(() => {
+        if (formattedBattleResources) {
+            const formattedattackAnimationList = getAttackAnimationsList(formattedBattleResources);
+            setAttackAnimationsInfoMap(formattedattackAnimationList);
+        }
+    }, [formattedBattleResources, setAttackAnimationsInfoMap]);
+
+    useEffect(() => {
         if (!pokemonActionInProgress && battleStateToBeUpdated) {
             setBattleState(battleStateToBeUpdated);
             setBattleStateToBeUpdated(null);
@@ -77,9 +96,9 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
 
 
     return {
-        formattedBattleState, eventAnimationsList, pokemonActionInProgress,
+        formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
-        displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress 
+        displayPokemonActionResults, updatePokemonActionInProgress 
      }
 };
 
