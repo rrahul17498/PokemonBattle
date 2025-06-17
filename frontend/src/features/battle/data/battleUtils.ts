@@ -1,5 +1,6 @@
 import { PokemonAttackDataType, PokemonDataType } from "@/features/pokemon/data/models";
-import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState, PreloadedAnimationInfo } from "./models";
+import { PlayerResourceData, PokemonStateType, PlayerStateData, BattleResources, BattleState, FormattedBattleResources, FormattedBattleState, LoadedAnimationBlobUrls, EventAnimationPreloadedBlobUrlAndAlignment } from "./models";
+import { AnimationAlignment } from "@/types/animation";
 
 
 export const createPlayerResourceObj = (userId: number, userName: string, ownedPokemons: PokemonDataType[]): PlayerResourceData => {
@@ -54,9 +55,13 @@ export const formatBattleState = (battleState: BattleState, isUserFirstPlayer: b
 
 export const getAttackAnimationsList = (formattedBattleResources: FormattedBattleResources) => {
     const combinedAttackList = [...formattedBattleResources.user.attackList, ...formattedBattleResources.opponent.attackList];
-    return new Map(combinedAttackList.map(({ id, media_src: mediaSrc }) => ([ id, mediaSrc ])));
+    return new Map(combinedAttackList.map(({ id, media_src: mediaSrc, attack_alignment: alignment }) => ([ id, { mediaSrc, alignment } ])));
 };
 
-export const getPreloadedAttackBlobUrl = (attackId: number, preloadedAnimationInfo: PreloadedAnimationInfo) => {
-  return preloadedAnimationInfo.get(attackId) || "";
+export const getAttackExecAlignment = (sourcePlayerId: number, userId: number): AnimationAlignment => {
+    if (sourcePlayerId === userId) {
+      return AnimationAlignment.RIGHT
+    }
+
+    return AnimationAlignment.LEFT;
 }

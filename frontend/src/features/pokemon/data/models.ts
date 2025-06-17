@@ -1,3 +1,4 @@
+import { AnimationAlignment } from "@/types/animation";
 import { z } from "zod";
 
 export enum PokemonTypes {
@@ -13,6 +14,7 @@ export const PokemonAttackSchema = z.object({
     power: z.number(),
     accuracy: z.number(),
     energy_consumed: z.number(),
+    attack_alignment: z.nativeEnum(AnimationAlignment)
 });
 
 export type PokemonAttackDataType = z.infer<typeof PokemonAttackSchema>;
