@@ -20,7 +20,7 @@ type UseBattleReturn = {
     sendUserActionEvent: (action: UserActionInput) => void,
     sendPokemonActionEvent: (action: PokemonActionInput) => void,
     updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void,
-    displayPokemonResultAndUpdateBattleState: () => void,
+    displayPokemonActionResults: () => void,
     updatePokemonActionInProgress: (isActionInProgress: boolean) => void
 };
 
@@ -44,7 +44,7 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
     const {
         formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
-        displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
+        displayPokemonActionResults, updatePokemonActionInProgress
      } = useBattleAction(formattedBattleResources);
 
     
@@ -121,6 +121,6 @@ export const useBattle = (battleId: number, roomId: string, userId: number): Use
 
     return {
         isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
-        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
+        sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonActionResults, updatePokemonActionInProgress
     };
 };

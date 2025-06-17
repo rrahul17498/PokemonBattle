@@ -6,10 +6,10 @@ interface AttackAnimationPanelProps {
   eventAnimationsList: EventAnimation[],
   formattedBattleResources: FormattedBattleResources,
   updateEventAnimationsList: (eventAnimationList: EventAnimation[]) => void,
-  displayPokemonResultAndUpdateBattleState: () => void
+  displayPokemonActionResults: () => void
 }
 
-const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState }: AttackAnimationPanelProps) => {
+const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, displayPokemonActionResults }: AttackAnimationPanelProps) => {
 
     const [currentAttackAnimation, setCurrentAttackAnimation] = useState<EventAnimation & { isLast: boolean } | null>(null);
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -35,7 +35,7 @@ const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, 
 
     const onCurrentAttackAnimationEnd = () => {
         if (currentAttackAnimation?.isLast) {
-            displayPokemonResultAndUpdateBattleState();
+            displayPokemonActionResults();
         }
 
         setCurrentAttackAnimation(null);

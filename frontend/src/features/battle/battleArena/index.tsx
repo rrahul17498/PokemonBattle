@@ -16,7 +16,7 @@ const BattleArena = () => {
 
   const {
     isBattleEventsRegistered, formattedBattleResources, formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
-    sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress
+    sendUserActionEvent, sendPokemonActionEvent, updateEventAnimationsList, displayPokemonActionResults, updatePokemonActionInProgress
   } = useBattle(Number(battleId), roomId as string, userData.id);
 
   const isBattleReady = formattedBattleResources && formattedBattleState && isBattleEventsRegistered && isAnimationsLoaded; 
@@ -40,7 +40,7 @@ const BattleArena = () => {
           eventAnimationsList={eventAnimationsList}
           formattedBattleResources={formattedBattleResources}
           updateEventAnimationsList={updateEventAnimationsList}
-          displayPokemonResultAndUpdateBattleState={displayPokemonResultAndUpdateBattleState}
+          displayPokemonActionResults={displayPokemonActionResults}
          />
         <OpponentPanel
          {...formattedBattleResources.opponent }
