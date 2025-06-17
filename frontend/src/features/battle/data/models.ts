@@ -1,4 +1,5 @@
 import { PokemonAttackDataType, PokemonDataType, PokemonStatus } from "@/features/pokemon/data/models";
+import { AnimationAlignment } from "@/types/animation";
 
 
 // Connect Battle
@@ -156,27 +157,29 @@ export type PokemonActionResult = {
     success: boolean
 };
 
-
+// Event Animation
 export type EventAnimationId = number;
 export type EventAnimationUrl = string;
 export type EventAnimationBlobUrl = string;
-
-export enum EventAnimationAlignment {
-    LEFT = "LEFT",
-    RIGHT = "RIGHT"
-}
-
+export type EventMediaAndAlignment = {
+    mediaSrc: EventAnimationUrl,
+    alignment: AnimationAlignment
+};
+export type EventAnimationPreloadedBlobUrlAndAlignment = {
+    blobUrl: EventAnimationUrl,
+    alignment: AnimationAlignment
+};
 export type EventAnimation = {
     eventType: BattleEvents,
     actionType: PokemonActionTypes,
     actionId: EventAnimationId,
-    alignment: EventAnimationAlignment,
-    mediaSrc: string | null,
+    invertAnimation: boolean,
+    mediaSrc: string,
 }
 
-export type PreloadedAnimationInfo = Map<EventAnimationId, EventAnimationBlobUrl>;
-
-export type AttackAnimations = Map<EventAnimationId, EventAnimationUrl>;
+// Types of Event Animation
+// Attack Animation
+export type AttackAnimationsList = Map<EventAnimationId, EventMediaAndAlignment>;
 
 
 // Feedback
