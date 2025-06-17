@@ -4,7 +4,7 @@
              "id": 1,
              "name": "Charmander",
              "type": "FIRE",
-             "image": "/src/assets/images/Charmander.png",
+             "image": "/images/pokemons/Charmander.png",
              "attacks": [
               { "id": 1, "name": "Scratch", "media_src": "/src/assets/videos/scratch_attack.mov", "power": 15, "accuracy": 100, "energy_consumed": 5, "attack_alignment": "LEFT" },
               { "id": 2, "name": "Skull Bash", "media_src": "/src/assets/videos/skull_bash.mov", "power": 20, "accuracy": 95, "energy_consumed": 5, "attack_alignment": "RIGHT"  },
@@ -21,7 +21,7 @@
               { "id": 6, "name": "Razor Leaf", "media_src": "/src/assets/videos/razor_leaf.mov", "power": 20, "accuracy": 95, "energy_consumed": 5, "attack_alignment": "RIGHT"  },
               { "id": 7, "name": "Solar Beam", "media_src": "/src/assets/videos/solar_beam.mov", "power": 50, "accuracy": 80, "energy_consumed": 30, "attack_alignment": "RIGHT"  }
              ],
-             "image": "/src/assets/images/Bulbasaur.png"
+             "image": "/images/pokemons/Bulbasaur.png"
         },
         {
              "id": 4,
@@ -32,7 +32,7 @@
               { "id": 9, "name": "Water Gun 2", "media_src": "/src/assets/videos/water_gun_2.mov", "power": 15, "accuracy": 95, "energy_consumed": 5, "attack_alignment": "RIGHT"  },
               { "id": 10, "name": "Hydro Pump", "media_src": "/src/assets/videos/hydro_pump.mov", "power": 20, "accuracy": 80, "energy_consumed": 10, "attack_alignment": "RIGHT"  }
              ],
-             "image": "/src/assets/images/Squirtle.png"
+             "image": "/images/pokemons/Squirtle.png"
         }
      ]
 }
