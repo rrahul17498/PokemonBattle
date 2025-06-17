@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { AttackAnimationsList, BattleEvents, BattleState, EventAnimation, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
+import { AttackAnimationsInfoMap, BattleEvents, BattleState, EventAnimation, FormattedBattleResources, PokemonActionResult, PokemonActionTypes } from "../../../data/models";
 import { formatBattleState, getAttackAnimationsList, getAttackExecAlignment } from "../../../data/battleUtils";
 import renderActionText from "../../actionText";
 import { useLoadAnimations } from "./useLoadAnimations";
@@ -14,10 +14,10 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     const [eventAnimationsList, setEventAnimationsList] = useState<EventAnimation[]>([]);
     const [pokemonActionInProgress, setPokemonActionInProgress] = useState(false);
     const [pokemonActionResultsToBeDisplayed, setPokemonActionResultsToBeDisplayed] = useState<PokemonActionResult[]>([]);
-    const [attackAnimationsList, setAttackAnimationsList] = useState<AttackAnimationsList>(new Map());
+    const [attackAnimationsInfoMap, setAttackAnimationsInfoMap] = useState<AttackAnimationsInfoMap>(new Map());
 
     // Preloaded attack animations
-    const { isAnimationsLoaded, loadedAnimationBlobUrlsWithAlignment } = useLoadAnimations(attackAnimationsList);
+    const { isAnimationsLoaded, loadedAnimationBlobUrlsWithAlignment } = useLoadAnimations(attackAnimationsInfoMap);
 
     const formattedBattleState = battleState && formattedBattleResources ? formatBattleState(battleState, formattedBattleResources.isUserFirstPlayer) : null;
 
@@ -82,9 +82,9 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     useEffect(() => {
         if (formattedBattleResources) {
             const formattedattackAnimationList = getAttackAnimationsList(formattedBattleResources);
-            setAttackAnimationsList(formattedattackAnimationList);
+            setAttackAnimationsInfoMap(formattedattackAnimationList);
         }
-    }, [formattedBattleResources, setAttackAnimationsList]);
+    }, [formattedBattleResources, setAttackAnimationsInfoMap]);
 
     useEffect(() => {
         if (!pokemonActionInProgress && battleStateToBeUpdated) {

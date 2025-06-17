@@ -179,7 +179,7 @@ export type EventAnimation = {
 
 // Types of Event Animation
 // Attack Animation
-export type AttackAnimationsList = Map<EventAnimationId, EventMediaAndAlignment>;
+export type AttackAnimationsInfoMap = Map<EventAnimationId, EventMediaAndAlignment>;
 
 
 // Feedback

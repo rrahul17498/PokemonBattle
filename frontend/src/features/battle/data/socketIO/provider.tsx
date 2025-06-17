@@ -1,14 +1,14 @@
 import useUser from "@/hooks/useUser";
 import { createContext, Dispatch, ReactElement, SetStateAction, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import io from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { ConnectBattleEvents, ConnectBattle, BattleResources, DisconnectBattle } from "../models";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/app/query/queryKeys";
 
 
 type SocketContext = {
-    socket: typeof io | null,
+    socket: Socket | null,
     isConnected: boolean,
     battleRoom: string | null,
     setBattleRoom: Dispatch<SetStateAction<string | null>>,
@@ -32,7 +32,7 @@ type SocketProvider = {
 export const SocketProvider = ({ children }: SocketProvider) => {
     const userData = useUser();
     const queryClient = useQueryClient();
-    const [socket, setSocket] = useState<typeof io | null>(defaultSocketIOData.socket);
+    const [socket, setSocket] = useState<Socket | null>(defaultSocketIOData.socket);
     const [isConnected, setIsConnected] = useState<boolean>(defaultSocketIOData.isConnected);
     const [battleRoom, setBattleRoom] = useState<string | null>(defaultSocketIOData.battleRoom);
 
@@ -89,14 +89,16 @@ export const SocketProvider = ({ children }: SocketProvider) => {
      }, [queryClient, userData]);
 
      const exitBattleRoom = () => {
-        const exitRoomPayload = { user_id: userData.id, room_id: battleRoom, did_exit_room: false };
-        socket.emit(ConnectBattleEvents.EXIT_BATTLE_ROOM, exitRoomPayload,(result: DisconnectBattle) => {
-            if (result.did_exit_room) {  
-                setBattleRoom(null);
-                return console.log("User exited from battle room");
-            }
-            return toast.error("Failed to exit battle room");
-        });
+        if(socket) {
+            const exitRoomPayload = { user_id: userData.id, room_id: battleRoom, did_exit_room: false };
+            socket.emit(ConnectBattleEvents.EXIT_BATTLE_ROOM, exitRoomPayload,(result: DisconnectBattle) => {
+                if (result.did_exit_room) {  
+                    setBattleRoom(null);
+                    return console.log("User exited from battle room");
+                }
+                return toast.error("Failed to exit battle room");
+            });
+        }
      };
 
 
