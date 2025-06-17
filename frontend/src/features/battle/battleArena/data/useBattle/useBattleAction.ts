@@ -61,7 +61,7 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
         }
     };
 
-    const displayPokemonResultAndUpdateBattleState = () => {
+    const displayPokemonActionResults = () => {
         if (!eventAnimationsList.length) {
             if (pokemonActionResultsToBeDisplayed.length > 0) {
                     pokemonActionResultsToBeDisplayed.forEach((actionResult) => {
@@ -98,7 +98,7 @@ const useBattleAction = (formattedBattleResources: FormattedBattleResources | un
     return {
         formattedBattleState, eventAnimationsList, pokemonActionInProgress, isAnimationsLoaded,
         loadPokemonActionResultAnimation, updateEventAnimationsList, saveBattleStateToBeUpdated,
-        displayPokemonResultAndUpdateBattleState, updatePokemonActionInProgress 
+        displayPokemonActionResults, updatePokemonActionInProgress 
      }
 };
 
