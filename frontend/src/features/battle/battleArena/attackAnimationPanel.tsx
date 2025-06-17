@@ -45,9 +45,10 @@ const AttackAnimationPanel = ({ eventAnimationsList, updateEventAnimationsList, 
         <section className="border-border border-x flex justify-around p-6 rounded bg-black">
              <Video
                 ref={videoRef}
-                src={currentAttackAnimation?.mediaSrc || ""}
+                src={currentAttackAnimation?.mediaSrc}
                 autoPlay={false}
                 hide={false}
+                invert={currentAttackAnimation?.invertAnimation}
                 onEnded={onCurrentAttackAnimationEnd}
                 />
         </section>
