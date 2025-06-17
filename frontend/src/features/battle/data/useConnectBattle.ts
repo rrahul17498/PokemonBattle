@@ -45,14 +45,16 @@ const useConnectBattle = (userId: number) => {
     const connectBattleMutation = useMutation({
         mutationFn: async(battleId: number) => { return await BattleAPIs.connectToBattle({ user_id: userId, battle_id: battleId }); },
         onSuccess: (data) => {
-            const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: data.room_id, battle_id: data.battle_id, did_join_room: false };
-            socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
-                if (result.did_join_room) {
-                    setBattleRoom(result.room_id);  
-                    console.log("User joined battle room");
-                    socket.emit(ConnectBattleEvents.INITIATE_BATTLE, result);
-                }
-            });
+            if(socket) {
+                const joinRoomPayload: ConnectBattle = { user_id: userId, room_id: data.room_id, battle_id: data.battle_id, did_join_room: false };
+                socket.emit(ConnectBattleEvents.JOIN_BATTLE_ROOM, joinRoomPayload,(result: ConnectBattle) => {
+                    if (result.did_join_room) {
+                        setBattleRoom(result.room_id);  
+                        console.log("User joined battle room");
+                        socket.emit(ConnectBattleEvents.INITIATE_BATTLE, result);
+                    }
+                });
+            }
         },
         onError: (e) => {
             console.error(e.message);
