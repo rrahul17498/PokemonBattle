@@ -1,21 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
-import { EventAnimationBlobUrl, EventAnimationId, EventAnimationUrl, PreloadedAnimationInfo } from "@/features/battle/data/models";
+import { EventAnimationBlobUrl, EventAnimationId, EventMediaAndAlignment, EventAnimationPreloadedBlobUrlAndAlignment } from "@/features/battle/data/models";
+import { AnimationAlignment } from "@/types/animation";
 
+
+type LoadedAnimationBlobUrlsWithAlignment = Map<EventAnimationId, EventAnimationPreloadedBlobUrlAndAlignment>;
 
 type UseLoadAnimationsReturn = {
     isAnimationsLoaded: boolean,
     loadingProgress: number,
-    loadedAnimationBlobUrls: PreloadedAnimationInfo,
+    loadedAnimationBlobUrlsWithAlignment: LoadedAnimationBlobUrlsWithAlignment,
     loadError: string | null,
     startLoading: () => void
 };
 
-type AnimationToLoadInfo = Map<EventAnimationId, EventAnimationUrl>;
+type AnimationsToLoadInfo = Map<EventAnimationId, EventMediaAndAlignment>;
 
-export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo): UseLoadAnimationsReturn => {
+export const useLoadAnimations = (attackAnimationInfoList: AnimationsToLoadInfo): UseLoadAnimationsReturn => {
     const [isAnimationsLoaded, setIsAnimationsLoaded] = useState(false);
     const [loadingProgress, setLoadingProgress] = useState(0);
-    const [loadedAnimationBlobUrls, setLoadedAnimationBlobUrls] = useState<PreloadedAnimationInfo>(new Map());
+    const [loadedAnimationBlobUrlsWithAlignment, setLoadedAnimationBlobUrlsWithAlignment] = useState<LoadedAnimationBlobUrlsWithAlignment>(new Map());
     const [loadError, setLoadError] = useState<string | null>(null);
 
     const startLoading = useCallback(async () => {
@@ -32,7 +35,7 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo):
             const totalAnimations = attackAnimationInfoList.size;
             let loadedAnimationsCount = 0;
 
-            const loadAnimationsPromises = attackAnimationInfoList.entries().map(async ([attackId, animationUrl ]) => {
+            const loadAnimationsPromises = attackAnimationInfoList.entries().map(async ([attackId, { mediaSrc: animationUrl, alignment } ]) => {
 
                 try {
                     const response = await fetch(animationUrl);
@@ -43,7 +46,7 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo):
                     const blob = await response.blob();
                     const blobUrl = URL.createObjectURL(blob);
 
-                    return new Promise<{ id: EventAnimationId, blobUrl: EventAnimationBlobUrl }>((resolve, reject) => {
+                    return new Promise<{ id: EventAnimationId, blobUrl: EventAnimationBlobUrl, alignment: AnimationAlignment }>((resolve, reject) => {
                             const video = document.createElement("video");
                             video.preload = "auto";
                             video.muted = true;
@@ -60,7 +63,7 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo):
                                 loadedAnimationsCount += 1;
                                 setLoadingProgress((loadedAnimationsCount / totalAnimations) * 100);
                                 console.log(`Animation loaded: ${animationUrl}`);
-                                resolve({ id: attackId, blobUrl });
+                                resolve({ id: attackId, blobUrl, alignment });
                             }
 
                             const onError = (e) => {
@@ -88,15 +91,15 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo):
 
            
                 
-            const animationUrlBlobUrlMap = new Map();
-            loadAnimationsResults.forEach((loadAnimationsResult) => {
-                if(!loadAnimationsResult) {
+            const animationUrlBlobUrlMap = new Map<EventAnimationId, EventAnimationPreloadedBlobUrlAndAlignment>();
+            loadAnimationsResults.forEach(({ id: animationId, blobUrl, alignment}) => {
+                if(!animationId) {
                     return;
                 }
-                animationUrlBlobUrlMap.set(loadAnimationsResult.id, loadAnimationsResult.blobUrl);
+                animationUrlBlobUrlMap.set(animationId, { blobUrl, alignment });
             });
 
-            setLoadedAnimationBlobUrls(animationUrlBlobUrlMap);
+            setLoadedAnimationBlobUrlsWithAlignment(animationUrlBlobUrlMap);
             setIsAnimationsLoaded(true);
 
         } catch(error) {
@@ -121,12 +124,12 @@ export const useLoadAnimations = (attackAnimationInfoList: AnimationToLoadInfo):
 
     useEffect(() => {
         return () => {
-            loadedAnimationBlobUrls.forEach((blobUrl) => {
+            loadedAnimationBlobUrlsWithAlignment.forEach(({ blobUrl, }) => {
                 URL.revokeObjectURL(blobUrl);
               });
         }
-    }, [loadedAnimationBlobUrls]);
+    }, [loadedAnimationBlobUrlsWithAlignment]);
 
 
-    return { isAnimationsLoaded, loadingProgress, loadedAnimationBlobUrls, loadError, startLoading };
+    return { isAnimationsLoaded, loadingProgress, loadedAnimationBlobUrlsWithAlignment, loadError, startLoading };
 };
