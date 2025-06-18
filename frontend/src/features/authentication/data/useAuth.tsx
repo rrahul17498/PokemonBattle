@@ -8,7 +8,7 @@ import { GuestUserSchema, OnBoardInfoType } from "./models";
 import * as UserAPIs from "./userAPIs";
 
 
-export const useOnBoard = () => {
+export const useAuth = () => {
 
     const queryClient = useQueryClient();
 
