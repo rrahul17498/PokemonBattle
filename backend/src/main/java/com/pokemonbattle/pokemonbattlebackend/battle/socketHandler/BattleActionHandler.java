@@ -81,7 +81,7 @@ public class BattleActionHandler {
             ) {
                       Optional<AttackResources> attackResourcesResult = this.attackResourceRepository.findByRoom(pokemonAction.getRoomId());
                       if (attackResourcesResult.isEmpty()) {
-                          this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.USER_ACTION_RESULT.name(), pokemonAction);
+                          this.server.getRoomOperations(pokemonAction.getRoomId()).sendEvent(BattleActionEvents.POKEMON_ACTION_RESULT.name(), pokemonAction);
                           throw new AttackStateNotFound(pokemonAction.getRoomId());
                       }
 
