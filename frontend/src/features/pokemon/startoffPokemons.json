@@ -13,7 +13,7 @@
              ]
         },
         {
-             "id": 3,
+             "id": 2,
              "name": "Bulbasaur",
              "type": "GRASS",
              "attacks": [
@@ -24,7 +24,7 @@
              "image": "/images/pokemons/Bulbasaur.png"
         },
         {
-             "id": 4,
+             "id": 3,
              "name": "Squirtle",
              "type": "WATER",
              "attacks": [
