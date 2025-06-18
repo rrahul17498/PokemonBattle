@@ -20,7 +20,7 @@ public class RedisConfig {
     @Bean
     public RedisJSONClient redisJSONClient() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://127.0.0.1:" + this.port);
+        config.useSingleServer().setAddress("redis://" + this.host + ":" + this.port);
         return new RedisJSONClient(config);
     }
 }
