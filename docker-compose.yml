@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16.4
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redislabs/rejson:latest
+    ports:
+      - "6379:6379"
+
+  pbbackend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_DDL_AUTO: ${SPRING_JPA_DDL_AUTO}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL}
+      REDIS_JSON_HOST: ${REDIS_JSON_HOST}
+      REDIS_JSON_PORT: ${REDIS_JSON_PORT}
+      REDIS_JSON_PASSWORD: ${REDIS_JSON_PASSWORD}
+      SOCKET_SERVER_PORT: ${SOCKET_SERVER_PORT}
+      SOCKET_SERVER_HOST: ${SOCKET_SERVER_HOST}
+    ports:
+      - "8080:8080"
+      - "8085:8085"
+    depends_on:
+      - postgres
+      - redis
+
+  pbfrontend:
+    build:
+      context: ./frontend  
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_SOCKET_BASE_URL: ${VITE_SOCKET_BASE_URL}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - pbbackend
+
+volumes:
+  postgres_data:
