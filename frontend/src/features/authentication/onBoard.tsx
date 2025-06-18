@@ -2,9 +2,8 @@ import { useMemo, useState } from 'react';
 import { OnBoardInfoType } from './data/models';
 import { ChooseStartOffPokemon } from '@/features/authentication/chooseStartOffPokemon';
 import { GuestForm } from './guestForm';
-import { useOnBoard } from './data/useOnBoard';
+import { useAuth } from './data/useAuth';
 import { AuthLayout } from '@/features/authentication/authLayout';
-import useUser from '@/hooks/useUser';
 
 
 const ONBOARD_STEPS = [
@@ -22,7 +21,7 @@ export const OnBoard = () => {
   
   const [onBoardInfo, setOnBoardInfo] = useState<OnBoardInfoType>({ name: "", owned_pokemons: [], step: 0 });  
 
-  const { createGuestUser } = useOnBoard();
+  const { createGuestUser } = useAuth();
 
 
   const updateOnBoardInfoAndGoToNextStep = (data: OnBoardInfoType) => {
